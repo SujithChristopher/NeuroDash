@@ -1,0 +1,154 @@
+:root {
+	color-scheme: light;
+	--side: #f7f7f5;
+	--main: #ffffff;
+	--surface: #ffffff;
+	--surface-2: #fafaf9;
+	--surface-3: #f2f2ef;
+	--hover: #f4f4f1;
+	--ink: #171717;
+	--ink-2: #525252;
+	--ink-3: #8a8a86;
+	--ink-4: #b3b3ae;
+	--line: #ebebe7;
+	--line-2: #dcdcd6;
+	--grid: #efefeb;
+	--axis: #cfcfc8;
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+	--shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.18), 0 4px 10px -4px rgba(0, 0, 0, 0.08);
+	--series-1: #2a78d6;
+	--series-2: #eb6834;
+	--series-3: #1baf7a;
+	--seq-1: #dbe8fa;
+	--seq-2: #9ec5f4;
+	--seq-3: #5598e7;
+	--seq-4: #256abf;
+	--seq-5: #184f95;
+	--good: #0ca30c;
+	--warn: #fab219;
+	--serious: #ec835a;
+	--crit: #d03b3b;
+	--idle: #a3a39e;
+	--good-ink: #0a7a0a;
+	--warn-ink: #8a5a00;
+	--serious-ink: #a3451f;
+	--crit-ink: #b42323;
+	--good-bg: #ecf7ec;
+	--warn-bg: #fdf5e1;
+	--serious-bg: #fdefe8;
+	--crit-bg: #fcebeb;
+	--neutral-bg: #f0f0ec;
+	--brand: #0f766e;
+	--accent: #0f766e;
+	--accent-ink: #0f766e;
+	--accent-bg: #e7f4f2;
+	--on-accent: #ffffff;
+	--font: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+[data-role='therapist'] {
+	--accent: #0f766e;
+	--accent-ink: #0f766e;
+	--accent-bg: #e7f4f2;
+}
+[data-role='consultant'] {
+	--accent: #4f46e5;
+	--accent-ink: #4338ca;
+	--accent-bg: #eeedfd;
+}
+[data-role='engineer'] {
+	--accent: #c2410c;
+	--accent-ink: #b23c0b;
+	--accent-bg: #fdf0e7;
+}
+[data-role='admin'] {
+	--accent: #334155;
+	--accent-ink: #334155;
+	--accent-bg: #eef0f3;
+}
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--side: #121211;
+	--main: #181817;
+	--surface: #1d1d1c;
+	--surface-2: #212120;
+	--surface-3: #292927;
+	--hover: #242423;
+	--ink: #f2f2ef;
+	--ink-2: #bdbdb6;
+	--ink-3: #8a8a84;
+	--ink-4: #5c5c58;
+	--line: #2a2a28;
+	--line-2: #363633;
+	--grid: #262624;
+	--axis: #42423e;
+	--shadow-sm: none;
+	--shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
+	--series-1: #3987e5;
+	--series-2: #d95926;
+	--series-3: #199e70;
+	--seq-1: #1d2a3b;
+	--seq-2: #1c4270;
+	--seq-3: #256abf;
+	--seq-4: #3987e5;
+	--seq-5: #86b6ef;
+	--good-ink: #3cc23c;
+	--warn-ink: #f5b83d;
+	--serious-ink: #ef9672;
+	--crit-ink: #f07575;
+	--good-bg: rgba(12, 163, 12, 0.14);
+	--warn-bg: rgba(250, 178, 25, 0.13);
+	--serious-bg: rgba(236, 131, 90, 0.14);
+	--crit-bg: rgba(208, 59, 59, 0.17);
+	--neutral-bg: #2a2a28;
+	--on-accent: #111110;
+	--brand: #2dd4bf;
+}
+:root[data-theme='dark'] [data-role='therapist'] {
+	--accent: #2dd4bf;
+	--accent-ink: #5eead4;
+	--accent-bg: rgba(45, 212, 191, 0.11);
+}
+:root[data-theme='dark'] [data-role='consultant'] {
+	--accent: #818cf8;
+	--accent-ink: #a5b4fc;
+	--accent-bg: rgba(129, 140, 248, 0.13);
+}
+:root[data-theme='dark'] [data-role='engineer'] {
+	--accent: #fb923c;
+	--accent-ink: #fdba74;
+	--accent-bg: rgba(251, 146, 60, 0.12);
+}
+:root[data-theme='dark'] [data-role='admin'] {
+	--accent: #94a3b8;
+	--accent-ink: #cbd5e1;
+	--accent-bg: rgba(148, 163, 184, 0.13);
+}
+
+[data-density='low'] {
+	--fs: 14.5px;
+	--fs-sm: 13.5px;
+	--fs-xs: 12.5px;
+	--pad: 20px;
+	--gap: 20px;
+	--row: 13px;
+	--h1: 24px;
+}
+[data-density='medium'] {
+	--fs: 14px;
+	--fs-sm: 13px;
+	--fs-xs: 12px;
+	--pad: 18px;
+	--gap: 16px;
+	--row: 10px;
+	--h1: 22px;
+}
+[data-density='high'] {
+	--fs: 13px;
+	--fs-sm: 12.5px;
+	--fs-xs: 11.5px;
+	--pad: 14px;
+	--gap: 12px;
+	--row: 7px;
+	--h1: 20px;
+}
