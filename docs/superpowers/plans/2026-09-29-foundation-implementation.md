@@ -24,7 +24,7 @@
 
 - **Wrong/empty login credentials** — must show the inline error and clear the password field, never throw. Test added to Task 7.
 - **Unauthenticated direct navigation to a protected route** (typed URL, refresh) — must redirect to `/login`, never flash protected content. Test added to Task 22.
-- **Role visiting a page outside their `NAV`** (e.g. therapist typing `/audit`) — `allowed(user, page)` is ported and unit-tested in Task 5, but wiring it into per-route SvelteKit navigation (vs. the original's single central router) is deferred — see "Known gap carried forward" at the end of this plan. Task 23's manual smoke test step 4 exercises and documents the current (404, not a "not allowed" card) behavior explicitly rather than silently missing it.
+- **Role visiting a page outside their `NAV`** (e.g. therapist typing `/audit`) — `allowed(user, page)` is ported and unit-tested in Task 5. Task 23's manual smoke test caught this returning full page content instead of a 404 or gate (worse than expected), which was fixed in the same task by wiring `allowed()` into `(app)/+layout.ts`/`+layout.svelte` — see the note at the end of this plan.
 - **Stale persisted user id** (localStorage has a user id that no longer exists in `USERS`, e.g. after a seed change) — boot must not crash on `userOf(id)` returning `undefined`. Test added to Task 7.
 - **Empty scoped lists** (e.g. admin with zero pending requests, engineer who owns a type with zero open faults) — Command Palette and Notifications must render their empty state, not throw on `[].reduce`/`Math.max()`-style edge cases. Test added to Tasks 5, 19, 20.
 
@@ -3622,6 +3622,8 @@ git commit -m "feat: add placeholder pages for all routes; Foundation sub-projec
 
 ---
 
-## Known gap carried forward (not a bug to fix in this plan)
+## Resolved during Task 23 smoke test: access-control gap was worse than predicted
 
-Step 3.4 above will surface that navigating to a page outside a role's `NAV` (but still a valid route file, e.g. therapist → `/audit`) 404s instead of showing a "not allowed" card, because SvelteKit's router doesn't know about role permissions — only the original's `allowed()` check (already ported in `db.ts`) does. Wiring `allowed()` into each page (or a shared `+layout.ts` per top-level route) to render a shared `NotAllowed` component instead of 404ing is real, valuable work — but it touches page-level routing decisions that are cleaner to make once real page content (and its own data-loading pattern) exists. Flag it explicitly to whoever picks up the next sub-project rather than silently declaring Foundation "done" with this gap invisible.
+The plan originally predicted that navigating to a page outside a role's `NAV` would 404. It doesn't — SvelteKit's router has no concept of role permissions, so it was rendering the **actual placeholder page content** for any authenticated user at any `(app)` route, regardless of role (e.g. a therapist visiting `/audit` saw the real "Audit log" page, not a 404). That's a real access-control gap, not just a UX rough edge, and it contradicts the approved spec's Error Handling section, which explicitly requires a "not allowed" fallback in Foundation.
+
+Fixed in `(app)/+layout.ts` (now reads `url` and calls the already-tested `allowed(user, page)` from `db.ts`, mapping `patients/[id]` → `'patient'` and `fleet/[id]` → `'device'`) and `(app)/+layout.svelte` (renders the original's `notAllowed()` card — lock icon, message, "Go to home" link — in place of `{@render children()}` when `data.notAllowed` is true). Verified via the Task 23 smoke test: therapist visiting `/audit` now sees "You don't have access to this page" instead of the Audit log content.

@@ -7,9 +7,12 @@
 	import { unreadCount } from '$lib/components/shell/notifications';
 	import { densityFor } from '$lib/stores/theme';
 	import { commandPaletteOpen } from '$lib/stores/ui';
+	import { HOME } from '$lib/data/users';
+	import Icon from '$lib/components/ui/Icon.svelte';
 
 	let { data, children } = $props();
 	const user = data.user;
+	const notAllowed = $derived(data.notAllowed);
 
 	let notifOpen = $state(false);
 	let userMenuOpen = $state(false);
@@ -39,7 +42,18 @@
 	/>
 	<div class="main">
 		<main class="content">
-			{@render children()}
+			{#if notAllowed}
+				<div class="card">
+					<div class="empty" style="padding:70px 20px">
+						<Icon name="lock" size={22} />
+						<div style="color:var(--ink);font-weight:600;margin:10px 0 4px">You don't have access to this page</div>
+						<div>Contact your administrator if you think this is a mistake.</div>
+						<div style="margin-top:16px"><a class="btn" href="/{HOME[user.role]}">Go to home</a></div>
+					</div>
+				</div>
+			{:else}
+				{@render children()}
+			{/if}
 		</main>
 	</div>
 </div>
