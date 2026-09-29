@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeuroDash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --side:#f7f7f5; --main:#ffffff; --surface:#ffffff; --surface-2:#fafaf9; --surface-3:#f2f2ef; --hover:#f4f4f1;
+  --ink:#171717; --ink-2:#525252; --ink-3:#8a8a86; --ink-4:#b3b3ae;
+  --line:#ebebe7; --line-2:#dcdcd6; --grid:#efefeb; --axis:#cfcfc8;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 16px 40px -8px rgba(0,0,0,.18), 0 4px 10px -4px rgba(0,0,0,.08);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+  --seq-1:#dbe8fa; --seq-2:#9ec5f4; --seq-3:#5598e7; --seq-4:#256abf; --seq-5:#184f95;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; --idle:#a3a39e;
+  --good-ink:#0a7a0a; --warn-ink:#8a5a00; --serious-ink:#a3451f; --crit-ink:#b42323;
+  --good-bg:#ecf7ec; --warn-bg:#fdf5e1; --serious-bg:#fdefe8; --crit-bg:#fcebeb; --neutral-bg:#f0f0ec;
+  --brand:#0f766e;
+  --accent:#0f766e; --accent-ink:#0f766e; --accent-bg:#e7f4f2; --on-accent:#ffffff;
+  --font: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+[data-role="therapist"]{ --accent:#0f766e; --accent-ink:#0f766e; --accent-bg:#e7f4f2; }
+[data-role="consultant"]{ --accent:#4f46e5; --accent-ink:#4338ca; --accent-bg:#eeedfd; }
+[data-role="engineer"]{ --accent:#c2410c; --accent-ink:#b23c0b; --accent-bg:#fdf0e7; }
+[data-role="admin"]{ --accent:#334155; --accent-ink:#334155; --accent-bg:#eef0f3; }
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --side:#121211; --main:#181817; --surface:#1d1d1c; --surface-2:#212120; --surface-3:#292927; --hover:#242423;
+  --ink:#f2f2ef; --ink-2:#bdbdb6; --ink-3:#8a8a84; --ink-4:#5c5c58;
+  --line:#2a2a28; --line-2:#363633; --grid:#262624; --axis:#42423e;
+  --shadow-sm:none; --shadow-lg:0 16px 40px -8px rgba(0,0,0,.6);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+  --seq-1:#1d2a3b; --seq-2:#1c4270; --seq-3:#256abf; --seq-4:#3987e5; --seq-5:#86b6ef;
+  --good-ink:#3cc23c; --warn-ink:#f5b83d; --serious-ink:#ef9672; --crit-ink:#f07575;
+  --good-bg:rgba(12,163,12,.14); --warn-bg:rgba(250,178,25,.13); --serious-bg:rgba(236,131,90,.14); --crit-bg:rgba(208,59,59,.17); --neutral-bg:#2a2a28;
+  --on-accent:#111110; --brand:#2dd4bf;
+}
+:root[data-theme="dark"] [data-role="therapist"]{ --accent:#2dd4bf; --accent-ink:#5eead4; --accent-bg:rgba(45,212,191,.11); }
+:root[data-theme="dark"] [data-role="consultant"]{ --accent:#818cf8; --accent-ink:#a5b4fc; --accent-bg:rgba(129,140,248,.13); }
+:root[data-theme="dark"] [data-role="engineer"]{ --accent:#fb923c; --accent-ink:#fdba74; --accent-bg:rgba(251,146,60,.12); }
+:root[data-theme="dark"] [data-role="admin"]{ --accent:#94a3b8; --accent-ink:#cbd5e1; --accent-bg:rgba(148,163,184,.13); }
+
+[data-density="low"]   { --fs:14.5px; --fs-sm:13.5px; --fs-xs:12.5px; --pad:20px; --gap:20px; --row:13px; --h1:24px; }
+[data-density="medium"]{ --fs:14px;   --fs-sm:13px;   --fs-xs:12px;   --pad:18px; --gap:16px; --row:10px; --h1:22px; }
+[data-density="high"]  { --fs:13px;   --fs-sm:12.5px; --fs-xs:11.5px; --pad:14px; --gap:12px; --row:7px;  --h1:20px; }
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{ background:var(--main); color:var(--ink); font-family:var(--font); font-size:var(--fs,14px); line-height:1.45; -webkit-font-smoothing:antialiased; font-feature-settings:"cv11","ss01"; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+a{ color:inherit; text-decoration:none; }
+a.lnk, .lnk{ color:var(--accent-ink); } a.lnk:hover{ text-decoration:underline; }
+.num{ font-variant-numeric:tabular-nums; } .mono{ font-family:var(--mono); font-size:.92em; }
+.muted{ color:var(--ink-3); } .soft{ color:var(--ink-2); } .sm{ font-size:var(--fs-sm); } .xs{ font-size:var(--fs-xs); }
+.nowrap{ white-space:nowrap; } .hidden{ display:none !important; } .grow{ flex:1; }
+.row{ display:flex; align-items:center; gap:8px; } .col{ display:flex; flex-direction:column; }
+.up{ color:var(--good-ink); } .down{ color:var(--crit-ink); }
+
+/* ============ LOGIN ============ */
+.login{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 16px; background:var(--side); }
+.login-logo{ display:flex; align-items:center; gap:10px; font-weight:650; font-size:19px; letter-spacing:-.02em; margin-bottom:26px; }
+.logo{ width:30px; height:30px; border-radius:8px; background:var(--brand); color:#fff; display:grid; place-items:center; flex:none; }
+:root[data-theme="dark"] .logo{ color:#0b0b0b; }
+.login-card{ width:380px; max-width:100%; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:30px 30px 26px; box-shadow:var(--shadow-lg); }
+.login-card h1{ font-size:20px; margin:0 0 4px; font-weight:650; letter-spacing:-.015em; }
+.login-card > p{ margin:0 0 22px; color:var(--ink-2); font-size:14px; }
+.login-card .field input{ padding:10px 12px; }
+.pw{ position:relative; } .pw input{ width:100%; padding-right:60px !important; }
+.pw button{ position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:none; color:var(--ink-3); font-size:12.5px; cursor:pointer; padding:4px 6px; }
+.login-row{ display:flex; justify-content:space-between; align-items:center; margin:2px 0 20px; font-size:13px; }
+.login-row label{ display:flex; gap:7px; align-items:center; color:var(--ink-2); cursor:pointer; }
+.login-err{ display:flex; gap:8px; align-items:flex-start; background:var(--crit-bg); color:var(--crit-ink); border-radius:8px; padding:9px 12px; font-size:13px; margin-bottom:16px; }
+.btn.block{ width:100%; justify-content:center; padding:10px 14px; font-size:14px; }
+.login-foot{ margin-top:22px; font-size:12px; color:var(--ink-3); display:flex; gap:14px; }
+
+/* ============ SHELL ============ */
+.shell{ display:grid; grid-template-columns:244px minmax(0,1fr); min-height:100vh; }
+.side{ background:var(--side); border-right:1px solid var(--line); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; padding:10px 10px 8px; }
+.ws{ display:flex; align-items:center; gap:10px; padding:8px 8px 10px; }
+.ws b{ display:block; font-size:14px; font-weight:650; letter-spacing:-.01em; line-height:1.2; }
+.ws div > span{ font-size:12px; color:var(--ink-3); }
+.searchbtn{ display:flex; align-items:center; gap:8px; width:100%; padding:7px 10px; margin:4px 0 10px; border:1px solid var(--line-2); border-radius:8px; background:var(--surface); color:var(--ink-3); cursor:pointer; font-size:13px; }
+.searchbtn:hover{ border-color:var(--ink-4); }
+.kbd{ margin-left:auto; font-size:11px; border:1px solid var(--line-2); border-radius:5px; padding:0 5px; color:var(--ink-3); font-family:var(--font); }
+.nav{ display:flex; flex-direction:column; gap:1px; flex:1; overflow-y:auto; }
+.nav a{ display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:7px; color:var(--ink-2); font-weight:500; font-size:13.5px; }
+.nav a svg{ color:var(--ink-3); flex:none; }
+.nav a:hover{ background:var(--hover); color:var(--ink); }
+.nav a.on{ background:var(--surface); color:var(--ink); box-shadow:0 0 0 1px var(--line), var(--shadow-sm); }
+.nav a.on svg{ color:var(--accent); }
+.nav .cnt{ margin-left:auto; font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.nav .cnt.hot{ background:var(--crit); color:#fff; border-radius:99px; padding:0 6px; font-weight:600; }
+.nav .sec{ font-size:11.5px; color:var(--ink-3); padding:16px 10px 5px; font-weight:500; }
+.userbtn{ display:flex; align-items:center; gap:10px; padding:8px; border-radius:8px; border:0; background:none; cursor:pointer; text-align:left; width:100%; }
+.userbtn:hover{ background:var(--hover); }
+.userbtn b{ display:block; font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.userbtn div > span{ display:block; font-size:12px; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.av{ width:30px; height:30px; border-radius:50%; background:var(--accent-bg); color:var(--accent-ink); display:grid; place-items:center; font-weight:600; font-size:11.5px; flex:none; letter-spacing:.02em; }
+.av.sm{ width:22px; height:22px; font-size:9.5px; } .av.lg{ width:48px; height:48px; font-size:16px; }
+.avs{ display:flex; } .avs .av{ box-shadow:0 0 0 2px var(--surface); } .avs .av + .av{ margin-left:-6px; }
+
+.main{ min-width:0; display:flex; flex-direction:column; background:var(--main); }
+.top{ height:52px; display:flex; align-items:center; gap:10px; padding:0 28px; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:20; background:var(--main); }
+.crumbs{ display:flex; gap:7px; align-items:center; font-size:13.5px; color:var(--ink-3); min-width:0; }
+.crumbs a:hover{ color:var(--ink); } .crumbs b{ color:var(--ink); font-weight:550; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sync{ display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-3); margin-right:6px; }
+.back{ display:inline-flex; align-items:center; gap:4px; font-size:13px; color:var(--ink-3); margin-bottom:14px; }
+.back:hover{ color:var(--ink); }
+.ws .icon-btn{ margin-right:-4px; }
+.srow{ display:grid; grid-template-columns:56px minmax(0,1fr) auto 168px; gap:16px; align-items:center; padding:15px var(--pad); border-bottom:1px solid var(--line); cursor:pointer; }
+.srow:last-child{ border-bottom:0; } .srow:hover{ background:var(--hover); }
+.srow .st{ font-variant-numeric:tabular-nums; font-weight:600; }
+.srow .sp2{ min-width:0; } .srow .sp2 b{ display:block; font-weight:600; }
+.srow .sp2 > span{ display:block; font-size:12.5px; color:var(--ink-3); margin-top:1px; }
+.srow .sr{ font-size:13px; text-align:right; white-space:nowrap; } .srow .ss{ text-align:right; }
+.srow.done .st{ color:var(--ink-3); font-weight:500; }
+.srow.now{ box-shadow:inset 3px 0 0 var(--accent); background:color-mix(in srgb, var(--accent-bg) 45%, transparent); }
+.content{ padding:32px 32px 64px; width:100%; max-width:1480px; }
+[data-density="low"] .content{ max-width:1240px; }
+
+.icon-btn{ border:0; background:transparent; width:32px; height:32px; border-radius:7px; display:grid; place-items:center; cursor:pointer; color:var(--ink-2); position:relative; flex:none; }
+.icon-btn:hover{ background:var(--hover); color:var(--ink); }
+.icon-btn .dot{ position:absolute; top:6px; right:6px; width:8px; height:8px; border-radius:50%; background:var(--crit); box-shadow:0 0 0 2px var(--main); }
+
+/* popovers */
+.pop{ position:fixed; z-index:70; background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-lg); }
+.menu{ width:250px; padding:6px; }
+.menu .mi{ display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:7px; cursor:pointer; font-size:13.5px; color:var(--ink); width:100%; border:0; background:none; text-align:left; }
+.menu .mi:hover{ background:var(--hover); }
+.menu .mh{ padding:8px 10px 10px; border-bottom:1px solid var(--line); margin-bottom:6px; }
+.menu .mh b{ display:block; font-size:13.5px; } .menu .mh span{ font-size:12.5px; color:var(--ink-3); }
+.menu hr{ border:0; border-top:1px solid var(--line); margin:6px 0; }
+.notif{ width:390px; max-height:70vh; display:flex; flex-direction:column; }
+.notif-h{ display:flex; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); gap:8px; }
+.notif-h b{ flex:1; font-size:14px; }
+.notif-b{ overflow-y:auto; }
+.ni{ display:flex; gap:11px; padding:11px 14px; border-bottom:1px solid var(--line); cursor:pointer; }
+.ni:hover{ background:var(--hover); } .ni:last-child{ border-bottom:0; }
+.ni .t{ font-size:13.5px; font-weight:500; } .ni .d{ font-size:12.5px; color:var(--ink-2); margin-top:1px; } .ni .w{ font-size:11.5px; color:var(--ink-3); margin-top:3px; }
+.ni.unread .t:before{ content:""; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--accent); margin:0 6px 2px 0; }
+
+/* command palette */
+.cmdk-scrim{ position:fixed; inset:0; background:rgba(0,0,0,.28); z-index:80; display:flex; justify-content:center; padding-top:12vh; }
+.cmdk{ width:600px; max-width:calc(100% - 32px); background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-lg); overflow:hidden; height:fit-content; }
+.cmdk input{ width:100%; border:0; border-bottom:1px solid var(--line); padding:16px 18px; font-size:15.5px; outline:none; background:transparent; }
+.cmdk-list{ max-height:380px; overflow-y:auto; padding:6px; }
+.cmdk-g{ font-size:11.5px; color:var(--ink-3); padding:8px 12px 4px; font-weight:500; }
+.cmdk-i{ display:flex; gap:10px; align-items:center; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:14px; }
+.cmdk-i span.sub{ color:var(--ink-3); font-size:12.5px; margin-left:auto; }
+.cmdk-i.sel{ background:var(--hover); }
+
+/* ============ PAGE ============ */
+.ph{ display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; min-height:36px; }
+.ph h1{ font-size:var(--h1); margin:0; font-weight:650; letter-spacing:-.02em; line-height:1.2; }
+.ph .meta{ color:var(--ink-3); font-size:13.5px; margin-top:2px; }
+.ph .sp{ flex:1; }
+.actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.grid{ display:grid; gap:var(--gap); }
+.g2{ grid-template-columns:repeat(2,minmax(0,1fr)); } .g3{ grid-template-columns:repeat(3,minmax(0,1fr)); } .g4{ grid-template-columns:repeat(4,minmax(0,1fr)); }
+.g-main{ grid-template-columns:minmax(0,1fr) 340px; } .g-wide{ grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); }
+.stack{ display:flex; flex-direction:column; gap:var(--gap); min-width:0; }
+.mb{ margin-bottom:var(--gap); }
+
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:10px; min-width:0; }
+.card-h{ display:flex; align-items:center; gap:10px; padding:12px var(--pad); border-bottom:1px solid var(--line); min-height:46px; }
+.card-h h2{ font-size:13.5px; font-weight:600; margin:0; }
+.card-h .sub{ font-size:12.5px; color:var(--ink-3); }
+.card-h .sp{ flex:1; }
+.card-b{ padding:var(--pad); } .card-b.flush{ padding:0; }
+.card.plain .card-h{ border-bottom:0; padding-bottom:0; }
+
+/* stat strip */
+.stats{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; border:1px solid var(--line); border-radius:10px; background:var(--surface); margin-bottom:var(--gap); overflow:hidden; }
+.stat{ padding:14px var(--pad); border-left:1px solid var(--line); min-width:0; }
+.stat:first-child{ border-left:0; }
+.stat.link{ cursor:pointer; } .stat.link:hover{ background:var(--hover); }
+.stat .l{ font-size:12.5px; color:var(--ink-3); display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.stat .v{ font-size:24px; font-weight:600; letter-spacing:-.02em; margin-top:3px; line-height:1.2; }
+[data-density="high"] .stat .v{ font-size:21px; }
+.stat .v small{ font-size:13px; color:var(--ink-3); font-weight:500; margin-left:3px; letter-spacing:0; }
+.stat .f{ font-size:12px; color:var(--ink-3); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stat.bad .v{ color:var(--crit-ink); } .stat.warnv .v{ color:var(--warn-ink); }
+
+/* pills & badges */
+.pill{ display:inline-flex; align-items:center; gap:6px; padding:1px 8px 1px 7px; border-radius:99px; font-size:var(--fs-xs); font-weight:500; white-space:nowrap; line-height:1.7; border:1px solid var(--line-2); color:var(--ink-2); background:var(--surface); }
+.pill .d{ width:7px; height:7px; border-radius:50%; background:var(--idle); flex:none; }
+.pill.good .d{ background:var(--good); } .pill.warn .d{ background:var(--warn); } .pill.serious .d{ background:var(--serious); } .pill.crit .d{ background:var(--crit); } .pill.accent .d{ background:var(--accent); } .pill.info .d{ background:var(--series-1); }
+.pill.live .d{ box-shadow:0 0 0 3px color-mix(in srgb, var(--good) 25%, transparent); }
+.tag{ display:inline-flex; align-items:center; gap:5px; padding:1px 7px; border-radius:5px; font-size:var(--fs-xs); font-weight:500; background:var(--surface-3); color:var(--ink-2); white-space:nowrap; line-height:1.7; }
+.tag.crit{ background:var(--crit-bg); color:var(--crit-ink); } .tag.serious{ background:var(--serious-bg); color:var(--serious-ink); } .tag.warn{ background:var(--warn-bg); color:var(--warn-ink); } .tag.good{ background:var(--good-bg); color:var(--good-ink); } .tag.accent{ background:var(--accent-bg); color:var(--accent-ink); }
+.sev{ display:inline-flex; align-items:center; gap:5px; font-size:var(--fs-xs); font-weight:550; white-space:nowrap; }
+.sev i{ display:inline-flex; gap:1.5px; align-items:flex-end; height:11px; }
+.sev i b{ width:3px; border-radius:1px; background:var(--line-2); }
+.sev i b:nth-child(1){ height:4px; } .sev i b:nth-child(2){ height:7px; } .sev i b:nth-child(3){ height:10px; }
+.sev.Low i b:nth-child(1){ background:var(--ink-3); }
+.sev.Medium i b:nth-child(-n+2){ background:var(--warn); }
+.sev.High i b{ background:var(--serious); }
+.sev.Critical{ color:var(--crit-ink); } .sev.Critical i b{ background:var(--crit); }
+.delta{ white-space:nowrap; font-size:var(--fs-xs); font-weight:600; padding:0 5px; border-radius:4px; font-variant-numeric:tabular-nums; }
+.delta.up{ background:var(--good-bg); } .delta.down{ background:var(--crit-bg); } .delta.flat{ background:var(--surface-3); color:var(--ink-2); }
+
+/* tables */
+.tbl-wrap{ overflow-x:auto; }
+table.tbl{ width:100%; border-collapse:collapse; font-size:var(--fs-sm); }
+.tbl th{ text-align:left; font-weight:500; color:var(--ink-3); font-size:12px; padding:8px var(--pad); border-bottom:1px solid var(--line); white-space:nowrap; background:var(--surface-2); }
+.tbl th.sortable{ cursor:pointer; } .tbl th.sortable:hover{ color:var(--ink); }
+.tbl td{ padding:var(--row) var(--pad); border-bottom:1px solid var(--line); vertical-align:middle; }
+.tbl tbody tr:last-child td{ border-bottom:0; }
+.tbl tr.click{ cursor:pointer; } .tbl tr.click:hover td{ background:var(--hover); }
+.tbl td.r,.tbl th.r{ text-align:right; }
+.tbl .pri{ font-weight:550; color:var(--ink); white-space:nowrap; } .tbl .sec2{ font-size:12px; color:var(--ink-3); margin-top:1px; }
+.tbl-foot{ display:flex; justify-content:space-between; align-items:center; padding:10px var(--pad); border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-3); }
+.who{ display:flex; align-items:center; gap:10px; min-width:0; }
+
+/* buttons & inputs */
+.btn{ display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:7px; border:1px solid var(--line-2); background:var(--surface); cursor:pointer; font-weight:500; font-size:13px; white-space:nowrap; box-shadow:var(--shadow-sm); line-height:1.45; }
+.btn:hover{ background:var(--hover); }
+.btn.pri{ background:var(--accent); border-color:transparent; color:var(--on-accent); }
+.btn.pri:hover{ filter:brightness(1.08); }
+.btn.dark{ background:var(--ink); color:var(--main); border-color:transparent; }
+.btn.sm{ padding:3px 9px; font-size:12.5px; }
+.btn.ghost{ border-color:transparent; background:transparent; box-shadow:none; color:var(--ink-2); }
+.btn.ghost:hover{ background:var(--hover); color:var(--ink); }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+.field{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.field label{ font-size:13px; font-weight:500; color:var(--ink); }
+.field input,.field select,.field textarea{ padding:8px 11px; border-radius:8px; border:1px solid var(--line-2); background:var(--surface); outline:none; width:100%; }
+.field input:focus,.field select:focus,.field textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-bg); }
+.field .hint{ font-size:12px; color:var(--ink-3); }
+.frow{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.checks{ display:flex; flex-wrap:wrap; gap:6px; }
+.checks label{ font-weight:450; display:flex; gap:7px; align-items:center; font-size:13px; border:1px solid var(--line-2); border-radius:7px; padding:5px 10px; cursor:pointer; }
+.checks label:has(input:checked){ border-color:var(--accent); background:var(--accent-bg); color:var(--accent-ink); }
+.checks input{ accent-color:var(--accent); margin:0; }
+.toolbar{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+.toolbar .inp{ display:flex; align-items:center; gap:7px; padding:0 10px; border:1px solid var(--line-2); border-radius:7px; background:var(--surface); color:var(--ink-3); }
+.toolbar .inp input{ border:0; outline:none; background:none; padding:6px 0; width:220px; font-size:13px; color:var(--ink); }
+.toolbar select{ padding:6px 9px; border-radius:7px; border:1px solid var(--line-2); background:var(--surface); font-size:13px; }
+.segs{ display:flex; gap:2px; padding:3px; background:var(--surface-3); border-radius:9px; }
+.segs button{ border:0; background:none; padding:5px 11px; border-radius:7px; cursor:pointer; font-size:13px; color:var(--ink-2); font-weight:500; display:flex; gap:6px; align-items:center; }
+.segs button .c{ font-size:11.5px; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.segs button.on{ background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08), 0 0 0 1px var(--line); }
+
+/* tabs */
+.tabs{ display:flex; gap:2px; border-bottom:1px solid var(--line); margin-bottom:var(--gap); overflow-x:auto; }
+.tabs a{ padding:9px 12px; color:var(--ink-3); font-weight:500; font-size:13.5px; border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; display:flex; gap:6px; align-items:center; }
+.tabs a:hover{ color:var(--ink); }
+.tabs a.on{ color:var(--ink); border-bottom-color:var(--ink); }
+.tabs a .c{ font-size:11.5px; background:var(--surface-3); color:var(--ink-2); padding:0 6px; border-radius:99px; }
+
+/* entity banner */
+.banner{ display:flex; gap:16px; align-items:flex-start; padding-bottom:18px; flex-wrap:wrap; }
+.banner h1{ font-size:var(--h1); margin:0; font-weight:650; letter-spacing:-.02em; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.banner .ids{ display:flex; gap:6px 16px; flex-wrap:wrap; color:var(--ink-2); font-size:13px; margin-top:5px; }
+.banner .ids span{ display:inline-flex; align-items:center; gap:6px; }
+.banner .ids b{ font-weight:500; color:var(--ink-3); }
+.banner .chips{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.banner .sp{ flex:1; }
+.prog{ display:flex; align-items:center; gap:10px; white-space:nowrap; font-size:12.5px; color:var(--ink-2); }
+.prog .bar{ width:72px; flex:none; height:5px; border-radius:9px; background:var(--surface-3); overflow:hidden; }
+.prog .bar div{ height:100%; background:var(--accent); border-radius:9px; }
+
+/* key-value */
+.kv{ display:grid; grid-template-columns:auto 1fr; gap:9px 16px; font-size:var(--fs-sm); margin:0; }
+.kv dt{ color:var(--ink-3); white-space:nowrap; } .kv dd{ margin:0; text-align:right; font-weight:500; min-width:0; }
+.kv dd .tag{ margin:0 0 3px 3px; }
+
+/* lists */
+.list{ list-style:none; margin:0; padding:0; }
+.li{ display:flex; gap:12px; align-items:center; padding:var(--row) var(--pad); border-bottom:1px solid var(--line); }
+.li:last-child{ border-bottom:0; }
+.li.click{ cursor:pointer; } .li.click:hover{ background:var(--hover); }
+.li .ico{ width:28px; height:28px; border-radius:7px; display:grid; place-items:center; flex:none; background:var(--surface-3); color:var(--ink-2); }
+.li .ico.crit{ background:var(--crit-bg); color:var(--crit-ink); } .li .ico.warn{ background:var(--warn-bg); color:var(--warn-ink); } .li .ico.serious{ background:var(--serious-bg); color:var(--serious-ink); } .li .ico.good{ background:var(--good-bg); color:var(--good-ink); } .li .ico.accent{ background:var(--accent-bg); color:var(--accent-ink); }
+.li .tx{ flex:1; min-width:0; } .li .tx b{ font-weight:550; display:block; font-size:var(--fs-sm); }
+.li .tx > span{ color:var(--ink-3); font-size:12.5px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.li .rt{ font-size:12px; color:var(--ink-3); white-space:nowrap; }
+
+/* schedule */
+.sched{ list-style:none; margin:0; padding:6px 0; }
+.slot{ display:grid; grid-template-columns:52px 14px 1fr; gap:10px; padding:0 var(--pad); cursor:pointer; }
+.slot:hover .sbox{ border-color:var(--line-2); background:var(--hover); }
+.slot .tm{ font-size:12.5px; color:var(--ink-3); padding-top:11px; font-variant-numeric:tabular-nums; text-align:right; }
+.slot .rail{ position:relative; }
+.slot .rail:before{ content:""; position:absolute; left:6px; top:0; bottom:0; width:1px; background:var(--line); }
+.slot .rail i{ position:absolute; left:2px; top:15px; width:9px; height:9px; border-radius:50%; background:var(--surface); border:2px solid var(--ink-4); }
+.slot.done .rail i{ background:var(--good); border-color:var(--good); }
+.slot.now .rail i{ background:var(--accent); border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-bg); }
+.slot.blocked .rail i{ background:var(--crit); border-color:var(--crit); }
+.sbox{ border:1px solid var(--line); border-radius:8px; padding:8px 11px; margin:4px 0; }
+.sbox b{ font-weight:550; font-size:13.5px; display:flex; justify-content:space-between; gap:8px; }
+.sbox > span{ font-size:12.5px; color:var(--ink-3); display:block; }
+.slot.done .sbox{ opacity:.7; }
+
+/* heatmap */
+.heat{ display:flex; gap:6px; }
+.heat .days{ display:grid; grid-template-rows:repeat(6,14px); gap:3px; font-size:10.5px; color:var(--ink-3); padding-top:18px; }
+.heat .wk{ display:grid; grid-template-rows:14px repeat(6,14px); gap:3px; }
+.heat .wk .ml{ font-size:10.5px; color:var(--ink-3); white-space:nowrap; }
+.heat .c{ width:14px; height:14px; border-radius:3px; background:var(--surface-3); }
+.heat .c.na{ background:transparent; box-shadow:inset 0 0 0 1px var(--line); }
+.heat .c.l0{ background:var(--surface-3); } .heat .c.l1{ background:var(--seq-1); } .heat .c.l2{ background:var(--seq-2); } .heat .c.l3{ background:var(--seq-3); } .heat .c.l4{ background:var(--seq-4); }
+.heat .c.today{ box-shadow:inset 0 0 0 1.5px var(--ink); }
+.heat-leg{ display:flex; gap:4px; align-items:center; font-size:11.5px; color:var(--ink-3); }
+.heat-leg .c{ width:11px; height:11px; border-radius:3px; }
+
+/* fleet */
+.fleet{ display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:var(--gap); }
+.dev{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:13px 14px 12px; cursor:pointer; display:flex; flex-direction:column; gap:10px; }
+.dev:hover{ border-color:var(--line-2); box-shadow:var(--shadow-sm); }
+.dev.crit{ border-color:color-mix(in srgb, var(--crit) 45%, var(--line)); }
+.dev-h{ display:flex; align-items:flex-start; gap:8px; }
+.dev-h b{ font-size:14px; font-weight:600; font-family:var(--mono); letter-spacing:-.01em; }
+.dev-h > div > span{ display:block; font-size:12px; color:var(--ink-3); }
+.dev-m{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.dev-m div span{ display:block; font-size:11px; color:var(--ink-3); } .dev-m div b{ font-size:13px; font-weight:550; font-variant-numeric:tabular-nums; }
+.dev-alert{ font-size:12px; padding:6px 9px; border-radius:6px; background:var(--crit-bg); color:var(--crit-ink); display:flex; gap:6px; align-items:center; }
+.dev-alert.warn{ background:var(--warn-bg); color:var(--warn-ink); }
+
+/* kanban */
+.kanban{ display:grid; grid-template-columns:repeat(4,minmax(220px,1fr)); gap:12px; overflow-x:auto; align-items:start; }
+.kcol{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px; min-height:160px; }
+.kcol-h{ display:flex; align-items:center; gap:8px; padding:4px 6px 10px; font-size:13px; font-weight:600; }
+.kcol-h .c{ color:var(--ink-3); font-weight:500; }
+.tk{ background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:10px 11px; margin-bottom:8px; box-shadow:var(--shadow-sm); }
+.tk .id{ font-size:11.5px; color:var(--ink-3); font-family:var(--mono); }
+.tk .ti{ font-size:13px; font-weight:500; margin:4px 0 8px; line-height:1.4; }
+.tk .ft{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-3); }
+
+/* event log */
+.log{ font-family:var(--mono); font-size:12px; }
+.log .e{ display:grid; grid-template-columns:128px 52px 1fr; gap:10px; padding:6px var(--pad); border-bottom:1px solid var(--line); }
+.log .e:last-child{ border-bottom:0; }
+.log .lv{ font-weight:600; } .log .lv.INFO{ color:var(--series-1); } .log .lv.WARN{ color:var(--warn-ink); } .log .lv.ERROR{ color:var(--crit-ink); } .log .lv.OK{ color:var(--good-ink); }
+.log .ts{ color:var(--ink-3); }
+
+/* meter, legend, charts */
+.meter{ height:5px; border-radius:99px; background:var(--surface-3); overflow:hidden; width:64px; flex:none; }
+.meter > div{ height:100%; border-radius:99px; background:var(--series-1); }
+.meter.m-warn > div{ background:var(--warn); } .meter.m-crit > div{ background:var(--crit); } .meter.m-good > div{ background:var(--good); }
+.mcell{ display:flex; align-items:center; gap:8px; }
+.legend{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12px; color:var(--ink-2); }
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+.legend i{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+.legend i.ln{ height:2px; width:14px; }
+.chart{ width:100%; position:relative; }
+.chart svg{ display:block; overflow:visible; }
+.chart text{ fill:var(--ink-3); font-size:11px; font-family:var(--font); font-variant-numeric:tabular-nums; }
+.chart .gl{ stroke:var(--grid); stroke-width:1; } .chart .ax{ stroke:var(--axis); stroke-width:1; }
+.chart .ref{ stroke:var(--ink-4); stroke-width:1; } .chart .reflab{ fill:var(--ink-3); font-size:10.5px; }
+.chart .dlab{ fill:var(--ink-2); font-size:11px; font-weight:600; }
+.xh .xh-l{ opacity:0; stroke:var(--ink-4); stroke-width:1; } .xh .xh-d{ opacity:0; }
+.xh:hover .xh-l,.xh:hover .xh-d{ opacity:1; }
+.hov:hover{ opacity:.8; }
+.chart-foot{ display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:10px; flex-wrap:wrap; }
+.tview{ font-size:12px; color:var(--ink-3); background:none; border:0; cursor:pointer; padding:0; }
+.tview:hover{ color:var(--ink); text-decoration:underline; }
+#tip{ position:fixed; z-index:100; pointer-events:none; background:var(--surface); color:var(--ink); border:1px solid var(--line); padding:8px 10px; border-radius:8px; font-size:12px; line-height:1.5; box-shadow:var(--shadow-lg); max-width:260px; opacity:0; transition:opacity .08s; }
+#tip b{ font-weight:600; } #tip .tr{ display:flex; gap:14px; justify-content:space-between; color:var(--ink-2); } #tip .tr b{ color:var(--ink); }
+#tip .sw{ width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:6px; }
+
+/* modal & toast */
+.scrim{ position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:90; display:flex; justify-content:center; align-items:flex-start; padding:10vh 16px 16px; overflow-y:auto; }
+.modal{ background:var(--surface); border-radius:14px; box-shadow:var(--shadow-lg); width:520px; max-width:100%; border:1px solid var(--line); }
+.modal-h{ padding:18px 20px 4px; display:flex; align-items:flex-start; gap:10px; }
+.modal-h h3{ margin:0; font-size:16px; font-weight:600; } .modal-h p{ margin:3px 0 0; color:var(--ink-3); font-size:13px; }
+.modal-b{ padding:14px 20px 4px; }
+.modal-f{ padding:12px 20px 16px; display:flex; justify-content:flex-end; gap:8px; border-top:1px solid var(--line); margin-top:6px; }
+.toast{ position:fixed; bottom:22px; right:22px; background:var(--ink); color:var(--main); padding:10px 14px; border-radius:9px; font-size:13.5px; z-index:120; box-shadow:var(--shadow-lg); display:flex; gap:8px; align-items:center; }
+.empty{ padding:32px var(--pad); text-align:center; color:var(--ink-3); font-size:var(--fs-sm); }
+.tl{ list-style:none; margin:0; padding:var(--pad); }
+.tl li{ position:relative; padding:0 0 16px 22px; font-size:var(--fs-sm); }
+.tl li:before{ content:""; position:absolute; left:3px; top:6px; width:8px; height:8px; border-radius:50%; background:var(--surface); border:2px solid var(--ink-4); }
+.tl li:after{ content:""; position:absolute; left:7px; top:18px; bottom:2px; width:1px; background:var(--line); }
+.tl li:last-child{ padding-bottom:0; } .tl li:last-child:after{ display:none; }
+.tl .when{ font-size:12px; color:var(--ink-3); margin-top:2px; }
+.note{ padding:12px 14px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); font-size:var(--fs-sm); }
+
+@media (max-width: 1150px){ .g4{ grid-template-columns:repeat(2,minmax(0,1fr)); } .g-main,.g-wide,.g3{ grid-template-columns:1fr; } .stats{ grid-auto-flow:row; grid-template-columns:repeat(2,1fr); } .stat{ border-left:0; border-top:1px solid var(--line); } .kanban{ grid-template-columns:repeat(4,240px); } }
+@media (max-width: 860px){ .shell{ grid-template-columns:1fr; } .side{ position:static; height:auto; } .nav{ flex-direction:row; flex-wrap:wrap; } .nav .sec{ display:none; } .g2{ grid-template-columns:1fr; } .top,.content{ padding-left:16px; padding-right:16px; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="tip"></div>
+<script>
+'use strict';
+/* =====================================================================
+   1. UTILITIES
+   ===================================================================== */
+let _seed = 20260918;
+function RNG(){ _seed |= 0; _seed = _seed + 0x6D2B79F5 | 0; let t = Math.imul(_seed ^ _seed >>> 15, 1 | _seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+const rand = (a,b) => a + RNG()*(b-a);
+const randInt = (a,b) => Math.floor(rand(a, b+1));
+const pick = a => a[Math.floor(RNG()*a.length)];
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const gauss = () => { let u = 0; while(!u) u = RNG(); return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*RNG()); };
+const round1 = v => Math.round(v*10)/10;
+const DAY = 86400000;
+const TODAY = (() => { const d = new Date(); d.setHours(0,0,0,0); return d; })();
+const NOW = new Date();
+const addDays = (d,n) => new Date(d.getTime() + n*DAY);
+const dayKey = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+const daysAgo = d => Math.floor((TODAY - startOfDay(d)) / DAY);
+function startOfDay(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const fmtD = d => d.getDate() + ' ' + MONTHS[d.getMonth()];
+const fmtDY = d => d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+const fmtT = d => String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+function rel(d){
+  const ms = NOW - d, h = ms/3600000;
+  if (h < 0) { const dd = Math.ceil(-ms/DAY); return 'in ' + dd + ' d'; }
+  if (h < 1) return Math.max(1, Math.round(h*60)) + ' min ago';
+  if (h < 24) return Math.round(h) + ' h ago';
+  const dd = Math.round(h/24); return dd === 1 ? 'yesterday' : dd + ' d ago';
+}
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct = v => Math.round(v*100) + '%';
+let _uid = 1000; const uid = p => p + '-' + (++_uid);
+
+/* =====================================================================
+   2. REFERENCE DATA  (all devices are placeholders for the demo)
+   ===================================================================== */
+const SCALES = {
+  'FMA-UE': { name:'Fugl-Meyer Upper Extremity', max:66, mcid:5 },
+  'BBS':    { name:'Berg Balance Scale',          max:56, mcid:4 },
+};
+const DEVICE_TYPES = [
+  { id:'PLUTO',  name:'Pluto',  category:'Wrist & Hand Robot',            scale:'FMA-UE', outUnit:'Nm', outLimit:1.2, units:4,
+    mechanisms:['Wrist Flex/Ext','Pronation/Supination','Hand Open/Close'], games:['HAT','FruitBasket','PongGame'] },
+  { id:'MARS',   name:'Mars',   category:'Arm Support Robot',             scale:'FMA-UE', outUnit:'Nm', outLimit:8.0, units:3,
+    mechanisms:['Shoulder Flexion','Elbow Extension','Reach & Grasp'], games:['PongGame','TukTuk'] },
+  { id:'ORION',  name:'Orion',  category:'Grip & Pinch Trainer',          scale:'FMA-UE', outUnit:'N',  outLimit:60,  units:2,
+    mechanisms:['Cylindrical Grip','Pinch Grip','Finger Extension'], games:['RNR','HatRick'] },
+  { id:'VEGA',   name:'Vega',   category:'Balance & Lower-Limb Trainer',  scale:'BBS',    outUnit:'N',  outLimit:400, units:2,
+    mechanisms:['Weight Shift','Ankle Dorsiflexion','Sit-to-Stand'], games:['TukTuk','PongGame'] },
+  { id:'COSMOS', name:'Cosmos', category:'Fine Motor Game Station',       scale:'FMA-UE', outUnit:'N',  outLimit:25,  units:2,
+    mechanisms:['Precision Reach','Bimanual Coordination'], games:['FruitBasket','HatRick'] },
+  { id:'ATLAS',  name:'Atlas',  category:'Shoulder & Scapular Robot',     scale:'FMA-UE', outUnit:'Nm', outLimit:12,  units:1,
+    mechanisms:['Shoulder Abduction','Scapular Stabilisation'], games:['HAT','RNR'] },
+];
+const GAME_LABELS = { HAT:'Hand Trainer Arcade', PongGame:'Pong', FruitBasket:'Fruit Basket', RNR:'Reach & Retrieve', TukTuk:'TukTuk Drive', HatRick:'HatRick Precision' };
+const typeOf = id => DEVICE_TYPES.find(t => t.id === id);
+const ROOMS = ['Therapy Bay 1','Therapy Bay 2','Therapy Bay 3','Gait & Balance Lab'];
+
+const USERS = [
+  { id:'U-T1', role:'therapist',  name:'Priya Nair',    title:'Senior Occupational Therapist', initials:'PN' },
+  { id:'U-T2', role:'therapist',  name:'Rohan Mehta',   title:'Physiotherapist',               initials:'RM' },
+  { id:'U-T3', role:'therapist',  name:'Ananya Kapoor', title:'Occupational Therapist',        initials:'AK' },
+  { id:'U-T4', role:'therapist',  name:'Farah Sheikh',  title:'Physiotherapist',               initials:'FS' },
+  { id:'U-C1', role:'consultant', name:'Vikram Suresh', title:'Neuro-rehabilitation Consultant', initials:'VS' },
+  { id:'U-C2', role:'consultant', name:'Leela Menon',   title:'Consultant, Stroke Recovery',   initials:'LM' },
+  { id:'U-E1', role:'engineer',   name:'Arjun Rao',     title:'Device engineer · Pluto, Mars', initials:'AR', owns:['PLUTO','MARS'] },
+  { id:'U-E2', role:'engineer',   name:"Kevin D'Souza", title:'Device engineer · Orion, Vega', initials:'KD', owns:['ORION','VEGA'] },
+  { id:'U-E3', role:'engineer',   name:'Meera Iyer',    title:'Device engineer · Cosmos, Atlas', initials:'MI', owns:['COSMOS','ATLAS'] },
+  { id:'U-A1', role:'admin',      name:'Sam Thomas',    title:'System administrator',          initials:'ST' },
+];
+USERS.forEach(u => { u.login = u.name.toLowerCase().replace(/[^a-z ]/g,'').replace(' ','.'); u.email = u.login + '@neurorehab.org'; u.status = 'Active'; });
+const DEMO_PASSWORD = 'neuro@123';   // same for every account in the prototype
+const userOf = id => USERS.find(u => u.id === id);
+const usersByRole = r => USERS.filter(u => u.role === r);
+const ownerOfType = typeId => USERS.find(u => u.owns && u.owns.includes(typeId));
+
+const ROLE_INFO = {
+  therapist:  { label:'Therapist',  density:'low',    question:'Who do I need to act on today?',        blurb:'Today’s patients, sessions and what needs action' },
+  consultant: { label:'Consultant', density:'medium', question:'Which patients are not progressing?',   blurb:'Progress review across all patients' },
+  engineer:   { label:'Engineer',   density:'high',   question:'Which of my devices are unsafe or unavailable?', blurb:'Your devices: health, performance, usage, outcomes' },
+  admin:      { label:'Admin',      density:'medium', question:'Is the whole programme running?',       blurb:'Superuser: everything, plus users and audit' },
+};
+
+/* =====================================================================
+   3. GENERATED DEMO DATA
+   ===================================================================== */
+const DB = { units:[], patients:[], sessions:[], assessments:[], faults:[], requests:[], audit:[], calibrations:[] };
+
+/* ---- device units ---- */
+DEVICE_TYPES.forEach(t => {
+  for (let i = 1; i <= t.units; i++) {
+    DB.units.push({
+      id: t.id + '-0' + i, typeId: t.id, serial: 'SN-' + t.id.slice(0,2) + randInt(20400, 20999),
+      room: t.id === 'VEGA' ? 'Gait & Balance Lab' : pick(ROOMS.slice(0,3)),
+      firmware: 'v' + pick(['2.3.1','2.3.1','2.4.0','2.2.7']),
+      commissioned: addDays(TODAY, -randInt(200, 640)),
+      lastCal: addDays(TODAY, -randInt(8, 50)), calInterval: 60,
+      lastSync: new Date(NOW.getTime() - randInt(5, 90) * 60000),
+      errBase: rand(1.0, 1.6), latBase: rand(20, 28), driftRate: rand(0.02, 0.05),
+    });
+  }
+});
+const unitOf = id => DB.units.find(u => u.id === id);
+// scripted device stories (so every role has something real to look at)
+unitOf('VEGA-01').lastCal = addDays(TODAY, -74); unitOf('VEGA-01').driftRate = 0.07;
+unitOf('COSMOS-01').lastSync = new Date(NOW.getTime() - 26 * 3600000);
+unitOf('MARS-02').anomaly = true;                    // tracking error creeping up last 10 days
+unitOf('PLUTO-03').lastCal = addDays(TODAY, -57);    // calibration due in 3 days
+
+/* ---- patients ---- */
+const FIRST = ['Suresh','Meenal','Rajiv','Farhana','Vikrant','Ishita','Devendra','Kavya','Aslam','Rohit','Sunita','Aarav','Priyanka','Naveen','Zoya','Harish','Lakshmi','Gautam','Nisha','Imran','Deepa','Kiran','Tara','Mohan'];
+const LAST = ['R.','K.','T.','D.','B.','S.','P.','N.','M.','J.','V.','G.'];
+const DIAG = [
+  { label:'Ischaemic stroke, right MCA', side:'Left' }, { label:'Ischaemic stroke, left MCA', side:'Right' },
+  { label:'Haemorrhagic stroke, basal ganglia', side:'Right' }, { label:'Haemorrhagic stroke, thalamic', side:'Left' },
+  { label:'Traumatic brain injury', side:'Bilateral' }, { label:'Ischaemic stroke, pontine', side:'Left' },
+];
+// response profiles: points gained per 14 days, adherence probability
+const PROFILES = {
+  good:     { rate:[3.5,5.5], adh:[0.85,0.98] },
+  moderate: { rate:[1.8,3.2], adh:[0.68,0.86] },
+  plateau:  { rate:[0.2,0.9], adh:[0.60,0.80] },
+  lowadh:   { rate:[0.8,2.0], adh:[0.35,0.55] },
+  decline:  { rate:[1.5,2.5], adh:[0.55,0.75] },
+};
+const PROFILE_SEQ = ['good','moderate','plateau','good','moderate','lowadh','good','decline','moderate','good','plateau','moderate','good','lowadh','moderate','good','moderate','good'];
+const TYPE_SEQ    = ['PLUTO','MARS','ORION','VEGA','PLUTO','COSMOS','ATLAS','MARS','PLUTO','ORION','VEGA','COSMOS','MARS','PLUTO','ATLAS','ORION','PLUTO','MARS','ORION','PLUTO','VEGA','MARS','PLUTO','COSMOS'];
+const THERAPISTS = usersByRole('therapist');
+
+for (let i = 0; i < 24; i++) {
+  const status = i < 18 ? 'Active' : i < 21 ? 'New' : 'Discharged';
+  const typeId = TYPE_SEQ[i], t = typeOf(typeId);
+  const dg = typeId === 'VEGA' ? pick(DIAG) : DIAG[i % DIAG.length];
+  const profName = status === 'Discharged' ? 'good' : status === 'New' ? 'moderate' : PROFILE_SEQ[i];
+  const prof = PROFILES[profName];
+  const admitted = status === 'Active' ? addDays(TODAY, -randInt(16, 62)) : status === 'New' ? addDays(TODAY, -randInt(0, 4)) : addDays(TODAY, -randInt(90, 130));
+  const p = {
+    id: 'PT-' + (1001 + i), code: 'P-' + String(randInt(100, 999)) + String.fromCharCode(65 + i),
+    name: FIRST[i] + ' ' + pick(LAST), age: randInt(38, 78), sex: pick(['F','M']),
+    diagnosis: dg.label, side: dg.side, onsetDays: randInt(14, 120), admitted, status,
+    therapistId: THERAPISTS[i % 4].id, consultantId: i % 2 ? 'U-C2' : 'U-C1', scale: t.scale, profile: profName,
+    mrn: String(4000000 + i * 7919 + 31337).replace(/(\d{3})(\d{4})/, '$1-$2'),
+    rate: rand(prof.rate[0], prof.rate[1]), adhP: rand(prof.adh[0], prof.adh[1]),
+    plan: null, notes: [], slot: null,
+  };
+  if (status === 'Discharged') p.discharged = addDays(admitted, randInt(45, 60));
+  // plan
+  const units = DB.units.filter(u => u.typeId === typeId);
+  if (status !== 'New' || i === 18 || i === 19) {
+    const start = status === 'New' ? addDays(TODAY, 1) : addDays(admitted, randInt(2, 4));
+    p.plan = {
+      typeId, unitId: status === 'New' ? (i === 18 ? units[units.length - 1].id : null) : pick(units.length > 2 ? units.slice(0, -1) : units).id,   // keep one spare unit of the bigger fleets free
+      mechanisms: t.mechanisms.slice(0, randInt(2, t.mechanisms.length)),
+      games: t.games.slice(0, randInt(1, t.games.length)),
+      minutes: pick([30, 30, 40, 45, 25]), daysPerWeek: 6, weeks: 10, start,
+      goal: typeId === 'VEGA' ? 'Independent sit-to-stand and safer weight transfer' : 'Improve reach and grasp for self-care tasks',
+      history: [{ date: start, by: p.therapistId, text: 'Plan created: ' + t.name + ', ' + '{MIN} min/day' }],
+    };
+    p.plan.history[0].text = p.plan.history[0].text.replace('{MIN}', p.plan.minutes);
+  }
+  DB.patients.push(p);
+}
+const patientOf = id => DB.patients.find(p => p.id === id);
+// guarantee: the Atlas patient is on ATLAS-01 (which is about to fail)
+DB.patients.filter(p => p.plan && p.plan.typeId === 'ATLAS').forEach(p => p.plan.unitId = 'ATLAS-01');
+
+/* ---- plan modifications ---- */
+DB.patients.filter(p => p.status === 'Active').forEach(p => {
+  const n = p.profile === 'plateau' || p.profile === 'lowadh' ? 2 : randInt(0, 1);
+  let d = p.plan.start;
+  for (let k = 0; k < n; k++) {
+    d = addDays(d, randInt(6, 14)); if (d >= TODAY) break;
+    const old = p.plan.minutes, t = typeOf(p.plan.typeId);
+    const opt = randInt(0, 2);
+    let text;
+    if (opt === 0) { p.plan.minutes = Math.min(60, old + 10); text = 'Daily minutes ' + old + ' → ' + p.plan.minutes; }
+    else if (opt === 1) { const g = t.games.find(x => !p.plan.games.includes(x)) || t.games[0]; if (!p.plan.games.includes(g)) p.plan.games.push(g); text = 'Added game: ' + GAME_LABELS[g]; }
+    else { const m = t.mechanisms.find(x => !p.plan.mechanisms.includes(x)) || t.mechanisms[0]; if (!p.plan.mechanisms.includes(m)) p.plan.mechanisms.push(m); text = 'Added movement: ' + m; }
+    p.plan.history.push({ date: d, by: p.therapistId, text });
+  }
+});
+
+/* ---- assessments (every 14 days) ---- */
+DB.patients.forEach(p => {
+  const sc = SCALES[p.scale];
+  if (p.status === 'New') {
+    if (p.id !== 'PT-1021') DB.assessments.push({ id: uid('AS'), patientId: p.id, date: addDays(p.admitted, 0), scale: p.scale, score: randInt(14, 30), by: p.therapistId, note: 'Baseline' });
+    return;
+  }
+  const end = p.status === 'Discharged' ? p.discharged : TODAY;
+  let score = p.scale === 'BBS' ? randInt(18, 30) : randInt(12, 34);
+  const dates = [];
+  for (let d = addDays(p.admitted, 1); d <= end; d = addDays(d, 14)) dates.push(d);
+  dates.forEach((d, k) => {
+    if (k > 0) {
+      let inc = p.rate + gauss() * 0.8;
+      if (p.profile === 'decline' && k === dates.length - 1) inc = -rand(2, 3.5);
+      score = clamp(score + inc, 0, sc.max);
+    }
+    DB.assessments.push({ id: uid('AS'), patientId: p.id, date: d, scale: p.scale, score: Math.round(score), by: p.therapistId, note: k === 0 ? 'Baseline' : k === dates.length - 1 && p.status === 'Discharged' ? 'Discharge' : 'Review' });
+  });
+});
+
+/* ---- sessions ---- */
+function makeSession(p, d, idx, totalDays){
+  const u = unitOf(p.plan.unitId), t = typeOf(p.plan.typeId);
+  const minutes = Math.round(p.plan.minutes * rand(0.7, 1.1));
+  const prog = clamp(idx / Math.max(20, totalDays), 0, 1);
+  const agoD = daysAgo(d);
+  const drift = u.anomaly && agoD < 10 ? (10 - agoD) * 0.12 : 0;
+  const trials = Math.round(minutes * rand(1.5, 2.3));
+  const accuracy = clamp(52 + prog * 26 * (p.rate / 3) + gauss() * 6, 20, 98);
+  const flags = u.anomaly && agoD < 10 ? randInt(1, 4) : (RNG() < 0.05 ? 1 : 0);
+  return {
+    id: uid('SS'), patientId: p.id, unitId: u.id, typeId: t.id, date: d,
+    minutes, trials, accuracy: round1(accuracy), stars: Math.round(trials * accuracy / 100 / 3),
+    game: pick(p.plan.games), mechanism: pick(p.plan.mechanisms),
+    rom: round1(clamp(35 + prog * 25 * (p.rate / 3) + gauss() * 4, 10, 120)),
+    trackErr: round1(u.errBase + Math.abs(gauss()) * 0.35 + drift),
+    latency: Math.round(u.latBase + gauss() * 3 + (u.anomaly && agoD < 10 ? 6 : 0)),
+    peakOut: round1(t.outLimit * clamp(rand(0.42, 0.8) + (u.anomaly && agoD < 5 ? 0.15 : 0), 0.2, 0.99)),
+    flags, disconnects: RNG() < 0.04 ? 1 : 0,
+  };
+}
+DB.patients.filter(p => p.plan && p.status !== 'New').forEach(p => {
+  const end = p.status === 'Discharged' ? p.discharged : addDays(TODAY, -1);
+  const total = Math.round((end - p.plan.start) / DAY);
+  let idx = 0;
+  for (let d = new Date(p.plan.start); d <= end; d = addDays(d, 1)) {
+    idx++;
+    if (d.getDay() === 0) continue;                                   // no Sunday sessions
+    let adh = p.adhP;
+    if (p.profile === 'lowadh' && daysAgo(d) < 7) adh -= 0.1;
+    if (daysAgo(d) === 1 && (p.profile === 'lowadh' || p.id === 'PT-1003')) adh = 0;  // scripted "missed yesterday"
+    if (RNG() > adh) continue;
+    const pi = +p.id.slice(3) - 1001, at = new Date(d.getTime() + (9 * 60 + (pi * 75) % 450 + 35 + (idx * 7) % 15) * 60000);   // realistic clock time
+    DB.sessions.push(makeSession(p, at, idx, total));
+  }
+});
+// today's schedule per therapist: first ~40 % done, one in progress, rest upcoming
+THERAPISTS.forEach(th => {
+  const mine = DB.patients.filter(p => p.status === 'Active' && p.therapistId === th.id);
+  const doneN = Math.ceil(mine.length * 0.4);
+  mine.forEach((p, k) => {
+    const t = new Date(TODAY); t.setHours(9 + Math.floor(k * 1.25), (k * 75) % 60, 0, 0);
+    p.slot = { time: t, state: k < doneN ? 'Done' : k === doneN ? 'In progress' : 'Upcoming' };
+    if (k < doneN && p.plan.unitId !== 'ATLAS-01') {
+      const s = makeSession(p, new Date(t), 99, 100); s.date = new Date(t.getTime() + 35 * 60000); s.today = true; DB.sessions.push(s);
+    }
+  });
+});
+DB.sessions.sort((a, b) => a.date - b.date);
+
+/* ---- faults (lifecycle: Reported -> Investigating -> Resolved -> Cleared for use) ---- */
+const FAULT_STEPS = ['Reported', 'Investigating', 'Resolved', 'Cleared for use'];
+function addFault(unitId, severity, status, hoursAgo, desc, reportedBy){
+  const opened = new Date(NOW.getTime() - hoursAgo * 3600000);
+  const f = { id: uid('FLT'), unitId, severity, status, opened, desc, reportedBy, log: [{ date: opened, by: reportedBy, text: 'Reported: ' + desc }] };
+  const eng = ownerOfType(unitOf(unitId).typeId);
+  const steps = FAULT_STEPS.indexOf(status);
+  for (let k = 1; k <= steps; k++) f.log.push({ date: new Date(opened.getTime() + k * 20 * 3600000), by: eng.id, text: FAULT_STEPS[k] });
+  DB.faults.push(f); return f;
+}
+addFault('ATLAS-01', 'Critical', 'Reported', 5, 'Motor overheating during shoulder abduction; safety stop triggered', 'U-T3');
+addFault('ORION-01', 'Medium', 'Investigating', 50, 'Grip force sensor intermittently reads zero', 'U-T2');
+addFault('MARS-02', 'Low', 'Reported', 20, 'Tracking error above normal range for 5 sessions (auto-detected)', 'system');
+addFault('COSMOS-01', 'Low', 'Reported', 26, 'No data sync for 26 h — check network link', 'system');
+addFault('PLUTO-02', 'High', 'Resolved', 120, 'Handle loose; play in wrist axis', 'U-T1');
+addFault('VEGA-02', 'Medium', 'Cleared for use', 300, 'Force plate zero offset after move', 'U-T4');
+addFault('PLUTO-01', 'Low', 'Cleared for use', 480, 'HAT game crashed on launch', 'U-T1');
+const OPEN_FAULT = f => f.status !== 'Cleared for use';
+
+/* ---- device requests ---- */
+function addRequest(patientId, typeId, status, hoursAgo, note, unitId){
+  const p = patientOf(patientId);
+  DB.requests.push({ id: uid('REQ'), patientId, typeId, requestedBy: p.therapistId, date: new Date(NOW.getTime() - hoursAgo * 3600000), status, unitId: unitId || null, note });
+}
+addRequest('PT-1019', TYPE_SEQ[18], 'Assigned', 30, 'New patient, plan starts tomorrow', patientOf('PT-1019').plan.unitId);
+addRequest('PT-1020', typeOf(TYPE_SEQ[19]).id, 'Pending', 6, 'New patient, baseline done');
+{ const atl = DB.patients.find(p => p.plan && p.plan.unitId === 'ATLAS-01' && p.status === 'Active');
+  if (atl) addRequest(atl.id, 'MARS', 'Pending', 4, 'Atlas out of service — need a temporary shoulder unit'); }
+
+/* ---- consultant review notes ---- */
+DB.patients.filter(p => p.status === 'Active' && (p.profile === 'good')).slice(0, 3).forEach(p => {
+  p.notes.push({ date: addDays(TODAY, -randInt(3, 9)), by: 'U-C1', text: 'Good trajectory. Continue current plan; consider increasing task difficulty.' });
+});
+
+/* ---- audit (seeded from the events above) ---- */
+function audit(userId, action, target, date){ DB.audit.push({ id: uid('AU'), date: date || new Date(), userId, action, target }); }
+DB.patients.forEach(p => {
+  audit(p.therapistId, 'Registered patient', p.id, p.admitted);
+  if (p.plan) p.plan.history.forEach((h, k) => { if (h.date <= NOW) audit(h.by, k === 0 ? 'Created therapy plan' : 'Modified therapy plan', p.id + ' · ' + h.text, h.date); });
+});
+DB.assessments.forEach(a => audit(a.by, 'Recorded assessment', a.patientId + ' · ' + a.scale + ' ' + a.score, a.date));
+DB.faults.forEach(f => f.log.forEach(l => audit(l.by, l.text.startsWith('Reported') ? 'Reported fault' : 'Fault → ' + l.text, f.unitId, l.date)));
+DB.requests.forEach(r => audit(r.requestedBy, 'Requested device', r.patientId + ' · ' + typeOf(r.typeId).name, r.date));
+USERS.forEach(u => audit(u.id, 'Signed in', 'Web dashboard', new Date(NOW.getTime() - randInt(1, 40) * 3600000)));
+
+/* =====================================================================
+   4. DERIVED METRICS & RULES  (recomputed after every change)
+   ===================================================================== */
+function unitStatus(u){
+  const open = DB.faults.filter(f => f.unitId === u.id && OPEN_FAULT(f));
+  const calDue = daysToCal(u), syncH = (NOW - u.lastSync) / 3600000;
+  if (open.some(f => f.severity === 'Critical' || f.severity === 'High')) return 'Out of service';
+  if (open.length || calDue < 0 || syncH > 24) return 'Needs attention';
+  if (DB.patients.some(p => p.status === 'Active' && p.plan && p.plan.unitId === u.id)) return 'In use';
+  return 'Available';
+}
+const daysToCal = u => u.calInterval - daysAgo(u.lastCal);
+const STATUS_TONE = { 'Out of service':'crit', 'Needs attention':'warn', 'In use':'accent', 'Available':'good', 'Active':'accent', 'New':'good', 'Discharged':'', 'Critical':'crit', 'High':'serious', 'Medium':'warn', 'Low':'', 'Reported':'crit', 'Investigating':'warn', 'Resolved':'accent', 'Cleared for use':'good', 'Pending':'warn', 'Assigned':'good', 'Declined':'', 'Done':'good', 'In progress':'accent', 'Upcoming':'' };
+
+function patientMetrics(p){
+  const m = { sessions: DB.sessions.filter(s => s.patientId === p.id) };
+  const as = DB.assessments.filter(a => a.patientId === p.id).sort((a, b) => a.date - b.date);
+  m.assessments = as;
+  m.baseline = as[0] ? as[0].score : null;
+  m.latest = as.length ? as[as.length - 1] : null;
+  m.change = as.length > 1 ? m.latest.score - m.baseline : null;
+  m.lastDelta = as.length > 1 ? m.latest.score - as[as.length - 2].score : null;
+  m.max = SCALES[p.scale].max;
+  m.gainPct = m.change != null ? m.change / m.max * 100 : null;
+  m.nextAssess = m.latest ? 14 - daysAgo(m.latest.date) : 0;
+  if (p.plan && p.status === 'Active') {
+    const win = (from, to) => {                     // planned vs done minutes over [from, to]
+      let planned = 0, done = 0;
+      for (let d = new Date(from); d <= to; d = addDays(d, 1)) { if (d.getDay() !== 0 && d >= startOfDay(p.plan.start)) planned += p.plan.minutes; }
+      m.sessions.forEach(s => { const sd = startOfDay(s.date); if (sd >= from && sd <= to) done += s.minutes; });
+      return planned ? done / planned : null;
+    };
+    m.adh7 = win(addDays(TODAY, -7), addDays(TODAY, -1));
+    m.adhAll = win(startOfDay(p.plan.start), addDays(TODAY, -1));
+    let y = addDays(TODAY, -1); if (y.getDay() === 0) y = addDays(y, -1);
+    m.missedYesterday = y >= startOfDay(p.plan.start) && !m.sessions.some(s => dayKey(s.date) === dayKey(y));
+    m.yesterday = y;
+    m.minutes7 = m.sessions.filter(s => daysAgo(s.date) >= 1 && daysAgo(s.date) <= 7).reduce((a, s) => a + s.minutes, 0);
+    m.notProgressing = as.length >= 3 && m.lastDelta <= 1;
+    m.declining = as.length >= 2 && m.lastDelta < 0;
+    m.lowAdh = m.adh7 != null && m.adh7 < 0.6;
+    const u = p.plan.unitId ? unitOf(p.plan.unitId) : null;
+    m.unitStatus = u ? unitStatus(u) : null;
+  }
+  return m;
+}
+// one "review reason" string for consultant lists
+function reviewReasons(p, m){
+  const r = [];
+  if (m.declining) r.push({ tone:'crit', text:'Score fell ' + ptsTxt(m.lastDelta) });
+  else if (m.notProgressing) r.push({ tone:'serious', text:'Flat since last assessment' });
+  if (m.lowAdh) r.push({ tone:'warn', text:'Low attendance' });
+  return r;
+}
+
+/* =====================================================================
+   5. ICONS
+   ===================================================================== */
+const IC = {
+  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  today:'<rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 3v3M16 3v3"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.2 4.1-6.5 8-6.5s7 2.3 8 6.5"/>',
+  device:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  robot:'<rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4M9 13h.01M15 13h.01M9 16.5h6M3 12v3M21 12v3"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  review:'<path d="M9 5H5v16h14V5h-4"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 13l2 2 4-4"/>',
+  wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
+  inbox:'<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
+  shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  logout:'<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  pulse:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevd:'<path d="M6 9l6 6 6-6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  clip:'<path d="M9 5H5v16h14V5h-4"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  cal:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  wifi:'<path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  file:'<path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/>',
+  note:'<path d="M4 4h16v12l-4 4H4z"/><path d="M16 20v-4h4M8 9h8M8 13h5"/>',
+  send:'<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 4.9.7c0 1.7-2.4 2.1-2.4 3.8M12 17h.01"/>',
+};
+const icon = (n, s = 16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n] || ''}</svg>`;
+
+/* status vocabulary -> pill tone */
+const TONE = { 'Out of service':'crit', 'Offline':'crit', 'Needs attention':'warn', 'In session':'good', 'In use':'info', 'Available':'', 'Active':'good', 'New':'info', 'Discharged':'', 'Reported':'crit', 'Investigating':'warn', 'Resolved':'info', 'Cleared for use':'good', 'Pending':'warn', 'Assigned':'good', 'Declined':'', 'Done':'good', 'In progress':'accent', 'Upcoming':'', 'Invited':'warn' };
+const pill = (text, tone) => { tone = tone != null ? tone : (TONE[text] || ''); return `<span class="pill ${tone} ${text === 'In session' ? 'live' : ''}"><span class="d"></span>${esc(text)}</span>`; };
+const tag = (text, tone = '') => `<span class="tag ${tone}">${text}</span>`;
+const sev = s => `<span class="sev ${s}"><i><b></b><b></b><b></b></i>${s}</span>`;
+const delta = (v, suffix = '') => v == null ? '' : `<span class="delta ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}">${v > 0 ? '+' : v < 0 ? '−' : '±'}${Math.abs(v)}${suffix}</span>`;
+const av = (u, cls = '') => `<span class="av ${cls}" title="${esc(u.name)}">${u.initials}</span>`;
+const initials = name => name.split(' ').map(s => s[0]).join('').replace('.', '').slice(0, 2).toUpperCase();
+
+/* =====================================================================
+   6. CHARTS  (SVG, drawn after mount so they measure their container)
+   ===================================================================== */
+let CHARTS = {}, _cid = 0;
+function niceScale(min, max, n = 4){
+  if (min === max) { min -= 1; max += 1; }
+  const raw = (max - min) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), norm = raw / mag;
+  const step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+  const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step, ticks = [];
+  for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v * 1000) / 1000);
+  return { lo, hi, ticks };
+}
+function chart(spec){
+  const id = 'ch' + (++_cid); CHARTS[id] = spec;
+  const series = spec.series || [];
+  const legend = series.length > 1 ? `<div class="legend">${series.map(s => `<span><i class="${spec.type === 'line' ? 'ln' : ''}" style="background:${s.color}"></i>${esc(s.name)}</span>`).join('')}</div>` : (spec.legend || '<span></span>');
+  return `<div class="chart" id="${id}" style="height:${spec.height || 200}px"></div>
+    <div class="chart-foot">${legend}<button class="tview" data-tv="${id}">Table</button></div>
+    <div class="tbl-wrap hidden" id="${id}-tv" style="max-height:240px;overflow:auto;margin-top:8px;border:1px solid var(--line);border-radius:8px">${chartTable(spec)}</div>`;
+}
+function chartTable(spec){
+  const f = spec.fmt || (v => v);
+  if (spec.type === 'line') {
+    const xs = [...new Set(spec.series.flatMap(s => s.points.map(p => +p.x)))].sort((a, b) => a - b);
+    const xf = spec.xFmt || (v => fmtD(new Date(v)));
+    return `<table class="tbl"><thead><tr><th>${esc(spec.xName || 'Date')}</th>${spec.series.map(s => `<th class="r">${esc(s.name)}</th>`).join('')}</tr></thead><tbody>${xs.map(x => `<tr><td>${xf(x)}</td>${spec.series.map(s => { const p = s.points.find(q => +q.x === x); return `<td class="r num">${p ? f(p.y) : '—'}</td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
+  }
+  if (spec.type === 'bar') return `<table class="tbl"><thead><tr><th>${esc(spec.xName || 'Day')}</th><th class="r">${esc(spec.yName || 'Value')}</th></tr></thead><tbody>${spec.data.map(d => `<tr><td>${esc(d.full || d.label)}</td><td class="r num">${f(d.value)}</td></tr>`).join('')}</tbody></table>`;
+  if (spec.type === 'scatter') return `<table class="tbl"><thead><tr><th>Patient</th><th class="r">${esc(spec.xName)}</th><th class="r">${esc(spec.yName)}</th></tr></thead><tbody>${spec.points.map(p => `<tr><td>${esc(p.label)}</td><td class="r num">${spec.xFmt(p.x)}</td><td class="r num">${spec.yFmt(p.y)}</td></tr>`).join('')}</tbody></table>`;
+  return '';
+}
+function mountCharts(){
+  Object.keys(CHARTS).forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const spec = CHARTS[id], W = Math.max(220, el.clientWidth), H = spec.height || 200;
+    el.innerHTML = spec.type === 'line' ? drawLine(spec, W, H) : spec.type === 'bar' ? drawBar(spec, W, H) : spec.type === 'scatter' ? drawScatter(spec, W, H) : '';
+  });
+}
+function yAxis(sc, y, x0, x1, fmt){
+  return sc.ticks.map(t => `<line class="gl" x1="${x0}" x2="${x1}" y1="${y(t)}" y2="${y(t)}"/><text x="${x0 - 8}" y="${y(t) + 3.5}" text-anchor="end">${fmt(t)}</text>`).join('');
+}
+function drawLine(spec, W, H){
+  const M = { l: 38, r: spec.series.length <= 4 ? 44 : 14, t: 12, b: 24 };
+  const all = spec.series.flatMap(s => s.points);
+  if (!all.length) return `<div class="empty">No data yet</div>`;
+  const xs = all.map(p => +p.x), x0 = Math.min(...xs), x1 = Math.max(...xs) || x0 + 1;
+  const ys = all.map(p => p.y).concat((spec.refs || []).map(r => r.y));
+  const sc = niceScale(spec.yMin != null ? spec.yMin : Math.min(...ys), spec.yMax != null ? spec.yMax : Math.max(...ys));
+  if (spec.yMax != null && sc.hi > spec.yMax) { sc.hi = spec.yMax; sc.ticks = sc.ticks.filter(t => t <= spec.yMax); }
+  const f = spec.fmt || (v => v), xf = spec.xFmt || (v => fmtD(new Date(v)));
+  const X = v => M.l + (x1 === x0 ? (W - M.l - M.r) / 2 : (v - x0) / (x1 - x0) * (W - M.l - M.r));
+  const Y = v => M.t + (1 - (v - sc.lo) / (sc.hi - sc.lo)) * (H - M.t - M.b);
+  let s = `<svg width="${W}" height="${H}">` + yAxis(sc, Y, M.l, W - M.r, f);
+  s += `<line class="ax" x1="${M.l}" x2="${W - M.r}" y1="${H - M.b}" y2="${H - M.b}"/>`;
+  const nT = Math.max(2, Math.min(5, new Set(xs).size, Math.floor((W - M.l - M.r) / 72))), used = new Set();
+  for (let k = 0; k < nT; k++) { const v = x0 + (x1 - x0) * (nT === 1 ? 0 : k / (nT - 1)); const lab = xf(v); if (used.has(lab)) continue; used.add(lab); s += `<text x="${X(v)}" y="${H - 6}" text-anchor="${k === 0 ? 'start' : k === nT - 1 ? 'end' : 'middle'}">${lab}</text>`; }
+  (spec.refs || []).forEach(r => { s += `<line class="ref" x1="${M.l}" x2="${W - M.r}" y1="${Y(r.y)}" y2="${Y(r.y)}"/><text class="reflab" x="${M.l + 4}" y="${Y(r.y) - 4}">${esc(r.label)}</text>`; });
+  spec.series.forEach(se => {
+    const pts = se.points.slice().sort((a, b) => a.x - b.x); if (!pts.length) return;
+    if (spec.area && spec.series.length === 1) s += `<path d="${pts.map((p, i) => (i ? 'L' : 'M') + X(+p.x).toFixed(1) + ' ' + Y(p.y).toFixed(1)).join('')}L${X(+pts[pts.length - 1].x)} ${Y(sc.lo)}L${X(+pts[0].x)} ${Y(sc.lo)}Z" style="fill:${se.color};opacity:.08"/>`;
+    s += `<path d="${pts.map((p, i) => (i ? 'L' : 'M') + X(+p.x).toFixed(1) + ' ' + Y(p.y).toFixed(1)).join('')}" fill="none" style="stroke:${se.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if (pts.length <= 16) pts.forEach(p => { s += `<circle cx="${X(+p.x)}" cy="${Y(p.y)}" r="3.5" style="fill:${se.color};stroke:var(--surface)" stroke-width="2"/>`; });
+    if (spec.series.length <= 4) { const L = pts[pts.length - 1]; s += `<text class="dlab" x="${X(+L.x) + 8}" y="${Y(L.y) + 4}">${f(L.y)}</text>`; }
+  });
+  const ux = [...new Set(xs)].sort((a, b) => a - b);
+  ux.forEach((x, i) => {
+    const xa = i ? (X(ux[i - 1]) + X(x)) / 2 : M.l, xb = i < ux.length - 1 ? (X(x) + X(ux[i + 1])) / 2 : W - M.r;
+    const rows = spec.series.map(se => { const p = se.points.find(q => +q.x === x); return p ? `<div class="tr"><span><span class="sw" style="background:${se.color}"></span>${esc(se.name)}</span><b>${f(p.y)}</b></div>` : ''; }).join('');
+    const dots = spec.series.map(se => { const p = se.points.find(q => +q.x === x); return p ? `<circle class="xh-d" cx="${X(x)}" cy="${Y(p.y)}" r="5" style="fill:${se.color};stroke:var(--surface)" stroke-width="2"/>` : ''; }).join('');
+    s += `<g class="xh" data-tip="${esc(`<b>${xf(x)}</b>${rows}`)}"><rect x="${xa}" y="${M.t}" width="${Math.max(1, xb - xa)}" height="${H - M.t - M.b}" fill="transparent"/><line class="xh-l" x1="${X(x)}" x2="${X(x)}" y1="${M.t}" y2="${H - M.b}"/>${dots}</g>`;
+  });
+  return s + '</svg>';
+}
+function drawBar(spec, W, H){
+  const M = { l: 38, r: 10, t: 12, b: 24 }, n = spec.data.length;
+  if (!n) return `<div class="empty">No data yet</div>`;
+  const f = spec.fmt || (v => v);
+  const sc = niceScale(0, Math.max(spec.yMax || 0, ...spec.data.map(d => d.value), ...(spec.refs || []).map(r => r.y)));
+  const Y = v => M.t + (1 - (v - sc.lo) / (sc.hi - sc.lo)) * (H - M.t - M.b);
+  const slot = (W - M.l - M.r) / n, bw = Math.max(3, Math.min(30, slot - 2));
+  let s = `<svg width="${W}" height="${H}">` + yAxis(sc, Y, M.l, W - M.r, f);
+  const every = Math.ceil(n / Math.max(1, Math.floor((W - M.l) / 44)));
+  spec.data.forEach((d, i) => {
+    const cx = M.l + slot * i + slot / 2, y = Y(d.value), h = Y(0) - y, x = cx - bw / 2, r = Math.min(3, bw / 2, h);
+    const path = h > 0 ? `M${x} ${Y(0)}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + bw - r}Q${x + bw} ${y} ${x + bw} ${y + r}V${Y(0)}Z` : '';
+    s += `<g class="hov" data-tip="${esc(`<b>${esc(d.full || d.label)}</b><div class="tr"><span>${esc(spec.yName || 'Value')}</span><b>${f(d.value)}</b></div>${d.extra || ''}`)}"><rect x="${cx - slot / 2}" y="${M.t}" width="${slot}" height="${H - M.t - M.b}" fill="transparent"/><path d="${path}" style="fill:${d.color || spec.color || 'var(--series-1)'}"/></g>`;
+    if (i % every === 0) s += `<text x="${cx}" y="${H - 6}" text-anchor="middle">${esc(d.label)}</text>`;
+  });
+  s += `<line class="ax" x1="${M.l}" x2="${W - M.r}" y1="${Y(0)}" y2="${Y(0)}"/>`;
+  (spec.refs || []).forEach(r => { s += `<line class="ref" x1="${M.l}" x2="${W - M.r}" y1="${Y(r.y)}" y2="${Y(r.y)}"/><text class="reflab" x="${W - M.r}" y="${Y(r.y) - 4}" text-anchor="end">${esc(r.label)}</text>`; });
+  return s + '</svg>';
+}
+function drawScatter(spec, W, H){
+  const M = { l: 42, r: 14, t: 12, b: 36 };
+  const xs = spec.points.map(p => p.x), ys = spec.points.map(p => p.y);
+  const sx = niceScale(spec.xMin != null ? spec.xMin : Math.min(...xs), spec.xMax != null ? spec.xMax : Math.max(...xs), 5);
+  const sy = niceScale(Math.min(0, ...ys), Math.max(...ys));
+  const X = v => M.l + (v - sx.lo) / (sx.hi - sx.lo) * (W - M.l - M.r);
+  const Y = v => M.t + (1 - (v - sy.lo) / (sy.hi - sy.lo)) * (H - M.t - M.b);
+  let s = `<svg width="${W}" height="${H}">` + yAxis(sy, Y, M.l, W - M.r, spec.yFmt);
+  sx.ticks.forEach(t => { s += `<text x="${X(t)}" y="${H - M.b + 16}" text-anchor="middle">${spec.xFmt(t)}</text>`; });
+  s += `<line class="ax" x1="${M.l}" x2="${W - M.r}" y1="${Y(sy.lo)}" y2="${Y(sy.lo)}"/>`;
+  s += `<text x="${(M.l + W - M.r) / 2}" y="${H - 2}" text-anchor="middle">${esc(spec.xName)}</text>`;
+  if (spec.refX != null) s += `<line class="ref" x1="${X(spec.refX)}" x2="${X(spec.refX)}" y1="${M.t}" y2="${H - M.b}"/><text class="reflab" x="${X(spec.refX) + 4}" y="${M.t + 10}">${esc(spec.refXLabel || '')}</text>`;
+  spec.points.forEach(p => {
+    s += `<g class="hov" style="cursor:pointer" data-href="${p.href || ''}" data-tip="${esc(p.tip)}"><circle cx="${X(p.x)}" cy="${Y(p.y)}" r="13" fill="transparent"/><circle cx="${X(p.x)}" cy="${Y(p.y)}" r="5" style="fill:${p.color || 'var(--series-1)'};stroke:var(--surface)" stroke-width="2"/></g>`;
+  });
+  return s + '</svg>';
+}
+function hbars(rows, opts = {}){
+  const max = opts.max || Math.max(1, ...rows.map(r => r.value));
+  const f = opts.fmt || (v => v);
+  return `<div style="display:flex;flex-direction:column;gap:10px">${rows.map(r => `
+    <div data-tip="${esc(`<b>${esc(r.label)}</b><div class="tr"><span>${esc(opts.name || 'Value')}</span><b>${f(r.value)}</b></div>`)}" style="display:grid;grid-template-columns:${opts.labelW || '120px'} 1fr 50px;gap:10px;align-items:center;font-size:var(--fs-sm)">
+      <span class="soft" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.label)}</span>
+      <div style="height:8px;background:var(--surface-3);border-radius:0 3px 3px 0"><div style="height:100%;width:${Math.max(1, r.value / max * 100)}%;background:${r.color || 'var(--series-1)'};border-radius:0 3px 3px 0"></div></div>
+      <b class="num" style="text-align:right;font-weight:550">${f(r.value)}</b></div>`).join('')}</div>`;
+}
+const spark = (vals, w = 80, h = 22) => {
+  if (vals.length < 2) return '<span class="muted">—</span>';
+  const mn = Math.min(...vals), mx = Math.max(...vals), X = i => i / (vals.length - 1) * (w - 4) + 2, Y = v => h - 3 - (mx === mn ? .5 : (v - mn) / (mx - mn)) * (h - 6);
+  return `<svg width="${w}" height="${h}" style="display:block"><path d="${vals.map((v, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join('')}" fill="none" style="stroke:var(--series-1)" stroke-width="1.5"/><circle cx="${X(vals.length - 1)}" cy="${Y(vals[vals.length - 1])}" r="2.3" style="fill:var(--series-1)"/></svg>`;
+};
+const meter = (v, tone) => `<div class="mcell"><div class="meter ${tone ? 'm-' + tone : ''}"><div style="width:${clamp(v, 0, 1) * 100}%"></div></div><span class="num sm">${Math.round(v * 100)}%</span></div>`;
+const adhTone = v => v == null ? '' : v < 0.6 ? 'crit' : v < 0.8 ? 'warn' : 'good';
+
+/* =====================================================================
+   7. UI BUILDERS
+   ===================================================================== */
+const card = (title, body, o = {}) => `<section class="card ${o.cls || ''}">${title ? `<div class="card-h"><h2>${title}</h2>${o.sub ? `<span class="sub">${o.sub}</span>` : ''}<span class="sp"></span>${o.right || ''}</div>` : ''}<div class="card-b ${o.flush ? 'flush' : ''}">${body}</div></section>`;
+const stats = items => `<div class="stats">${items.map(s => `<div class="stat ${s.cls || ''} ${s.href ? 'link' : ''}" ${s.href ? `data-href="${s.href}"` : ''}><div class="l">${s.l}</div><div class="v">${s.v}</div>${s.f != null ? `<div class="f">${s.f}</div>` : ''}</div>`).join('')}</div>`;
+function table(cols, rows, o = {}){
+  if (!rows.length) return `<div class="empty">${o.empty || 'Nothing to show.'}</div>`;
+  const key = o.key, st = key && STATE.sort[key];
+  let data = rows.slice();
+  if (st) { const c = cols[st.col]; data.sort((a, b) => { const va = c.sort(a), vb = c.sort(b); return (va > vb ? 1 : va < vb ? -1 : 0) * st.dir; }); }
+  const lim = o.limit && data.length > o.limit ? o.limit : null;
+  const shown = lim ? data.slice(0, lim) : data;
+  return `<div class="tbl-wrap"><table class="tbl"><thead><tr>${cols.map((c, i) => `<th class="${c.r ? 'r' : ''} ${key && c.sort ? 'sortable' : ''}" ${c.w ? `style="width:${c.w}"` : ''} ${key && c.sort ? `data-sort="${key}:${i}"` : ''}>${c.h}${st && st.col === i ? (st.dir > 0 ? ' ↑' : ' ↓') : ''}</th>`).join('')}</tr></thead>
+    <tbody>${shown.map(r => `<tr class="${o.href ? 'click' : ''}" ${o.href ? `data-href="${o.href(r)}"` : ''}>${cols.map(c => `<td class="${c.r ? 'r num' : ''}">${c.v(r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+    + (o.foot !== false && (lim || o.foot) ? `<div class="tbl-foot"><span>${lim ? `Showing 1–${lim} of ${data.length}` : `${data.length} ${o.foot}`}</span></div>` : '');
+}
+function list(items, empty){
+  if (!items.length) return `<div class="empty">${empty || 'Nothing here.'}</div>`;
+  return `<ul class="list">${items.map(it => `<li class="li ${it.href ? 'click' : ''}" ${it.href ? `data-href="${it.href}"` : ''}>${it.ico !== false ? `<div class="ico ${it.tone || ''}">${icon(it.icon || 'alert', 15)}</div>` : ''}<div class="tx"><b>${it.title}</b>${it.desc ? `<span>${it.desc}</span>` : ''}</div>${it.right ? `<div class="rt">${it.right}</div>` : ''}${it.action || ''}</li>`).join('')}</ul>`;
+}
+const tabs = (base, items, cur) => `<nav class="tabs">${items.map(([k, l, c]) => `<a href="${base}/${k}" class="${k === cur ? 'on' : ''}">${l}${c ? `<span class="c">${c}</span>` : ''}</a>`).join('')}</nav>`;
+const segs = (key, items, cur) => `<div class="segs">${items.map(([v, l, c]) => `<button data-setf="${key}" data-val="${v}" class="${v === cur ? 'on' : ''}">${l}${c != null ? `<span class="c">${c}</span>` : ''}</button>`).join('')}</div>`;
+const pageHead = (title, meta, actions) => `<div class="ph"><div><h1>${title}</h1>${meta ? `<div class="meta">${meta}</div>` : ''}</div><span class="sp"></span>${actions ? `<div class="actions">${actions}</div>` : ''}</div>`;
+const searchBox = (key, ph) => `<label class="inp">${icon('search', 14)}<input data-filter="${key}" placeholder="${ph}" value="${esc(STATE.filters[key] || '')}"></label>`;
+
+/* =====================================================================
+   8. STATE, SESSION, ACCESS
+   ===================================================================== */
+const STATE = { user: null, sort: {}, filters: {}, read: new Set(), pop: null };
+const store = {
+  get(k){ try { return localStorage.getItem('nd.' + k) || sessionStorage.getItem('nd.' + k); } catch (e) { return null; } },
+  set(k, v, persist){ try { (persist ? localStorage : sessionStorage).setItem('nd.' + k, v); } catch (e) {} },
+  del(k){ try { localStorage.removeItem('nd.' + k); sessionStorage.removeItem('nd.' + k); } catch (e) {} },
+};
+const me = () => STATE.user, role = () => STATE.user && STATE.user.role;
+const ROLE_LABEL = { therapist:'Therapist', consultant:'Consultant', engineer:'Device engineer', admin:'Administrator' };
+const DENSITY = { therapist:'low', consultant:'medium', engineer:'high', admin:'medium' };
+const HOME = { therapist:'today', consultant:'review', engineer:'fleet', admin:'overview' };
+const NAV = {
+  therapist:  [['today','Today','today'], ['patients','My patients','users'], ['equipment','Equipment','robot']],
+  consultant: [['review','Clinical review','review'], ['outcomes','Outcomes','trend']],
+  engineer:   [['fleet','Fleet','grid'], ['service','Service','wrench'], ['requests','Requests','inbox']],
+  admin:      [['overview','Overview','home'], '#Clinical', ['review','Patients','users'], ['outcomes','Outcomes','trend'], '#Devices', ['fleet','Fleet','grid'], ['service','Service','wrench'], ['requests','Requests','inbox'], '#Organisation', ['members','Members','user'], ['audit','Audit log','shield']],
+};
+const DETAIL = { patient: ['therapist','consultant','admin'], device: ['engineer','admin'] };
+function allowed(page){ if (DETAIL[page]) return DETAIL[page].includes(role()); return NAV[role()].some(n => Array.isArray(n) && n[0] === page); }
+
+const anon = () => role() === 'engineer';
+const pname = p => anon() ? p.code : p.name;
+function scopePatients(){
+  const r = role(), u = me();
+  if (r === 'therapist') return DB.patients.filter(p => p.therapistId === u.id);
+  if (r === 'engineer') return DB.patients.filter(p => p.plan && u.owns.includes(p.plan.typeId));
+  return DB.patients;
+}
+const scopeUnits = () => role() === 'engineer' ? DB.units.filter(u => me().owns.includes(u.typeId)) : DB.units;
+const canSeePatient = p => role() === 'consultant' || role() === 'admin' || (role() === 'therapist' && p.therapistId === me().id);
+const canSeeUnit = u => role() === 'admin' || (role() === 'engineer' && me().owns.includes(u.typeId));
+const plink = p => canSeePatient(p) ? `<a class="lnk" href="#/patient/${p.id}">${esc(pname(p))}</a>` : `<span class="mono">${esc(pname(p))}</span>`;
+const ulink = u => canSeeUnit(u) ? `<a class="lnk mono nowrap" href="#/device/${u.id}">${esc(u.id)}</a>` : `<span class="mono nowrap">${esc(u.id)}</span>`;
+const ptsTxt = n => Math.abs(n) + (Math.abs(n) === 1 ? ' pt' : ' pts');
+
+function go(hash){ if (location.hash === hash) render(); else location.hash = hash; }
+function parseHash(){ const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean); return { page: parts[0], id: parts[1], tab: parts[2] }; }
+function toast(msg){ document.querySelectorAll('.toast').forEach(t => t.remove()); const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = icon('check', 15) + esc(msg); document.body.appendChild(t); setTimeout(() => t.remove(), 2600); }
+
+/* modal forms */
+function openModal({ title, sub, body, submit = 'Save', onSubmit }){
+  const wrap = document.createElement('div'); wrap.className = 'scrim';
+  wrap.innerHTML = `<form class="modal" autocomplete="off"><div class="modal-h"><div class="grow"><h3>${title}</h3>${sub ? `<p>${sub}</p>` : ''}</div><button type="button" class="icon-btn" data-close>${icon('x')}</button></div><div class="modal-b">${body}</div><div class="modal-f"><button type="button" class="btn" data-close>Cancel</button><button class="btn pri" type="submit">${submit}</button></div></form>`;
+  const close = () => wrap.remove();
+  wrap.addEventListener('click', e => { if (e.target === wrap || e.target.closest('[data-close]')) close(); });
+  wrap.querySelector('form').addEventListener('submit', e => {
+    e.preventDefault(); const fd = new FormData(e.target), o = {};
+    for (const [k, v] of fd.entries()) { if (o[k] !== undefined) o[k] = [].concat(o[k], v); else o[k] = v; }
+    if (onSubmit(o) !== false) { close(); render(); }
+  });
+  document.body.appendChild(wrap);
+  const first = wrap.querySelector('input:not([disabled]),select,textarea'); if (first) first.focus();
+}
+const fld = (label, inner, hint) => `<div class="field"><label>${label}</label>${inner}${hint ? `<div class="hint">${hint}</div>` : ''}</div>`;
+const sel = (name, opts, cur) => `<select name="${name}">${opts.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${v == cur ? 'selected' : ''}>${esc(l)}</option>`; }).join('')}</select>`;
+const checks = (name, opts, cur = []) => `<div class="checks">${opts.map(o => `<label><input type="checkbox" name="${name}" value="${esc(o)}" ${cur.includes(o) ? 'checked' : ''}>${esc(GAME_LABELS[o] || o)}</label>`).join('')}</div>`;
+
+/* =====================================================================
+   9. VIEW HELPERS
+   ===================================================================== */
+function daily(arr, days, fn){
+  const out = [];
+  for (let k = days - 1; k >= 0; k--) { const d = addDays(TODAY, -k), key = dayKey(d), ss = arr.filter(s => dayKey(s.date) === key); out.push({ d, ss, value: fn(ss) }); }
+  return out;
+}
+const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const sum = a => a.reduce((x, y) => x + y, 0);
+const inLast = (arr, days) => arr.filter(s => daysAgo(s.date) < days);
+const dayBar = r => ({ label: String(r.d.getDate()), full: WD[r.d.getDay()] + ' ' + fmtD(r.d), value: r.value });
+const WDL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function calOffset(u, d){ let since = Math.round((d - u.lastCal) / DAY); if (since < 0) since += u.calInterval; return Math.round(Math.max(0, 0.05 + u.driftRate * since / 7 + 0.03 * Math.sin(+d / DAY * 0.9 + u.id.length)) * 100) / 100; }
+const CAL_TOL = 0.5;
+const unitSessions = u => DB.sessions.filter(s => s.unitId === u.id);
+const typeLabel = id => { const t = typeOf(id); return t ? t.name : '—'; };
+const sevOrder = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+const progDay = p => p.plan ? clamp(daysAgo(p.plan.start) + 1, 0, p.plan.weeks * 7) : 0;
+const progCell = p => p.plan && p.status === 'Active' ? `<div class="prog"><div class="bar"><div style="width:${progDay(p) / (p.plan.weeks * 7) * 100}%"></div></div><span class="num">Day ${progDay(p)}<span class="muted">/${p.plan.weeks * 7}</span></span></div>` : '<span class="muted">—</span>';
+function liveStatus(u){
+  const s = unitStatus(u);
+  if (s === 'Out of service') return s;
+  if ((NOW - u.lastSync) / 3600000 > 24) return 'Offline';
+  if (s === 'Needs attention') return s;
+  if (DB.patients.some(p => p.slot && p.slot.state === 'In progress' && p.plan && p.plan.unitId === u.id)) return 'In session';
+  return s;
+}
+const syncTxt = u => { const h = (NOW - u.lastSync) / 3600000; return h > 24 ? `<span class="down">${Math.round(h)} h ago</span>` : `<span class="soft">${h < 1 ? Math.max(1, Math.round(h * 60)) + ' min' : Math.round(h) + ' h'} ago</span>`; };
+const calTxt = d => d < 0 ? `<span class="down">Overdue ${-d} d</span>` : d <= 7 ? `<span style="color:var(--warn-ink)">In ${d} d</span>` : `<span class="soft">In ${d} d</span>`;
+const scoreCell = m => m.latest ? `<span class="nowrap"><span class="num"><b style="font-weight:600">${m.latest.score}</b><span class="muted">/${m.max}</span></span> ${delta(m.change)}</span>` : '<span class="muted">—</span>';
+const flagTags = (p, m) => p.status !== 'Active' ? '' : reviewReasons(p, m).map(z => tag(z.text, z.tone)).join(' ') + (m.unitStatus === 'Out of service' ? ' ' + tag('Device down', 'crit') : '');
+
+/* =====================================================================
+   10. THERAPIST
+   ===================================================================== */
+function therapistActions(){
+  const out = [];
+  DB.patients.filter(p => p.therapistId === me().id).forEach(p => {
+    const href = '#/patient/' + p.id, nm = esc(p.name);
+    if (p.status === 'Active') {
+      const m = patientMetrics(p);
+      if (m.unitStatus === 'Out of service') out.push({ key:'dev' + p.id, prio:0, tone:'crit', icon:'alert', title: nm + ' · device out of service', desc: esc(p.plan.unitId), href, action:`<button class="btn sm" data-act="requestDevice" data-pid="${p.id}">Request unit</button>` });
+      if (m.declining) out.push({ key:'dec' + p.id, prio:1, tone:'crit', icon:'trend', title: nm + ' · ' + p.scale + ' down ' + ptsTxt(m.lastDelta), desc: 'Assessed ' + fmtD(m.latest.date) + ' · ' + m.latest.score + '/' + m.max, href, date: m.latest.date, action:`<button class="btn sm" data-act="modifyPlan" data-pid="${p.id}">Edit plan</button>` });
+      else if (m.notProgressing) out.push({ key:'flat' + p.id, prio:3, tone:'serious', icon:'trend', title: nm + ' · no change since last assessment', desc: p.scale + ' ' + m.latest.score + '/' + m.max + ' on ' + fmtD(m.latest.date), href, date: m.latest.date, action:`<button class="btn sm" data-act="modifyPlan" data-pid="${p.id}">Edit plan</button>` });
+      if (m.nextAssess <= 0) out.push({ key:'as' + p.id, prio:1, tone:'accent', icon:'clip', title: nm + ' · assessment ' + (m.nextAssess < 0 ? 'overdue' : 'due today'), desc: SCALES[p.scale].name + (m.nextAssess < 0 ? ' · ' + (-m.nextAssess) + ' d overdue' : ''), href, action:`<button class="btn sm" data-act="newAssessment" data-pid="${p.id}">Record</button>` });
+      if (m.missedYesterday) out.push({ key:'miss' + p.id, prio:2, tone:'warn', icon:'clock', title: nm + ' · missed session', desc: WD[m.yesterday.getDay()] + ' ' + fmtD(m.yesterday), href, date: m.yesterday });
+      if (m.lowAdh) out.push({ key:'adh' + p.id, prio:2, tone:'warn', icon:'pulse', title: nm + ' · low attendance', desc: m.minutes7 + ' of ' + Math.round(m.minutes7 / m.adh7) + ' planned minutes this week', href });
+    }
+    if (p.status === 'New') {
+      const hasBase = DB.assessments.some(a => a.patientId === p.id), req = DB.requests.find(q => q.patientId === p.id);
+      if (!hasBase) out.push({ key:'base' + p.id, prio:1, tone:'accent', icon:'clip', title: nm + ' · baseline assessment needed', desc:'Registered ' + fmtD(p.admitted), href, action:`<button class="btn sm" data-act="newAssessment" data-pid="${p.id}">Record</button>` });
+      if (!p.plan) out.push({ key:'plan' + p.id, prio:2, tone:'accent', icon:'edit', title: nm + ' · therapy plan needed', desc:'New patient', href, action:`<button class="btn sm" data-act="modifyPlan" data-pid="${p.id}">Create plan</button>` });
+      if (req && req.status === 'Assigned') out.push({ key:'rdy' + p.id, prio:4, tone:'good', icon:'check', title: nm + ' · ' + esc(req.unitId) + ' assigned', desc: 'Programme starts ' + fmtD(p.plan.start), href, date: req.date });
+      if (req && req.status === 'Pending') out.push({ key:'wait' + p.id, prio:5, tone:'', icon:'clock', title: nm + ' · awaiting device', desc: typeLabel(req.typeId) + ' requested ' + rel(req.date), href, date: req.date });
+    }
+  });
+  return out.sort((a, b) => a.prio - b.prio);
+}
+
+function viewToday(){
+  const active = DB.patients.filter(p => p.therapistId === me().id && p.status === 'Active');
+  const sched = active.filter(p => p.slot).sort((a, b) => a.slot.time - b.slot.time);
+  const done = sched.filter(p => p.slot.state === 'Done').length;
+  const acts = therapistActions();
+  const h = NOW.getHours(), greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const rows = sched.map(p => {
+    const m = patientMetrics(p), blocked = m.unitStatus === 'Out of service' && p.slot.state !== 'Done';
+    const s = m.sessions.find(x => x.today);
+    const result = p.slot.state === 'Done' && s ? `${s.minutes} min <span class="muted">· ${Math.round(s.accuracy)}% accuracy</span>`
+      : blocked ? `<button class="btn sm" data-act="requestDevice" data-pid="${p.id}">Request another unit</button>` : '';
+    return `<div class="srow ${p.slot.state === 'Done' ? 'done' : ''} ${p.slot.state === 'In progress' && !blocked ? 'now' : ''}" data-href="#/patient/${p.id}">
+      <div class="st">${fmtT(p.slot.time)}</div>
+      <div class="sp2"><b>${esc(p.name)}</b><span>${typeLabel(p.plan.typeId)} · <span class="mono">${esc(p.plan.unitId)}</span> · ${p.plan.minutes} min planned</span></div>
+      <div class="sr">${result}</div><div class="ss">${blocked ? pill('Device out of service', 'crit') : pill(p.slot.state)}</div></div>`;
+  }).join('');
+  const todo = acts.map(a => { const i = a.title.indexOf(' · '), what = a.title.slice(i + 3); return { ...a, title: a.title.slice(0, i), desc: what.charAt(0).toUpperCase() + what.slice(1) + (a.desc ? ' · ' + a.desc : '') }; });
+  return pageHead(`${greet}, ${esc(me().name.split(' ')[0])}`, `${WDL[TODAY.getDay()]}, ${TODAY.getDate()} ${MONL[TODAY.getMonth()]}`)
+    + `<div class="grid g-wide">
+      ${card('Sessions today', rows || '<div class="empty">No sessions scheduled today.</div>', { flush: true, sub: `${done} of ${sched.length} done` })}
+      ${card('To do', list(todo, 'You’re all caught up.'), { flush: true, sub: acts.length ? String(acts.length) : '' })}
+    </div>`;
+}
+
+function viewEquipment(){
+  const F = STATE.filters, mode = F.eq || 'all';
+  // therapists see usability, not engineering detail: minor faults / calibration notes don't block use
+  const tStatus = u => { const x = liveStatus(u); return x !== 'Needs attention' ? x : DB.patients.some(p => p.status === 'Active' && p.plan && p.plan.unitId === u.id) ? 'In use' : 'Available'; };
+  const rows = DB.units.map(u => ({ u, st: tStatus(u), mine: DB.patients.filter(p => p.therapistId === me().id && p.status === 'Active' && p.plan && p.plan.unitId === u.id) }));
+  const un = r => ['Out of service', 'Offline'].includes(r.st);
+  const cnt = { all: rows.length, mine: rows.filter(r => r.mine.length).length, available: rows.filter(r => r.st === 'Available').length, down: rows.filter(un).length };
+  const shown = rows.filter(r => mode === 'all' || (mode === 'mine' && r.mine.length) || (mode === 'available' && r.st === 'Available') || (mode === 'down' && un(r)));
+  const myReq = DB.requests.filter(q => q.requestedBy === me().id).sort((a, b) => b.date - a.date);
+  const tbl = card('', table([
+      { h:'Unit', v: r => `<span class="pri mono">${esc(r.u.id)}</span>`, sort: r => r.u.id },
+      { h:'Device', v: r => `<span class="nowrap">${typeOf(r.u.typeId).name}</span> <span class="muted nowrap">· ${esc(typeOf(r.u.typeId).category)}</span>`, sort: r => r.u.typeId },
+      { h:'Status', v: r => pill(r.st), sort: r => r.st },
+      { h:'Location', v: r => `<span class="soft nowrap">${esc(r.u.room)}</span>`, sort: r => r.u.room },
+      { h:'My patients', v: r => r.mine.length ? r.mine.map(p => plink(p)).join(', ') : '<span class="muted">—</span>' },
+    ], shown, { key:'eqt', empty:'No units.' }), { flush: true });
+  const reqs = myReq.length ? card('My requests', list(myReq.map(q => ({ icon:'inbox', tone: q.status === 'Assigned' ? 'good' : q.status === 'Pending' ? 'warn' : '', title: esc(patientOf(q.patientId).name), desc: typeLabel(q.typeId) + (q.unitId ? ' · ' + esc(q.unitId) : '') + ' · ' + rel(q.date), right: pill(q.status) }))), { flush: true }) : '';
+  return pageHead('Equipment', '', `<button class="btn" data-act="reportFault">${icon('alert', 15)} Report issue</button><button class="btn pri" data-act="requestDevice">${icon('plus', 15)} Request device</button>`)
+    + `<div class="toolbar">${segs('eq', [['all', 'All units', cnt.all], ['mine', 'Used by my patients', cnt.mine], ['available', 'Available', cnt.available], ['down', 'Unavailable', cnt.down]], mode)}</div>`
+    + (reqs ? `<div class="grid g-wide">${tbl}${reqs}</div>` : tbl);
+}
+
+/* =====================================================================
+   11. PATIENT LIST (therapist: my patients · consultant/admin: clinical review)
+   ===================================================================== */
+function viewPatientList(){
+  const r = role(), F = STATE.filters, th = r === 'therapist';
+  const base = scopePatients().map(p => ({ p, m: patientMetrics(p) }));
+  base.forEach(x => x.flag = x.p.status === 'Active' && (reviewReasons(x.p, x.m).length > 0));
+  const def = th ? 'Active' : 'review', st = F.pst || def;
+  const cnt = s => base.filter(x => s === 'All' ? true : s === 'review' ? x.flag : x.p.status === s).length;
+  const q = (F.pq || '').toLowerCase(), tf = F.pth || '', dt = F.pdt || '';
+  const rows = base.filter(x => (st === 'All' || (st === 'review' ? x.flag : x.p.status === st)) && (!q || (x.p.name + x.p.mrn + x.p.diagnosis).toLowerCase().includes(q)) && (!tf || x.p.therapistId === tf) && (!dt || (x.p.plan && x.p.plan.typeId === dt)));
+  const cols = [
+    { h:'Patient', v: x => `<div class="pri">${esc(x.p.name)}</div><div class="sec2 nowrap">${x.p.age} ${x.p.sex} · ${esc(x.p.diagnosis.replace('Ischaemic stroke', 'Isch. stroke').replace('Haemorrhagic stroke', 'Haem. stroke'))}</div>`, sort: x => x.p.name },
+  ];
+  if (!th) cols.push({ h:'Therapist', v: x => { const u = userOf(x.p.therapistId); return `<div class="who">${av(u, 'sm')}<span class="nowrap">${esc(u.name)}</span></div>`; }, sort: x => userOf(x.p.therapistId).name });
+  cols.push(
+    { h:'Device', v: x => x.p.plan ? `${typeLabel(x.p.plan.typeId)}<div class="sec2 mono nowrap">${esc(x.p.plan.unitId || 'unassigned')}</div>` : '<span class="muted">—</span>', sort: x => x.p.plan ? x.p.plan.typeId : '' },
+  );
+  if (th) cols.push({ h:'Programme', v: x => x.p.status === 'Discharged' ? `<span class="soft">Discharged ${fmtD(x.p.discharged)}</span>` : progCell(x.p), sort: x => progDay(x.p) });
+  cols.push(
+    { h:'Score', v: x => scoreCell(x.m), sort: x => x.m.change == null ? -99 : x.m.change },
+  );
+  if (!th) cols.push({ h:'Trend', v: x => spark(x.m.assessments.map(a => a.score)) });
+  if (th) cols.push({ h:'This week', v: x => { if (x.p.status !== 'Active') return '<span class="muted">—</span>'; const n = x.m.sessions.filter(s => daysAgo(s.date) >= 1 && daysAgo(s.date) <= 7).length; return `<span class="num nowrap ${n < x.p.plan.daysPerWeek - 1 ? 'down' : ''}">${n} of ${x.p.plan.daysPerWeek}</span> <span class="muted">sessions</span>`; } },
+    { h:'Next assessment', v: x => x.p.status !== 'Active' ? '<span class="muted">—</span>' : x.m.nextAssess <= 0 ? tag(x.m.nextAssess < 0 ? 'Overdue' : 'Today', 'warn') : `<span class="soft nowrap">In ${x.m.nextAssess} d</span>`, sort: x => x.p.status === 'Active' ? x.m.nextAssess : 999 });
+  if (!th) cols.push(
+    { h:'Adherence · 7d', v: x => x.m.adh7 != null ? meter(x.m.adh7, adhTone(x.m.adh7)) : '<span class="muted">—</span>', sort: x => x.m.adh7 == null ? -1 : x.m.adh7 },
+  );
+  cols.push({ h:'Flags', v: x => `<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start">${flagTags(x.p, x.m)}</div>` });
+  const segItems = th ? [['Active', 'Active', cnt('Active')], ['New', 'New', cnt('New')], ['Discharged', 'Discharged', cnt('Discharged')], ['All', 'All', cnt('All')]]
+    : [['review', 'Needs review', cnt('review')], ['Active', 'Active', cnt('Active')], ['New', 'New', cnt('New')], ['Discharged', 'Discharged', cnt('Discharged')], ['All', 'All', cnt('All')]];
+  const title = th ? 'My patients' : r === 'admin' ? 'Patients' : 'Clinical review';
+  return pageHead(title, th ? '' : base.filter(x => x.p.status === 'Active').length + ' active patients · ' + usersByRole('therapist').length + ' therapists', th ? `<button class="btn pri" data-act="addPatient">${icon('plus', 15)} New patient</button>` : '')
+    + `<div class="toolbar">${segs('pst', segItems, st)}<span class="grow"></span>${searchBox('pq', 'Search name, MRN, diagnosis')}
+      ${!th ? `<select data-filter="pth"><option value="">All therapists</option>${usersByRole('therapist').map(u => `<option value="${u.id}" ${u.id === tf ? 'selected' : ''}>${esc(u.name)}</option>`).join('')}</select>` : ''}
+      <select data-filter="pdt"><option value="">All devices</option>${DEVICE_TYPES.map(t => `<option value="${t.id}" ${t.id === dt ? 'selected' : ''}>${t.name}</option>`).join('')}</select></div>`
+    + card('', table(cols, rows, { key:'pl', href: x => '#/patient/' + x.p.id, empty:'No patients match.', foot:'patients' }), { flush: true });
+}
+
+/* =====================================================================
+   12. PATIENT CHART
+   ===================================================================== */
+function heatmap(p, m, sess7){
+  const weeks = clamp(Math.ceil((daysAgo(p.plan.start) + ((startOfDay(p.plan.start).getDay() + 6) % 7) + 1) / 7), 1, 12);
+  const dow = (TODAY.getDay() + 6) % 7, start = addDays(TODAY, -dow - (weeks - 1) * 7);
+  let cols = '', lastMonth = -1, lastLab = -9;
+  for (let w = 0; w < weeks; w++) {
+    const wkStart = addDays(start, w * 7);
+    let ml = ''; if (wkStart.getMonth() !== lastMonth && w - lastLab >= 3) { ml = MONTHS[wkStart.getMonth()]; lastLab = w; } lastMonth = wkStart.getMonth();
+    let cells = '';
+    for (let k = 0; k < 6; k++) {
+      const d = addDays(wkStart, k), isToday = dayKey(d) === dayKey(TODAY);
+      if (d > TODAY || !p.plan || d < startOfDay(p.plan.start) || (p.discharged && d > p.discharged)) { cells += `<div class="c na ${isToday ? 'today' : ''}"></div>`; continue; }
+      const mins = sum(m.sessions.filter(s => dayKey(s.date) === dayKey(d)).map(s => s.minutes)), r = mins / p.plan.minutes;
+      const lv = mins === 0 ? 0 : r < 0.5 ? 1 : r < 0.8 ? 2 : r < 1 ? 3 : 4;
+      const tip = isToday && !mins ? `<b>Today</b><div class="tr"><span>Session</span><b>${p.slot ? p.slot.state : 'Not scheduled'}</b></div>` : `<b>${WD[d.getDay()]} ${fmtD(d)}</b><div class="tr"><span>Therapy</span><b>${mins} / ${p.plan.minutes} min</b></div>`;
+      cells += `<div class="c l${lv} ${isToday ? 'today' : ''}" data-tip="${esc(tip)}"></div>`;
+    }
+    cols += `<div class="wk"><div class="ml">${ml}</div>${cells}</div>`;
+  }
+  return `<div class="row" style="align-items:flex-start;gap:32px;flex-wrap:wrap"><div class="heat"><div class="days"><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>${cols}</div>
+    <div class="col" style="gap:12px;min-width:170px">
+      <div><div class="xs muted">Last 7 days</div><div style="font-size:18px;font-weight:600">${sess7} of ${p.plan.daysPerWeek} <span class="sm muted" style="font-weight:400">sessions</span></div></div>
+      <div><div class="xs muted">Since start</div><div style="font-size:18px;font-weight:600">${m.adhAll != null ? pct(m.adhAll) : '—'} <span class="sm muted" style="font-weight:400">of planned minutes</span></div></div>
+      <div class="heat-leg">None <span class="c" style="background:var(--surface-3)"></span><span class="c" style="background:var(--seq-1)"></span><span class="c" style="background:var(--seq-2)"></span><span class="c" style="background:var(--seq-3)"></span><span class="c" style="background:var(--seq-4)"></span> Target met</div>
+    </div></div>`;
+}
+
+function viewPatient(id, tab){
+  const p = patientOf(id);
+  if (!p || !canSeePatient(p)) return notAllowed();
+  const m = patientMetrics(p), r = role(), own = r === 'therapist' && p.therapistId === me().id, t = p.plan ? typeOf(p.plan.typeId) : null, sc = SCALES[p.scale];
+  if (!['summary', 'sessions', 'assessments', 'plan', 'notes'].includes(tab)) tab = 'summary';
+  const acts = own ? `<button class="btn" data-act="modifyPlan" data-pid="${p.id}">${icon('edit', 14)} ${p.plan ? 'Edit plan' : 'Create plan'}</button><button class="btn pri" data-act="newAssessment" data-pid="${p.id}">${icon('clip', 14)} Record assessment</button><button class="btn" style="padding:6px 9px" title="More" data-act="pop" data-pop="more" data-pid="${p.id}" data-unit="${p.plan && p.plan.unitId || ''}">⋯</button>`
+    : (r === 'consultant' || r === 'admin') ? `<button class="btn pri" data-act="addNote" data-pid="${p.id}">${icon('note', 14)} Add review note</button>` : '';
+  const head = `<div class="banner"><span class="av lg">${initials(p.name)}</span>
+    <div><h1>${esc(p.name)} ${pill(p.status)}</h1>
+      <div class="ids"><span><b>MRN</b> ${p.mrn}</span><span>${p.age} y · ${p.sex === 'F' ? 'Female' : 'Male'}</span><span><b>Admitted</b> ${fmtDY(p.admitted)}</span><span><b>Therapist</b> ${esc(userOf(p.therapistId).name)}</span></div>
+      <div class="chips">${tag(esc(p.diagnosis))}${tag('Affected side: ' + p.side)}${p.status === 'Active' && m.latest ? (m.nextAssess <= 0 ? tag(m.nextAssess < 0 ? 'Assessment overdue' : 'Assessment due today', 'warn') : tag('Next assessment in ' + m.nextAssess + ' d')) : ''}${p.plan && p.status === 'Active' ? progCell(p) : ''}</div></div>
+    <span class="sp"></span><div class="actions">${acts}</div></div>`;
+  const base = '#/patient/' + p.id;
+  const scoreChart = h => chart({ type:'line', height: h, yMin: 0, yMax: sc.max, area: true, series:[{ name: p.scale, color:'var(--series-1)', points: m.assessments.map(a => ({ x: a.date, y: a.score })) }], refs: m.baseline != null ? [{ y: Math.min(sc.max, m.baseline + sc.mcid), label: 'Baseline + MCID' }] : [] });
+  const planKV = p.plan ? `<dl class="kv">
+      <dt>Device</dt><dd>${t.name} <span class="mono muted">${esc(p.plan.unitId || 'unassigned')}</span></dd>
+      <dt>Status</dt><dd>${p.plan.unitId ? pill(unitStatus(unitOf(p.plan.unitId))) : pill('Pending')}</dd>
+      <dt>Target</dt><dd>${p.plan.minutes} min · ${p.plan.daysPerWeek} days/wk</dd>
+      <dt>Duration</dt><dd>${p.plan.weeks} weeks from ${fmtD(p.plan.start)}</dd>
+      <dt>Movements</dt><dd>${p.plan.mechanisms.map(x => tag(esc(x))).join('')}</dd>
+      <dt>Games</dt><dd>${p.plan.games.map(x => tag(esc(GAME_LABELS[x]))).join('')}</dd>
+      <dt>Goal</dt><dd style="font-weight:400">${esc(p.plan.goal)}</dd></dl>` : `<div class="empty">No therapy plan.${own ? `<br><br><button class="btn sm pri" data-act="modifyPlan" data-pid="${p.id}">Create plan</button>` : ''}</div>`;
+  let body = '';
+  if (tab === 'summary') {
+    const lastS = m.sessions[m.sessions.length - 1];
+    const team = [[userOf(p.therapistId), 'Therapist'], [userOf(p.consultantId), 'Consultant']].concat(p.plan ? [[ownerOfType(p.plan.typeId), 'Device engineer']] : []);
+    const sess7 = m.sessions.filter(s => daysAgo(s.date) >= 1 && daysAgo(s.date) <= 7).length;
+    const progHead = m.latest ? `<div class="row" style="align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-size:26px;font-weight:650;letter-spacing:-.02em">${m.latest.score}</span><span class="muted">/ ${sc.max}</span>${m.change != null ? delta(m.change) + `<span class="muted sm">since baseline (${m.baseline})</span>` : '<span class="muted sm">baseline</span>'}</div>` : '';
+    body = ``
+      + `<div class="grid g-main"><div class="stack">
+          ${card('Progress', m.assessments.length ? progHead + scoreChart(210) : `<div class="empty">No assessments recorded.${own ? `<br><br><button class="btn sm pri" data-act="newAssessment" data-pid="${p.id}">Record baseline</button>` : ''}</div>`, { sub: sc.name })}
+          ${card('Attendance', p.plan && p.status !== 'New' ? heatmap(p, m, sess7) : '<div class="empty">Programme not started.</div>', { sub:'therapy minutes per day vs target' })}
+        </div><div class="stack">
+          ${card('Therapy plan', planKV, { right: own && p.plan ? `<button class="btn sm ghost" data-act="modifyPlan" data-pid="${p.id}">Edit</button>` : '' })}
+          ${card('Care team', list(team.map(([u, l]) => ({ ico: false, title: `<span class="who">${av(u, 'sm')}${esc(u.name)}</span>`, right: l }))), { flush: true })}
+          ${p.notes.length ? card('Latest review', `<div class="note">${esc(p.notes[p.notes.length - 1].text)}</div><div class="xs muted" style="margin-top:8px">${esc(userOf(p.notes[p.notes.length - 1].by).name)} · ${fmtD(p.notes[p.notes.length - 1].date)}</div>`, { right:`<a class="lnk xs" href="${base}/notes">All notes</a>` }) : ''}
+        </div></div>`;
+  } else if (tab === 'sessions') {
+    const acc = daily(m.sessions, 30, ss => mean(ss.map(s => s.accuracy))).filter(x => x.value != null);
+    const rom = daily(m.sessions, 30, ss => mean(ss.map(s => s.rom))).filter(x => x.value != null);
+    body = (m.sessions.length ? `<div class="grid g2 mb">
+        ${card('Game accuracy', chart({ type:'line', height: 170, yMin: 0, yMax: 100, fmt: v => Math.round(v) + '%', series:[{ name:'Accuracy', color:'var(--series-1)', points: acc.map(x => ({ x: x.d, y: round1(x.value) })) }] }), { sub:'daily mean, 30 days' })}
+        ${card('Active range of motion', chart({ type:'line', height: 170, yMin: 0, fmt: v => Math.round(v) + '°', series:[{ name:'ROM', color:'var(--series-1)', points: rom.map(x => ({ x: x.d, y: round1(x.value) })) }] }), { sub:'daily mean, 30 days' })}
+      </div>` : '')
+      + card('Session log', table([
+        { h:'Date', v: s => `<span class="nowrap">${WD[s.date.getDay()]} ${fmtD(s.date)}</span>`, sort: s => +s.date },
+        { h:'Unit', v: s => `<span class="mono">${esc(s.unitId)}</span>` }, { h:'Game', v: s => esc(GAME_LABELS[s.game]) }, { h:'Movement', v: s => `<span class="soft">${esc(s.mechanism)}</span>` },
+        { h:'Minutes', r: 1, v: s => s.minutes, sort: s => s.minutes }, { h:'Trials', r: 1, v: s => s.trials },
+        { h:'Accuracy', r: 1, v: s => s.accuracy + '%', sort: s => s.accuracy }, { h:'ROM', r: 1, v: s => s.rom + '°' },
+      ], m.sessions.slice().reverse(), { key:'ps', limit: 25, empty:'No sessions yet.', foot:'sessions' }), { flush: true });
+  } else if (tab === 'assessments') {
+    const rows = m.assessments.slice().reverse().map((a, i, arr) => ({ a, prev: arr[i + 1] }));
+    body = `<div class="grid g-wide">${card('History', table([
+        { h:'Date', v: x => fmtDY(x.a.date) }, { h:'Type', v: x => esc(x.a.note) },
+        { h:'Score', r: 1, v: x => `${x.a.score}<span class="muted">/${sc.max}</span>` },
+        { h:'Change', r: 1, v: x => x.prev ? delta(x.a.score - x.prev.score) : '<span class="muted">—</span>' },
+        { h:'Assessor', v: x => esc(userOf(x.a.by) ? userOf(x.a.by).name : '') },
+      ], rows, { empty:'No assessments yet.' }), { flush: true, sub: sc.name })}
+      ${card('Trend', m.assessments.length ? scoreChart(240) : '<div class="empty">No data.</div>')}</div>`;
+  } else if (tab === 'plan') {
+    body = `<div class="grid g2">${card('Current plan', planKV, { right: own && p.plan ? `<button class="btn sm ghost" data-act="modifyPlan" data-pid="${p.id}">Edit</button>` : '' })}
+      ${card('Change history', p.plan ? `<ul class="tl">${p.plan.history.slice().reverse().map(h => `<li><div>${esc(h.text)}</div><div class="when">${fmtDY(h.date)} · ${esc(userOf(h.by).name)}</div></li>`).join('')}</ul>` : '<div class="empty">No history.</div>', { flush: true })}</div>`;
+  } else if (tab === 'notes') {
+    body = card('Review notes', p.notes.length ? `<ul class="tl">${p.notes.slice().reverse().map(n => `<li><div style="margin-bottom:2px">${esc(n.text)}</div><div class="when">${esc(userOf(n.by).name)} · ${fmtDY(n.date)}</div></li>`).join('')}</ul>` : '<div class="empty">No review notes.</div>',
+      { flush: true, right: (r === 'consultant' || r === 'admin') ? `<button class="btn sm" data-act="addNote" data-pid="${p.id}">${icon('plus', 14)} Add note</button>` : '' });
+  }
+  return head + tabs(base, [['summary', 'Summary'], ['sessions', 'Sessions', m.sessions.length || ''], ['assessments', 'Assessments', m.assessments.length || ''], ['plan', 'Therapy plan'], ['notes', 'Review notes', p.notes.length || '']], tab) + body;
+}
+
+/* =====================================================================
+   13. OUTCOMES
+   ===================================================================== */
+function viewOutcomes(){
+  const all = DB.patients.filter(p => p.status !== 'New').map(p => ({ p, m: patientMetrics(p) })).filter(x => x.m.change != null);
+  const reached = all.filter(x => x.m.change >= SCALES[x.p.scale].mcid).length;
+  const gains = all.map(x => x.m.gainPct).sort((a, b) => a - b), med = gains.length ? gains[Math.floor(gains.length / 2)] : 0;
+  const act = DB.patients.filter(p => p.status === 'Active').map(p => ({ p, m: patientMetrics(p) }));
+  const adhs = act.map(x => x.m.adh7).filter(v => v != null);
+  const byType = DEVICE_TYPES.map(t => { const xs = all.filter(x => x.p.plan && x.p.plan.typeId === t.id); return { t, n: xs.length, gain: mean(xs.map(x => x.m.gainPct)), mcid: xs.filter(x => x.m.change >= SCALES[t.scale].mcid).length, adh: mean(xs.map(x => x.m.adhAll).filter(v => v != null)) }; }).filter(r => r.n);
+  const byDx = [['Ischaemic stroke', 'Ischaemic'], ['Haemorrhagic stroke', 'Haemorrhagic'], ['Traumatic brain injury', 'Traumatic']].map(([label, k]) => ({ label, value: round1(mean(all.filter(x => x.p.diagnosis.startsWith(k)).map(x => x.m.gainPct)) || 0) }));
+  const traj = scale => { const pts = []; for (let w = 0; w <= 10; w += 2) { const v = []; all.filter(x => x.p.scale === scale).forEach(x => { const a = x.m.assessments[w / 2]; if (a) v.push(a.score / SCALES[scale].max * 100); }); if (v.length >= 2) pts.push({ x: w, y: round1(mean(v)) }); } return pts; };
+  const bins = [[0, .4, '<40%'], [.4, .6, '40–60'], [.6, .8, '60–80'], [.8, 1.01, '80–100'], [1.01, 9, '>100%']].map(([a, b, l]) => ({ label: l, full: 'Adherence ' + l + (l.includes('%') ? '' : '%'), value: adhs.filter(v => v >= a && v < b).length }));
+  const pts = act.filter(x => x.m.change != null && x.m.adhAll != null).map(x => { const flag = reviewReasons(x.p, x.m).length > 0; return {
+    x: Math.round(x.m.adhAll * 100), y: round1(x.m.gainPct), label: x.p.name, href:'#/patient/' + x.p.id, color: flag ? 'var(--series-2)' : 'var(--series-1)',
+    tip: `<b>${esc(x.p.name)}</b><div class="tr"><span>Adherence</span><b>${pct(x.m.adhAll)}</b></div><div class="tr"><span>Gain</span><b>${round1(x.m.gainPct)}% of scale</b></div><div class="tr"><span>${x.p.scale}</span><b>${x.m.baseline} → ${x.m.latest.score}</b></div>` }; });
+  return pageHead('Outcomes', all.length + ' patients with two or more assessments')
+    + stats([
+      { l:'Reached MCID', v: `${Math.round(reached / all.length * 100)}%`, f: `${reached} of ${all.length} patients` },
+      { l:'Median gain', v: round1(med) + '%', f:'of scale range since baseline' },
+      { l:'Mean adherence · 7d', v: adhs.length ? pct(mean(adhs)) : '—', f: act.length + ' active patients' },
+      { l:'Discharged', v: DB.patients.filter(p => p.status === 'Discharged').length, f:'completed programme' },
+    ])
+    + `<div class="grid g2 mb">
+      ${card('Recovery trajectory', chart({ type:'line', height: 230, yMin: 0, yMax: 100, fmt: v => Math.round(v) + '%', xFmt: v => 'Week ' + Math.round(v), xName:'Week', series:[{ name:'Upper limb · FMA-UE', color:'var(--series-1)', points: traj('FMA-UE') }, { name:'Balance · BBS', color:'var(--series-2)', points: traj('BBS') }] }), { sub:'mean score, % of scale' })}
+      ${card('Adherence vs gain', chart({ type:'scatter', height: 230, points: pts, xName:'Adherence since start (%)', yName:'Gain (% of scale)', xFmt: v => v + '%', yFmt: v => v + '%', xMin: 20, xMax: 100, refX: 60, refXLabel:'60%', legend:`<div class="legend"><span><i style="background:var(--series-2)"></i>Flagged</span><span><i style="background:var(--series-1)"></i>On track</span></div>` }), { sub:'active patients' })}
+    </div>
+    <div class="grid g-wide">
+      ${card('By device', table([
+        { h:'Device', v: r => `<div class="pri">${r.t.name}</div><div class="sec2">${esc(r.t.category)}</div>` },
+        { h:'Patients', r: 1, v: r => r.n, sort: r => r.n },
+        { h:'Mean gain', r: 1, v: r => round1(r.gain) + '%', sort: r => r.gain },
+        { h:'Reached MCID', r: 1, v: r => `${r.mcid}/${r.n}`, sort: r => r.mcid / r.n },
+        { h:'Adherence', v: r => r.adh != null ? meter(r.adh, adhTone(r.adh)) : '—', sort: r => r.adh || 0 },
+      ], byType, { key:'od' }), { flush: true })}
+      <div class="stack">${card('Gain by diagnosis', hbars(byDx, { fmt: v => v + '%', name:'Mean gain', labelW:'150px' }), { sub:'% of scale range' })}
+        ${card('Adherence distribution', chart({ type:'bar', height: 150, xName:'Adherence', yName:'Patients', data: bins }), { sub:'active patients, 7 days' })}</div>
+    </div>`;
+}
+
+/* =====================================================================
+   14. ENGINEER — FLEET, DEVICE, SERVICE, REQUESTS
+   ===================================================================== */
+function unitRow(u){
+  const ss = unitSessions(u), s7 = inLast(ss, 7);
+  return { u, st: liveStatus(u), s7: s7.length, min7: sum(s7.map(s => s.minutes)), err7: mean(s7.map(s => s.trackErr)), cal: daysToCal(u),
+    use14: daily(ss, 14, x => sum(x.map(s => s.minutes))).map(r => r.value), faults: DB.faults.filter(f => f.unitId === u.id && OPEN_FAULT(f)) };
+}
+function devCard(x){
+  const f = x.faults.slice().sort((a, b) => sevOrder[a.severity] - sevOrder[b.severity])[0];
+  const alert = f ? `<div class="dev-alert ${f.severity === 'Critical' || f.severity === 'High' ? '' : 'warn'}">${icon('alert', 13)}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.severity}: ${esc(f.desc)}</span></div>`
+    : x.st === 'Offline' ? `<div class="dev-alert">${icon('wifi', 13)}No heartbeat for ${Math.round((NOW - x.u.lastSync) / 3600000)} h</div>`
+    : x.cal < 0 ? `<div class="dev-alert warn">${icon('cal', 13)}Calibration overdue ${-x.cal} d</div>` : '';
+  return `<div class="dev ${x.st === 'Out of service' ? 'crit' : ''}" data-href="#/device/${x.u.id}">
+    <div class="dev-h"><div class="grow"><b>${esc(x.u.id)}</b><span>${typeOf(x.u.typeId).name} · ${esc(x.u.room)}</span></div>${pill(x.st)}</div>
+    <div class="dev-m"><div><span>Sessions 7d</span><b>${x.s7}</b></div><div><span>Track err</span><b>${x.err7 != null ? x.err7.toFixed(2) + '°' : '—'}</b></div><div><span>Calibration</span><b>${x.cal < 0 ? `<span class="down">Overdue</span>` : x.cal + ' d'}</b></div></div>
+    <div>${spark(x.use14, 240, 26).replace('width="240"', 'width="100%" viewBox="0 0 240 26" preserveAspectRatio="none"')}<div class="row xs muted" style="justify-content:space-between;margin-top:2px"><span>Minutes/day · 14d</span><span>Sync ${syncTxt(x.u)}</span></div></div>
+    ${alert}</div>`;
+}
+function viewFleet(){
+  const F = STATE.filters, mode = F.fl || 'all', q = (F.fq || '').toLowerCase();
+  const rows = scopeUnits().map(unitRow);
+  const bad = x => ['Out of service', 'Offline', 'Needs attention'].includes(x.st);
+  const shown = rows.filter(x => (mode === 'all' || (mode === 'att' && bad(x)) || (mode === 'use' && (x.st === 'In use' || x.st === 'In session')) || (mode === 'avail' && x.st === 'Available')) && (!q || (x.u.id + x.u.room + typeOf(x.u.typeId).name).toLowerCase().includes(q)));
+  const ids = rows.map(x => x.u.id);
+  const tickets = DB.faults.filter(f => OPEN_FAULT(f) && ids.includes(f.unitId)).sort((a, b) => sevOrder[a.severity] - sevOrder[b.severity]);
+  const reqs = DB.requests.filter(q2 => q2.status === 'Pending' && (role() === 'admin' || me().owns.includes(q2.typeId)));
+  const types = role() === 'engineer' ? me().owns.map(typeLabel).join(', ') : DEVICE_TYPES.length + ' device types';
+  return pageHead('Fleet', `${rows.length} units · ${types}`, `<button class="btn" data-act="reportFault">${icon('plus', 15)} New ticket</button>`)
+    + stats([
+      { l:'In session now', v: rows.filter(x => x.st === 'In session').length, f:'live' },
+      { l:'Available', v: rows.filter(x => x.st === 'Available' || x.st === 'In use').length, f:'in service' },
+      { l:'Needs attention', v: rows.filter(x => x.st === 'Needs attention' || x.st === 'Offline').length, f:'minor fault, sync or calibration', cls: rows.some(x => x.st === 'Needs attention' || x.st === 'Offline') ? 'warnv' : '' },
+      { l:'Out of service', v: rows.filter(x => x.st === 'Out of service').length, f:'critical or high fault', cls: rows.some(x => x.st === 'Out of service') ? 'bad' : '' },
+      { l:'Device minutes · 7d', v: sum(rows.map(x => x.min7)).toLocaleString(), f: sum(rows.map(x => x.s7)) + ' sessions' },
+    ])
+    + `<div class="toolbar">${segs('fl', [['all', 'All', rows.length], ['att', 'Attention', rows.filter(bad).length], ['use', 'In use', rows.filter(x => x.st === 'In use' || x.st === 'In session').length], ['avail', 'Available', rows.filter(x => x.st === 'Available').length]], mode)}<span class="grow"></span>${searchBox('fq', 'Search units')}</div>`
+    + `<div class="fleet mb">${shown.map(devCard).join('') || '<div class="empty">No units match.</div>'}</div>`
+    + `<div class="grid g2">
+      ${card('Open tickets', list(tickets.slice(0, 5).map(f => ({ icon:'wrench', tone: f.severity === 'Critical' || f.severity === 'High' ? 'crit' : 'warn', title: `<span class="mono">${esc(f.unitId)}</span> · ${esc(f.desc)}`, desc: f.severity + ' · ' + f.status + ' · opened ' + rel(f.opened), href:'#/service' })), 'No open tickets.'), { flush: true, right:'<a class="lnk xs" href="#/service">Service board</a>' })}
+      ${card('Device requests', list(reqs.map(q2 => ({ icon:'inbox', tone:'accent', title: typeLabel(q2.typeId) + ' for ' + plink(patientOf(q2.patientId)), desc: esc(userOf(q2.requestedBy).name) + ' · ' + rel(q2.date), href:'#/requests', action:`<button class="btn sm" data-act="assignRequest" data-rid="${q2.id}">Assign</button>` })), 'No pending requests.'), { flush: true })}
+    </div>`;
+}
+
+function unitEvents(u){
+  const ev = [], ss = inLast(unitSessions(u), 7);
+  const ts = (d, salt) => { const x = new Date(d.getTime() + (salt % 50) * 1000); return MONTHS[x.getMonth()] + ' ' + String(x.getDate()).padStart(2, '0') + ' ' + fmtT(x) + ':' + String(x.getSeconds()).padStart(2, '0'); };
+  ss.forEach((s, i) => {
+    ev.push({ d: s.date, lv:'INFO', msg:`session.end id=${s.id} dur=${s.minutes}m trials=${s.trials} err=${s.trackErr}°`, salt: i * 7 });
+    if (s.flags) ev.push({ d: new Date(s.date.getTime() - 9 * 60000), lv:'WARN', msg:`sensor.out_of_range count=${s.flags} axis=${1 + (i % 3)} session=${s.id}`, salt: i * 3 });
+    if (s.disconnects) ev.push({ d: new Date(s.date.getTime() - 14 * 60000), lv:'WARN', msg:`link.drop reconnect_ms=${2400 + i * 37}`, salt: i });
+  });
+  DB.faults.filter(f => f.unitId === u.id).forEach(f => f.log.forEach((l, i) => { if (daysAgo(l.date) < 30) ev.push({ d: l.date, lv: i === 0 ? (f.severity === 'Critical' || f.severity === 'High' ? 'ERROR' : 'WARN') : 'INFO', msg: i === 0 ? `ticket.open ${f.id} severity=${f.severity.toLowerCase()} "${f.desc}"` : `ticket.update ${f.id} status=${l.text.toLowerCase().replace(/ /g, '_')}`, salt: i }); }));
+  if (daysAgo(u.lastCal) < 30) ev.push({ d: new Date(u.lastCal.getTime() + 10 * 3600000), lv:'OK', msg:`calibration.complete offset=0.05° by=${ownerOfType(u.typeId).login}`, salt: 3 });
+  if ((NOW - u.lastSync) / 3600000 > 24) ev.push({ d: NOW, lv:'ERROR', msg:`heartbeat.missed last_seen=${ts(u.lastSync, 0)}`, salt: 0 });
+  else ev.push({ d: u.lastSync, lv:'INFO', msg:`sync.ok fw=${u.firmware} queue=0`, salt: 11 });
+  return ev.sort((a, b) => b.d - a.d).slice(0, 40).map(e => `<div class="e"><span class="ts">${ts(e.d, e.salt)}</span><span class="lv ${e.lv}">${e.lv}</span><span>${esc(e.msg)}</span></div>`).join('');
+}
+function viewDevice(id, tab){
+  const u = unitOf(id);
+  if (!u || !canSeeUnit(u)) return notAllowed();
+  const t = typeOf(u.typeId), st = liveStatus(u), ss = unitSessions(u), base = '#/device/' + u.id;
+  if (!['overview', 'telemetry', 'sessions', 'usage', 'outcomes', 'service'].includes(tab)) tab = 'overview';
+  const fl = DB.faults.filter(f => f.unitId === u.id).sort((a, b) => b.opened - a.opened), open = fl.filter(OPEN_FAULT);
+  const head = `<div class="banner"><span class="av lg" style="border-radius:12px">${icon('robot', 22)}</span>
+    <div><h1><span class="mono">${esc(u.id)}</span> ${pill(st)}</h1>
+      <div class="ids"><span>${t.name} · ${esc(t.category)}</span><span><b>Serial</b> ${esc(u.serial)}</span><span><b>Location</b> ${esc(u.room)}</span><span><b>Firmware</b> ${esc(u.firmware)}</span><span><b>In service since</b> ${fmtDY(u.commissioned)}</span></div></div>
+    <span class="sp"></span><div class="actions"><button class="btn" data-act="reportFault" data-unit="${u.id}">${icon('wrench', 14)} New ticket</button><button class="btn pri" data-act="calibrate" data-unit="${u.id}">${icon('cal', 14)} Log calibration</button></div></div>`;
+  const d30 = inLast(ss, 30), d7 = inLast(ss, 7);
+  let body = '';
+  if (tab === 'overview') {
+    const cal = []; for (let w = 12; w >= 0; w--) { const d = addDays(TODAY, -w * 7); cal.push({ x: d, y: calOffset(u, d) }); }
+    const ev = daily(ss, 21, x => sum(x.map(s => s.flags + s.disconnects))).filter(r => r.d < TODAY);
+    body = stats([
+        { l:'Open tickets', v: open.length, f: fl.length + ' all-time', cls: open.some(f => f.severity === 'Critical' || f.severity === 'High') ? 'bad' : '' },
+        { l:'Calibration due', v: daysToCal(u) < 0 ? 'Overdue' : daysToCal(u) + ' d', f:'Last ' + fmtD(u.lastCal), cls: daysToCal(u) < 0 ? 'warnv' : '' },
+        { l:'Offset', v: calOffset(u, TODAY).toFixed(2) + '°', f:'Tolerance ' + CAL_TOL + '°', cls: calOffset(u, TODAY) > CAL_TOL ? 'warnv' : '' },
+        { l:'Last sync', v: rel(u.lastSync), f: (NOW - u.lastSync) / 3600000 > 24 ? 'Heartbeat missed' : 'Healthy', cls: (NOW - u.lastSync) / 3600000 > 24 ? 'bad' : '' },
+        { l:'Sessions · 7d', v: d7.length, f: sum(d7.map(s => s.minutes)) + ' min' },
+      ])
+      + `<div class="grid g2 mb">
+        ${card('Calibration offset', chart({ type:'line', height: 180, yMin: 0, fmt: v => v.toFixed(1) + '°', series:[{ name:'Offset', color:'var(--series-1)', points: cal }], refs:[{ y: CAL_TOL, label:'Tolerance' }] }), { sub:'weekly check' })}
+        ${card('Sensor & link events', chart({ type:'bar', height: 180, yName:'Events', data: ev.map(dayBar) }), { sub:'per day, 20 days' })}
+      </div>` + card('Event log', `<div class="log">${unitEvents(u)}</div>`, { flush: true, sub:'last 7 days' });
+  } else if (tab === 'telemetry') {
+    const dd = daily(ss, 30, x => x).filter(r => r.ss.length && r.d < TODAY);
+    const line = (name, fn, fmt, refs) => chart({ type:'line', height: 190, yMin: 0, fmt, refs, series:[{ name, color:'var(--series-1)', points: dd.map(r => ({ x: r.d, y: round1(fn(r.ss)) })) }] });
+    body = stats([
+        { l:'Tracking error · 7d', v: d7.length ? mean(d7.map(s => s.trackErr)).toFixed(2) + '°' : '—', f:'30d mean ' + (d30.length ? mean(d30.map(s => s.trackErr)).toFixed(2) + '°' : '—'), cls: d7.length && mean(d7.map(s => s.trackErr)) > 2.2 ? 'warnv' : '' },
+        { l:'Command latency · 7d', v: d7.length ? Math.round(mean(d7.map(s => s.latency))) + ' ms' : '—', f:'Spec ≤ 40 ms' },
+        { l:'Peak output · 7d', v: d7.length ? Math.round(Math.max(...d7.map(s => s.peakOut)) / t.outLimit * 100) + '%' : '—', f:'of ' + t.outLimit + ' ' + t.outUnit + ' limit' },
+        { l:'Sessions measured', v: d30.length, f:'30 days' },
+      ])
+      + `<div class="grid g3">
+        ${card('Tracking error', line('Tracking error', x => mean(x.map(s => s.trackErr)), v => v.toFixed(1) + '°', [{ y: 2.5, label:'Spec 2.5°' }]), { sub:'daily mean' })}
+        ${card('Command latency', line('Latency', x => mean(x.map(s => s.latency)), v => Math.round(v) + ' ms', [{ y: 40, label:'Spec 40 ms' }]), { sub:'daily mean' })}
+        ${card('Peak output', line('Peak output', x => Math.max(...x.map(s => s.peakOut)) / t.outLimit * 100, v => Math.round(v) + '%', [{ y: 90, label:'90% of limit' }]), { sub:'daily max, % of limit' })}
+      </div>`;
+  } else if (tab === 'sessions') {
+    body = card('Sessions', table([
+      { h:'Time', v: s => `<span class="nowrap">${fmtD(s.date)} ${fmtT(s.date)}</span>`, sort: s => +s.date },
+      { h:'Patient', v: s => `<span class="mono">${esc(pname(patientOf(s.patientId)))}</span>` },
+      { h:'Game', v: s => esc(GAME_LABELS[s.game]) }, { h:'Movement', v: s => `<span class="soft">${esc(s.mechanism)}</span>` },
+      { h:'Min', r: 1, v: s => s.minutes }, { h:'Trials', r: 1, v: s => s.trials }, { h:'Acc.', r: 1, v: s => s.accuracy + '%' },
+      { h:'Track err', r: 1, v: s => s.trackErr.toFixed(2) + '°', sort: s => s.trackErr }, { h:'Latency', r: 1, v: s => s.latency + ' ms', sort: s => s.latency },
+      { h:'Peak', r: 1, v: s => Math.round(s.peakOut / t.outLimit * 100) + '%' }, { h:'Flags', r: 1, v: s => s.flags ? `<span style="color:var(--warn-ink);font-weight:600">${s.flags}</span>` : '<span class="muted">0</span>', sort: s => s.flags },
+    ], ss.slice().reverse(), { key:'ds', limit: 30, foot:'sessions' }), { flush: true, right: anon() ? tag(icon('lock', 11) + ' De-identified') : '' });
+  } else if (tab === 'usage') {
+    const mins = daily(ss, 30, x => sum(x.map(s => s.minutes))).filter(r => r.d < TODAY);
+    const by = (key, lab) => Object.entries(d30.reduce((a, s) => (a[s[key]] = (a[s[key]] || 0) + s.minutes, a), {})).map(([k, v]) => ({ label: lab ? lab(k) : k, value: v })).sort((a, b) => b.value - a.value);
+    body = stats([
+        { l:'Sessions · 30d', v: d30.length, f: d7.length + ' in last 7 days' },
+        { l:'Device minutes · 30d', v: sum(d30.map(s => s.minutes)).toLocaleString(), f:'' },
+        { l:'Patients · 30d', v: new Set(d30.map(s => s.patientId)).size, f:'' },
+        { l:'Mean session', v: d30.length ? Math.round(mean(d30.map(s => s.minutes))) + ' min' : '—', f:'' },
+      ])
+      + `<div class="grid g-wide">${card('Device minutes per day', chart({ type:'bar', height: 230, yName:'Minutes', data: mins.map(dayBar) }), { sub:'30 days' })}
+        <div class="stack">${card('By game', hbars(by('game', k => GAME_LABELS[k]), { name:'Minutes', labelW:'130px' }), { sub:'minutes, 30d' })}${card('By movement', hbars(by('mechanism'), { name:'Minutes', labelW:'150px' }), { sub:'minutes, 30d' })}</div></div>`;
+  } else if (tab === 'outcomes') {
+    const pids = [...new Set(ss.map(s => s.patientId))];
+    const rows = pids.map(pid => { const p = patientOf(pid), m = patientMetrics(p), mine = ss.filter(s => s.patientId === pid), f5 = mine.slice(0, 5), l5 = mine.slice(-5);
+      return { p, m, n: mine.length, acc0: mean(f5.map(s => s.accuracy)), acc1: mean(l5.map(s => s.accuracy)), rom0: mean(f5.map(s => s.rom)), rom1: mean(l5.map(s => s.rom)) }; });
+    const acc = daily(ss, 30, x => mean(x.map(s => s.accuracy))).filter(r => r.value != null && r.d < TODAY);
+    body = `<div class="grid g-wide">${card('Patients on this unit', table([
+        { h:'Patient', v: x => canSeePatient(x.p) ? plink(x.p) : `<span class="mono pri">${esc(pname(x.p))}</span>`, sort: x => x.p.code },
+        { h:'Sessions', r: 1, v: x => x.n, sort: x => x.n },
+        { h:'Accuracy', r: 1, v: x => `${Math.round(x.acc0)} → ${Math.round(x.acc1)}% ${delta(Math.round(x.acc1 - x.acc0))}`, sort: x => x.acc1 - x.acc0 },
+        { h:'ROM', r: 1, v: x => `${Math.round(x.rom0)} → ${Math.round(x.rom1)}° ${delta(Math.round(x.rom1 - x.rom0))}`, sort: x => x.rom1 - x.rom0 },
+        { h:'Clinical score', r: 1, v: x => x.m.change != null ? `${x.m.baseline} → ${x.m.latest.score} ${delta(x.m.change)}` : '—', sort: x => x.m.gainPct || 0 },
+      ], rows, { key:'dout', empty:'No patients yet.' }), { flush: true, sub:'first vs last 5 sessions', right: anon() ? tag(icon('lock', 11) + ' De-identified') : '' })}
+      ${card('Mean game accuracy', chart({ type:'line', height: 220, yMin: 0, yMax: 100, fmt: v => Math.round(v) + '%', series:[{ name:'Accuracy', color:'var(--series-1)', points: acc.map(r => ({ x: r.d, y: round1(r.value) })) }] }), { sub:'all patients, 30 days' })}</div>`;
+  } else if (tab === 'service') {
+    const cals = [0, 1, 2, 3].map(k => addDays(u.lastCal, -k * u.calInterval)).filter(d => d > u.commissioned);
+    body = `<div class="grid g-wide">${card('Tickets', table([
+        { h:'Ticket', v: f => `<span class="mono muted">${esc(f.id)}</span>` }, { h:'Severity', v: f => sev(f.severity) }, { h:'Summary', v: f => esc(f.desc) },
+        { h:'Opened', v: f => `<span class="nowrap soft">${fmtD(f.opened)}</span>` }, { h:'Status', v: f => pill(f.status) }, { h:'', r: 1, v: f => faultBtn(f) },
+      ], fl, { empty:'No tickets for this unit.' }), { flush: true })}
+      ${card('Calibration record', `<ul class="tl">${cals.map(d => `<li><div>Calibrated · offset 0.05°</div><div class="when">${fmtDY(d)} · ${esc(ownerOfType(u.typeId).name)}</div></li>`).join('')}</ul>`, { flush: true, sub:'every ' + u.calInterval + ' days' })}</div>`;
+  }
+  return head + tabs(base, [['overview', 'Overview'], ['telemetry', 'Telemetry'], ['sessions', 'Sessions', ss.length], ['usage', 'Usage'], ['outcomes', 'Outcomes'], ['service', 'Service', open.length || '']], tab) + body;
+}
+
+function faultBtn(f){
+  const i = FAULT_STEPS.indexOf(f.status);
+  if (i >= FAULT_STEPS.length - 1) return '';
+  return `<button class="btn sm ${i === 2 ? 'pri' : ''}" data-act="advanceFault" data-fid="${f.id}">${['Start investigation', 'Mark resolved', 'Clear for use'][i]}</button>`;
+}
+function viewService(){
+  const F = STATE.filters, mode = F.svc || 'board', ids = scopeUnits().map(u => u.id);
+  const fl = DB.faults.filter(f => ids.includes(f.unitId));
+  const cols = FAULT_STEPS.map(s => ({ s, items: fl.filter(f => f.status === s && (s !== 'Cleared for use' || daysAgo(f.opened) < 30)).sort((a, b) => sevOrder[a.severity] - sevOrder[b.severity] || b.opened - a.opened) }));
+  const cal = scopeUnits().map(u => ({ u, due: daysToCal(u), off: calOffset(u, TODAY) })).sort((a, b) => a.due - b.due);
+  const tcard = f => { const rep = f.reportedBy === 'system' ? null : userOf(f.reportedBy);
+    return `<div class="tk"><div class="row"><span class="id">${esc(f.id)}</span><span class="grow"></span>${sev(f.severity)}</div>
+      <div class="ti">${esc(f.desc)}</div>
+      <div class="ft">${ulink(unitOf(f.unitId))}<span class="grow"></span>${rep ? av(rep, 'sm') : tag('Auto')}<span>${rel(f.opened)}</span></div>
+      ${faultBtn(f) ? `<div style="margin-top:9px">${faultBtn(f)}</div>` : ''}</div>`; };
+  return pageHead('Service', fl.filter(OPEN_FAULT).length + ' open tickets', `<button class="btn pri" data-act="reportFault">${icon('plus', 15)} New ticket</button>`)
+    + `<div class="toolbar">${segs('svc', [['board', 'Tickets', fl.filter(OPEN_FAULT).length], ['cal', 'Calibration', cal.filter(x => x.due <= 7).length || null]], mode)}</div>`
+    + (mode === 'board'
+      ? `<div class="kanban">${cols.map(c => `<div class="kcol"><div class="kcol-h">${pill(c.s)}<span class="c">${c.items.length}</span></div>${c.items.map(tcard).join('') || '<div class="empty" style="padding:18px 6px">No tickets</div>'}</div>`).join('')}</div>`
+      : card('', table([
+        { h:'Unit', v: x => ulink(x.u) }, { h:'Device', v: x => typeLabel(x.u.typeId) }, { h:'Location', v: x => `<span class="soft">${esc(x.u.room)}</span>` },
+        { h:'Last calibrated', v: x => fmtDY(x.u.lastCal), sort: x => +x.u.lastCal }, { h:'Due', v: x => calTxt(x.due), sort: x => x.due },
+        { h:'Current offset', r: 1, v: x => `<span style="${x.off > CAL_TOL ? 'color:var(--warn-ink);font-weight:600' : ''}">${x.off.toFixed(2)}°</span>`, sort: x => x.off },
+        { h:'', r: 1, v: x => `<button class="btn sm" data-act="calibrate" data-unit="${x.u.id}">Log calibration</button>` },
+      ], cal, { key:'cal' }), { flush: true }));
+}
+
+function viewRequests(){
+  const F = STATE.filters, mode = F.rq || 'Pending';
+  const all = DB.requests.filter(q => role() === 'admin' || me().owns.includes(q.typeId)).sort((a, b) => b.date - a.date);
+  const rows = all.filter(q => mode === 'All' || q.status === mode);
+  return pageHead('Requests', '')
+    + `<div class="toolbar">${segs('rq', [['Pending', 'Pending', all.filter(q => q.status === 'Pending').length], ['Assigned', 'Assigned', all.filter(q => q.status === 'Assigned').length], ['All', 'All', all.length]], mode)}</div>`
+    + card('', table([
+      { h:'Requested', v: q => `<span class="nowrap soft">${rel(q.date)}</span>`, sort: q => +q.date },
+      { h:'Patient', v: q => plink(patientOf(q.patientId)) },
+      { h:'Device', v: q => typeLabel(q.typeId) },
+      { h:'Requested by', v: q => { const u = userOf(q.requestedBy); return `<div class="who">${av(u, 'sm')}${esc(u.name)}</div>`; } },
+      { h:'Note', v: q => `<span class="soft">${esc(q.note)}</span>` },
+      { h:'Status', v: q => pill(q.status) + (q.unitId ? ` <span class="mono xs muted">${esc(q.unitId)}</span>` : '') },
+      { h:'', r: 1, v: q => q.status === 'Pending' ? `<div class="actions" style="justify-content:flex-end"><button class="btn sm ghost" data-act="declineRequest" data-rid="${q.id}">Decline</button><button class="btn sm pri" data-act="assignRequest" data-rid="${q.id}">Assign unit</button></div>` : '' },
+    ], rows, { empty:'No requests.' }), { flush: true });
+}
+
+/* =====================================================================
+   15. ADMIN
+   ===================================================================== */
+function viewOverview(){
+  const active = DB.patients.filter(p => p.status === 'Active'), live = DB.units.map(liveStatus);
+  const cnt = s => live.filter(x => x === s).length;
+  const order = [['In session', 'var(--good)'], ['In use', 'var(--series-1)'], ['Available', 'var(--idle)'], ['Needs attention', 'var(--warn)'], ['Offline', 'var(--serious)'], ['Out of service', 'var(--crit)']];
+  const openF = DB.faults.filter(OPEN_FAULT), s7 = inLast(DB.sessions, 8).filter(s => daysAgo(s.date) >= 1);
+  const days = daily(DB.sessions, 30, x => sum(x.map(s => s.minutes))).filter(r => r.d < TODAY);
+  const items = [];
+  openF.filter(f => f.severity === 'Critical' || f.severity === 'High').forEach(f => items.push({ icon:'wrench', tone:'crit', title: f.severity + ' · <span class="mono">' + esc(f.unitId) + '</span> · ' + esc(f.desc), desc: f.status + ' · ' + esc(ownerOfType(unitOf(f.unitId).typeId).name), right: rel(f.opened), href:'#/service' }));
+  DB.units.filter(u => (NOW - u.lastSync) / 3600000 > 24).forEach(u => items.push({ icon:'wifi', tone:'serious', title:'<span class="mono">' + esc(u.id) + '</span> offline', desc:'No heartbeat since ' + fmtT(u.lastSync) + ' ' + fmtD(u.lastSync), href:'#/device/' + u.id }));
+  DB.requests.filter(q => q.status === 'Pending').forEach(q => items.push({ icon:'inbox', tone:'accent', title:'Device request · ' + typeLabel(q.typeId), desc: esc(patientOf(q.patientId).name) + ' · ' + esc(userOf(q.requestedBy).name), right: rel(q.date), href:'#/requests' }));
+  DB.units.filter(u => daysToCal(u) < 0).forEach(u => items.push({ icon:'cal', tone:'warn', title:'Calibration overdue · <span class="mono">' + esc(u.id) + '</span>', desc: -daysToCal(u) + ' days overdue', href:'#/device/' + u.id }));
+  active.forEach(p => { const m = patientMetrics(p); if (m.declining) items.push({ icon:'trend', tone:'serious', title: esc(p.name) + ' · score down ' + ptsTxt(m.lastDelta), desc: SCALES[p.scale].name, right: fmtD(m.latest.date), href:'#/patient/' + p.id }); });
+  const recent = DB.audit.slice().sort((a, b) => b.date - a.date).slice(0, 7);
+  const byType = DEVICE_TYPES.map(t => { const us = DB.units.filter(u => u.typeId === t.id), ls = us.map(liveStatus); return { t, n: us.length, up: ls.filter(s => !['Out of service', 'Offline'].includes(s)).length, att: ls.filter(s => s === 'Needs attention').length, down: ls.filter(s => ['Out of service', 'Offline'].includes(s)).length }; });
+  return pageHead('Overview', `${WDL[TODAY.getDay()]}, ${TODAY.getDate()} ${MONL[TODAY.getMonth()]}`)
+    + stats([
+      { l:'Active patients', v: active.length, f: DB.patients.filter(p => p.status === 'New').length + ' new · ' + DB.patients.filter(p => p.status === 'Discharged').length + ' discharged', href:'#/review' },
+      { l:'Therapy delivered · 7d', v: `${round1(sum(s7.map(s => s.minutes)) / 60)}<small>h</small>`, f: s7.length + ' sessions' },
+      { l:'Fleet availability', v: `${DB.units.length - cnt('Out of service') - cnt('Offline')}<small>/ ${DB.units.length}</small>`, f: cnt('Needs attention') + ' need attention', href:'#/fleet' },
+      { l:'Open tickets', v: openF.length, f: openF.filter(f => f.severity === 'Critical').length + ' critical', cls: openF.some(f => f.severity === 'Critical') ? 'bad' : '', href:'#/service' },
+      { l:'Members', v: USERS.length, f:'4 roles', href:'#/members' },
+    ])
+    + `<div class="grid g-wide mb">
+      ${card('Needs attention', list(items), { flush: true, sub: items.length + ' items' })}
+      ${card('Fleet', `<div style="display:flex;height:10px;gap:2px;border-radius:4px;overflow:hidden;margin-bottom:10px">${order.map(([s, c]) => cnt(s) ? `<div style="flex:${cnt(s)};background:${c}" data-tip="${esc('<b>' + s + '</b><div class="tr"><span>Units</span><b>' + cnt(s) + '</b></div>')}"></div>` : '').join('')}</div>
+        <div class="legend" style="margin-bottom:14px">${order.filter(([s]) => cnt(s)).map(([s, c]) => `<span><i style="background:${c}"></i>${s} <b class="num">${cnt(s)}</b></span>`).join('')}</div>
+        <div style="border:1px solid var(--line);border-radius:8px;overflow:hidden">${table([{ h:'Device', v: r => `<span class="pri">${r.t.name}</span>` }, { h:'Units', r: 1, v: r => r.n }, { h:'Up', r: 1, v: r => r.up }, { h:'Attention', r: 1, v: r => r.att || '<span class="muted">0</span>' }, { h:'Down', r: 1, v: r => r.down ? `<span class="down">${r.down}</span>` : '<span class="muted">0</span>' }], byType, { foot: false })}</div>`, { right:'<a class="lnk xs" href="#/fleet">Open fleet</a>' })}
+    </div>
+    <div class="grid g-wide">
+      ${card('Therapy delivered', chart({ type:'bar', height: 190, yName:'Minutes', data: days.map(dayBar) }), { sub:'device minutes per day, all units' })}
+      ${card('Recent activity', `<ul class="tl">${recent.map(a => { const u = userOf(a.userId); return `<li><div><b style="font-weight:550">${esc(u ? u.name : 'System')}</b> <span class="soft">${esc(a.action.toLowerCase())}</span></div><div class="when"><span class="mono">${esc(a.target)}</span> · ${rel(a.date)}</div></li>`; }).join('')}</ul>`, { flush: true, right:'<a class="lnk xs" href="#/audit">Audit log</a>' })}
+    </div>`;
+}
+
+function viewMembers(){
+  const F = STATE.filters, mode = F.mem || 'members', q = (F.mq || '').toLowerCase(), rf = F.mrole || '';
+  const scope = u => u.role === 'therapist' ? DB.patients.filter(p => p.therapistId === u.id && p.status !== 'Discharged').length + ' patients'
+    : u.role === 'engineer' ? (u.owns || []).map(typeLabel).join(', ') : u.role === 'consultant' ? 'All patients' : 'Organisation';
+  const last = u => { const a = DB.audit.filter(x => x.userId === u.id).sort((a, b) => b.date - a.date)[0]; return a ? rel(a.date) : '—'; };
+  const rows = USERS.filter(u => (!rf || u.role === rf) && (!q || (u.name + u.email).toLowerCase().includes(q)));
+  const Y = `<span class="up">${icon('check', 15)}</span>`, N = '<span class="muted">—</span>';
+  const matrix = [
+    ['Patient records', 'Own caseload', 'All · read', 'Own devices · de-identified', 'All'],
+    ['Assessments', 'Own caseload · write', 'All · read', 'Own devices · de-identified', 'All'],
+    ['Therapy plans', 'Own caseload · write', 'All · read', 'Device settings', 'All'],
+    ['Session data', 'Own caseload', 'All', 'Own devices · de-identified', 'All'],
+    ['Review notes', 'Read', 'Write', N, 'Write'],
+    ['Device status', 'All units', 'Via patient', 'Own devices', 'All'],
+    ['Telemetry & calibration', N, N, 'Own devices', 'All'],
+    ['Service tickets', 'Create', N, 'Own devices · manage', 'All · manage'],
+    ['Device requests', 'Create', N, 'Own device types · assign', 'All · assign'],
+    ['Members & audit log', N, N, N, Y],
+  ];
+  return pageHead('Members', USERS.length + ' members', `<button class="btn pri" data-act="invite">${icon('plus', 15)} Invite member</button>`)
+    + `<div class="toolbar">${segs('mem', [['members', 'Members', USERS.length], ['roles', 'Roles & permissions']], mode)}${mode === 'members' ? `<span class="grow"></span>${searchBox('mq', 'Search members')}<select data-filter="mrole"><option value="">All roles</option>${Object.keys(ROLE_LABEL).map(k => `<option value="${k}" ${k === rf ? 'selected' : ''}>${ROLE_LABEL[k]}</option>`).join('')}</select>` : ''}</div>`
+    + (mode === 'members' ? card('', table([
+      { h:'Member', v: u => `<div class="who">${av(u)}<div><div class="pri">${esc(u.name)}</div><div class="sec2">${esc(u.email)}</div></div></div>`, sort: u => u.name },
+      { h:'Role', v: u => ROLE_LABEL[u.role], sort: u => u.role },
+      { h:'Title', v: u => `<span class="soft">${esc(u.title.split(' · ')[0])}</span>` },
+      { h:'Access', v: u => `<span class="soft">${esc(scope(u))}</span>` },
+      { h:'Status', v: u => pill(u.status, u.status === 'Active' ? 'good' : 'warn') },
+      { h:'Last active', v: u => `<span class="soft nowrap">${last(u)}</span>` },
+    ], rows, { key:'mem', foot:'members' }), { flush: true })
+    : card('Permissions', `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Resource</th>${Object.values(ROLE_LABEL).map(l => `<th>${l}</th>`).join('')}</tr></thead><tbody>${matrix.map(r => `<tr><td class="pri">${r[0]}</td>${r.slice(1).map(c => `<td class="sm soft">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`, { flush: true }));
+}
+
+function viewAudit(){
+  const F = STATE.filters, q = (F.aq || '').toLowerCase(), rf = F.arole || '';
+  const rows = DB.audit.filter(a => { const u = userOf(a.userId); return (!rf || (u ? u.role : 'system') === rf) && (!q || ((u ? u.name : 'system') + a.action + a.target).toLowerCase().includes(q)); }).sort((a, b) => b.date - a.date);
+  return pageHead('Audit log', 'All changes to records, devices and access')
+    + `<div class="toolbar">${searchBox('aq', 'Search actor, action or resource')}<select data-filter="arole"><option value="">All roles</option>${Object.keys(ROLE_LABEL).map(k => `<option value="${k}" ${k === rf ? 'selected' : ''}>${ROLE_LABEL[k]}</option>`).join('')}<option value="system" ${rf === 'system' ? 'selected' : ''}>System</option></select></div>`
+    + card('', table([
+      { h:'Time', v: a => `<span class="mono nowrap soft">${a.date.getFullYear()}-${String(a.date.getMonth() + 1).padStart(2, '0')}-${String(a.date.getDate()).padStart(2, '0')} ${fmtT(a.date)}</span>` },
+      { h:'Actor', v: a => { const u = userOf(a.userId); return u ? `<div class="who">${av(u, 'sm')}${esc(u.name)}</div>` : '<span class="soft">System</span>'; } },
+      { h:'Action', v: a => esc(a.action) },
+      { h:'Resource', v: a => `<span class="mono soft">${esc(a.target)}</span>` },
+    ], rows, { limit: 100, foot:'events' }), { flush: true });
+}
+
+function notAllowed(){ return `<div class="card"><div class="empty" style="padding:70px 20px">${icon('lock', 22)}<div style="color:var(--ink);font-weight:600;margin:10px 0 4px">You don’t have access to this page</div><div>Contact your administrator if you think this is a mistake.</div><div style="margin-top:16px"><a class="btn" href="#/${HOME[role()]}">Go to home</a></div></div></div>`; }
+
+/* =====================================================================
+   16. NOTIFICATIONS (derived from live data)
+   ===================================================================== */
+function notifications(){
+  const r = role(), out = [];
+  const add = (id, tone, title, desc, date, href) => out.push({ id, tone, title, desc, date, href });
+  if (r === 'therapist') therapistActions().forEach(a => add(a.key, a.tone, a.title, a.desc, a.date || addDays(NOW, -0.1), a.href));
+  if (r === 'consultant' || r === 'admin') DB.patients.filter(p => p.status === 'Active').forEach(p => { const m = patientMetrics(p); if (m.declining) add('dec' + p.id, 'crit', esc(p.name) + ' · score down ' + ptsTxt(m.lastDelta), SCALES[p.scale].name, m.latest.date, '#/patient/' + p.id); });
+  if (r === 'consultant') DB.patients.filter(p => p.plan).forEach(p => p.plan.history.slice(1).filter(h => daysAgo(h.date) <= 7).forEach((h, i) => add('pc' + p.id + i, 'accent', 'Plan changed · ' + esc(p.name), esc(h.text), h.date, '#/patient/' + p.id + '/plan')));
+  if (r === 'engineer' || r === 'admin') {
+    const ids = scopeUnits().map(u => u.id);
+    DB.faults.filter(f => OPEN_FAULT(f) && ids.includes(f.unitId)).forEach(f => add(f.id + f.status, f.severity === 'Critical' || f.severity === 'High' ? 'crit' : 'warn', f.severity + ' ticket · ' + esc(f.unitId), esc(f.desc), f.opened, '#/service'));
+    DB.requests.filter(q => q.status === 'Pending' && (r === 'admin' || me().owns.includes(q.typeId))).forEach(q => add(q.id, 'accent', 'Device request · ' + typeLabel(q.typeId), esc(userOf(q.requestedBy).name), q.date, '#/requests'));
+    DB.units.filter(u => ids.includes(u.id) && daysToCal(u) <= 7).forEach(u => add('cal' + u.id, 'warn', 'Calibration ' + (daysToCal(u) < 0 ? 'overdue' : 'due') + ' · ' + u.id, daysToCal(u) < 0 ? -daysToCal(u) + ' days overdue' : 'Due in ' + daysToCal(u) + ' days', addDays(u.lastCal, u.calInterval - 7), '#/device/' + u.id));
+  }
+  return out.sort((a, b) => b.date - a.date);
+}
+
+/* =====================================================================
+   17. ACTIONS (every change is written to the audit log)
+   ===================================================================== */
+const ACTIONS = {
+  addPatient(){
+    openModal({ title:'New patient', sub:'Adds the patient to your caseload.', submit:'Create patient', body:
+      fld('Full name', '<input name="name" required>') +
+      `<div class="frow">${fld('Age', '<input name="age" type="number" min="18" max="100" value="55">')}${fld('Sex', sel('sex', [['F', 'Female'], ['M', 'Male']]))}</div>` +
+      fld('Diagnosis', sel('dx', DIAG.map((d, i) => [i, d.label]))) +
+      fld('Primary outcome measure', sel('scale', [['FMA-UE', 'Fugl-Meyer Upper Extremity (FMA-UE)'], ['BBS', 'Berg Balance Scale (BBS)']])),
+      onSubmit(o){
+        const d = DIAG[+o.dx], n = DB.patients.length;
+        const p = { id: 'PT-' + (1001 + n), code: 'P-' + randInt(100, 999) + 'Z', mrn: String(4000000 + n * 7919 + 31337).replace(/(\d{3})(\d{4})/, '$1-$2'), name: o.name.trim(), age: +o.age, sex: o.sex, diagnosis: d.label, side: d.side, onsetDays: 7, admitted: new Date(NOW), status: 'New', therapistId: me().id, consultantId: 'U-C1', scale: o.scale, profile: 'moderate', rate: 2, adhP: .8, plan: null, notes: [], slot: null };
+        DB.patients.push(p); audit(me().id, 'Registered patient', p.id); toast(p.name + ' created'); location.hash = '#/patient/' + p.id;
+      } });
+  },
+  newAssessment(el){
+    const p = patientOf(el.dataset.pid), sc = SCALES[p.scale];
+    openModal({ title:'Record assessment', sub: esc(p.name) + ' · ' + sc.name, submit:'Save', body:
+      `<div class="frow">${fld('Total score', `<input name="score" type="number" min="0" max="${sc.max}" required>`, '0–' + sc.max)}${fld('Type', sel('note', ['Review', 'Baseline', 'Discharge'], DB.assessments.some(a => a.patientId === p.id) ? 'Review' : 'Baseline'))}</div>` +
+      fld('Date', `<input value="${fmtDY(TODAY)}" disabled>`),
+      onSubmit(o){ DB.assessments.push({ id: uid('AS'), patientId: p.id, date: new Date(NOW), scale: p.scale, score: clamp(+o.score, 0, sc.max), by: me().id, note: o.note }); audit(me().id, 'Recorded assessment', p.id + ' · ' + p.scale + ' ' + o.score); toast('Assessment saved'); } });
+  },
+  modifyPlan(el){
+    const p = patientOf(el.dataset.pid), pl = p.plan, isNew = !pl;
+    const tOpts = DEVICE_TYPES.filter(t => t.scale === p.scale).map(t => [t.id, t.name + ' — ' + t.category]);
+    const t = typeOf(pl ? pl.typeId : tOpts[0][0]);
+    openModal({ title: isNew ? 'Create therapy plan' : 'Edit therapy plan', sub: esc(p.name), submit: isNew ? 'Create plan' : 'Save changes', body:
+      (isNew ? fld('Device', sel('typeId', tOpts)) : fld('Device', `<input value="${esc(t.name + ' · ' + (pl.unitId || 'unassigned'))}" disabled>`)) +
+      `<div class="frow">${fld('Minutes per day', `<input name="minutes" type="number" min="10" max="90" step="5" value="${pl ? pl.minutes : 30}">`)}${fld('Days per week', sel('days', [3, 4, 5, 6], pl ? pl.daysPerWeek : 6))}</div>` +
+      fld('Movements', checks('mech', t.mechanisms, pl ? pl.mechanisms : t.mechanisms.slice(0, 2))) +
+      fld('Games', checks('games', t.games, pl ? pl.games : t.games.slice(0, 1))) +
+      fld('Goal', `<input name="goal" value="${esc(pl ? pl.goal : 'Improve reach and grasp for self-care tasks')}">`),
+      onSubmit(o){
+        const mech = [].concat(o.mech || []), games = [].concat(o.games || []);
+        if (!mech.length || !games.length) { toast('Select at least one movement and one game'); return false; }
+        if (isNew) {
+          p.plan = { typeId: o.typeId, unitId: null, mechanisms: mech, games, minutes: +o.minutes, daysPerWeek: +o.days, weeks: 10, start: addDays(TODAY, 1), goal: o.goal, history: [{ date: new Date(NOW), by: me().id, text: 'Plan created: ' + typeLabel(o.typeId) + ', ' + o.minutes + ' min/day' }] };
+          audit(me().id, 'Created therapy plan', p.id); toast('Plan created');
+        } else {
+          const ch = [];
+          if (+o.minutes !== pl.minutes) ch.push('Daily minutes ' + pl.minutes + ' → ' + o.minutes);
+          if (+o.days !== pl.daysPerWeek) ch.push('Days/week ' + pl.daysPerWeek + ' → ' + o.days);
+          if (mech.join() !== pl.mechanisms.join()) ch.push('Movements: ' + mech.join(', '));
+          if (games.join() !== pl.games.join()) ch.push('Games: ' + games.map(g => GAME_LABELS[g]).join(', '));
+          if (o.goal !== pl.goal) ch.push('Goal updated');
+          if (!ch.length) { toast('No changes'); return; }
+          Object.assign(pl, { minutes: +o.minutes, daysPerWeek: +o.days, mechanisms: mech, games, goal: o.goal });
+          pl.history.push({ date: new Date(NOW), by: me().id, text: ch.join('; ') });
+          audit(me().id, 'Modified therapy plan', p.id + ' · ' + ch.join('; ')); toast('Plan updated');
+        }
+      } });
+  },
+  requestDevice(el){
+    const mine = DB.patients.filter(p => p.therapistId === me().id && p.status !== 'Discharged');
+    const pid = el.dataset.pid || mine[0].id, p0 = patientOf(pid);
+    openModal({ title:'Request device', submit:'Send request', body:
+      fld('Patient', sel('pid', mine.map(p => [p.id, p.name + ' · MRN ' + p.mrn]), pid)) +
+      fld('Device', sel('typeId', DEVICE_TYPES.map(t => [t.id, t.name + ' — ' + t.category]), p0.plan ? p0.plan.typeId : 'PLUTO')) +
+      fld('Note', '<input name="note" placeholder="Optional">'),
+      onSubmit(o){ DB.requests.push({ id: uid('REQ'), patientId: o.pid, typeId: o.typeId, requestedBy: me().id, date: new Date(NOW), status:'Pending', unitId: null, note: o.note || 'Device needed for therapy plan' }); audit(me().id, 'Requested device', o.pid + ' · ' + typeLabel(o.typeId)); toast('Request sent'); } });
+  },
+  reportFault(el){
+    const units = scopeUnits();
+    openModal({ title: role() === 'therapist' ? 'Report device issue' : 'New ticket', submit: role() === 'therapist' ? 'Report' : 'Create ticket', body:
+      fld('Unit', sel('unit', units.map(u => [u.id, u.id + ' — ' + typeOf(u.typeId).category + ' · ' + u.room]), el.dataset.unit || units[0].id)) +
+      fld('Severity', sel('sev', [['Low', 'Low — minor, device usable'], ['Medium', 'Medium — usable with caution'], ['High', 'High — unsafe, stop use'], ['Critical', 'Critical — safety event']], 'Medium'), 'High and Critical take the unit out of service.') +
+      fld('Description', '<textarea name="desc" rows="3" required></textarea>'),
+      onSubmit(o){ DB.faults.push({ id: uid('FLT'), unitId: o.unit, severity: o.sev, status:'Reported', opened: new Date(NOW), desc: o.desc.trim(), reportedBy: me().id, log:[{ date: new Date(NOW), by: me().id, text:'Reported: ' + o.desc.trim() }] }); audit(me().id, 'Reported fault', o.unit + ' · ' + o.sev); toast('Ticket created for ' + o.unit); } });
+  },
+  advanceFault(el){
+    const f = DB.faults.find(x => x.id === el.dataset.fid), i = FAULT_STEPS.indexOf(f.status);
+    f.status = FAULT_STEPS[i + 1]; f.log.push({ date: new Date(NOW), by: me().id, text: f.status });
+    audit(me().id, 'Fault → ' + f.status, f.unitId); toast(f.id + ' → ' + f.status); render();
+  },
+  calibrate(el){ const u = unitOf(el.dataset.unit); u.lastCal = new Date(TODAY); audit(me().id, 'Calibrated device', u.id); toast(u.id + ' calibration logged'); render(); },
+  assignRequest(el){
+    const q = DB.requests.find(x => x.id === el.dataset.rid), p = patientOf(q.patientId);
+    const units = DB.units.filter(u => u.typeId === q.typeId).map(u => ({ u, st: unitStatus(u) }));
+    const best = units.find(x => x.st === 'Available') || units.find(x => x.st === 'In use') || units[0];
+    openModal({ title:'Assign unit', sub: typeLabel(q.typeId) + ' · ' + esc(pname(p)), submit:'Assign', body:
+      fld('Unit', sel('unit', units.map(x => [x.u.id, x.u.id + ' — ' + x.st + ' · ' + x.u.room]), best.u.id)),
+      onSubmit(o){
+        if (unitStatus(unitOf(o.unit)) === 'Out of service') { toast('Unit is out of service'); return false; }
+        q.status = 'Assigned'; q.unitId = o.unit;
+        if (p.plan) { const old = p.plan.unitId; p.plan.typeId = q.typeId; p.plan.unitId = o.unit; p.plan.history.push({ date: new Date(NOW), by: me().id, text: 'Device assigned: ' + o.unit + (old ? ' (was ' + old + ')' : '') }); }
+        audit(me().id, 'Assigned device', q.patientId + ' · ' + o.unit); toast(o.unit + ' assigned');
+      } });
+  },
+  declineRequest(el){ const q = DB.requests.find(x => x.id === el.dataset.rid); q.status = 'Declined'; audit(me().id, 'Declined device request', q.patientId); toast('Request declined'); render(); },
+  addNote(el){
+    const p = patientOf(el.dataset.pid);
+    openModal({ title:'Add review note', sub: esc(p.name), submit:'Save note', body: fld('Note', '<textarea name="text" rows="4" required></textarea>'),
+      onSubmit(o){ p.notes.push({ date: new Date(NOW), by: me().id, text: o.text.trim() }); audit(me().id, 'Added review note', p.id); toast('Note saved'); } });
+  },
+  invite(){
+    openModal({ title:'Invite member', submit:'Send invite', body:
+      fld('Full name', '<input name="name" required>') + fld('Email', '<input name="email" type="email" required>') +
+      fld('Role', sel('role', Object.entries(ROLE_LABEL))),
+      onSubmit(o){ const u = { id: uid('U'), role: o.role, name: o.name.trim(), title: ROLE_LABEL[o.role], initials: initials(o.name.trim()), email: o.email.trim(), login: o.email.split('@')[0], status: 'Invited', owns: o.role === 'engineer' ? [] : undefined }; USERS.push(u); audit(me().id, 'Invited member', u.email); toast('Invite sent to ' + u.email); } });
+  },
+  signOut(){ STATE.user = null; STATE.pop = null; store.del('user'); location.hash = ''; render(); },
+  theme(el){ const t = el.dataset.val || (document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); document.documentElement.dataset.theme = t; store.set('theme', t, true); render(); },
+  pop(el){ const k = el.dataset.pop; STATE.pop = STATE.pop === k ? null : k; STATE.popAnchor = el.getBoundingClientRect(); STATE.popData = Object.assign({}, el.dataset); render(); },
+  readAll(){ notifications().forEach(n => STATE.read.add(n.id)); render(); },
+  search(){ openSearch(); },
+  forgot(){ const e = document.getElementById('login-err'); e.innerHTML = `${icon('lock', 15)}<span>Password resets are handled by your administrator.</span>`; e.classList.remove('hidden'); e.style.background = 'var(--surface-3)'; e.style.color = 'var(--ink-2)'; },
+  togglePw(){ const i = document.querySelector('input[name=password]'), b = document.querySelector('.pw button'); i.type = i.type === 'password' ? 'text' : 'password'; b.textContent = i.type === 'password' ? 'Show' : 'Hide'; },
+};
+
+/* =====================================================================
+   18. LOGIN
+   ===================================================================== */
+function viewLogin(){
+  return `<div class="login">
+    <div class="login-logo"><span class="logo">${icon('pulse', 17)}</span>NeuroDash</div>
+    <form class="login-card" id="login" autocomplete="on">
+      <h1>Sign in</h1><p>Welcome back. Enter your details to continue.</p>
+      <div class="login-err hidden" id="login-err"></div>
+      <div class="field"><label for="uid">User ID</label><input id="uid" name="userid" autocomplete="username" placeholder="firstname.lastname" required></div>
+      <div class="field"><label for="pwd">Password</label><div class="pw"><input id="pwd" type="password" name="password" autocomplete="current-password" required><button type="button" data-act="togglePw">Show</button></div></div>
+      <div class="login-row"><label><input type="checkbox" name="remember" checked style="accent-color:var(--brand)"> Keep me signed in</label><a href="#" class="lnk" data-act="forgot" style="color:var(--brand)">Forgot password?</a></div>
+      <button class="btn pri block" type="submit" style="background:var(--brand)">Sign in</button>
+    </form>
+    <div class="login-foot"><span>© ${TODAY.getFullYear()} NeuroDash</span><span>v2.0</span></div></div>`;
+}
+function doLogin(form){
+  const id = form.userid.value.trim().toLowerCase(), pw = form.password.value;
+  const u = USERS.find(x => (x.login === id || x.email === id) && x.status === 'Active');
+  if (!u || pw !== DEMO_PASSWORD) {
+    const e = document.getElementById('login-err'); e.removeAttribute('style');
+    e.innerHTML = `${icon('alert', 15)}<span>Incorrect user ID or password.</span>`; e.classList.remove('hidden');
+    form.password.value = ''; form.password.focus(); return;
+  }
+  STATE.user = u; store.set('user', u.id, form.remember.checked); STATE.filters = {}; STATE.sort = {};
+  audit(u.id, 'Signed in', 'Web');
+  location.hash = '#/' + HOME[u.role]; render();
+}
+
+/* =====================================================================
+   19. SEARCH PALETTE (Ctrl+K)
+   ===================================================================== */
+function openSearch(){
+  if (!STATE.user || document.querySelector('.cmdk-scrim')) return;
+  const wrap = document.createElement('div'); wrap.className = 'cmdk-scrim';
+  wrap.innerHTML = `<div class="cmdk"><input placeholder="Search patients, devices, pages…"><div class="cmdk-list"></div></div>`;
+  document.body.appendChild(wrap);
+  const inp = wrap.querySelector('input'), listEl = wrap.querySelector('.cmdk-list');
+  let items = [], sel = 0;
+  const pages = NAV[role()].filter(Array.isArray).map(n => ({ g:'Pages', ic: n[2], t: n[1], s: '', href: '#/' + n[0] }));
+  const pats = role() === 'engineer' ? [] : scopePatients().map(p => ({ g:'Patients', ic:'user', t: p.name, s: 'MRN ' + p.mrn + ' · ' + p.status, href: '#/patient/' + p.id, k: p.name + p.mrn + p.diagnosis }));
+  const devs = (role() === 'engineer' || role() === 'admin') ? scopeUnits().map(u => ({ g:'Devices', ic:'robot', t: u.id, s: typeOf(u.typeId).name + ' · ' + liveStatus(u), href: '#/device/' + u.id, k: u.id + u.room + typeOf(u.typeId).name })) : [];
+  const draw = () => {
+    const q = inp.value.toLowerCase().trim();
+    items = [...pages, ...pats, ...devs].filter(x => !q || (x.k || x.t).toLowerCase().includes(q)).slice(0, 12);
+    sel = Math.min(sel, Math.max(0, items.length - 1));
+    let g = '';
+    listEl.innerHTML = items.length ? items.map((x, i) => (x.g !== g ? `<div class="cmdk-g">${(g = x.g)}</div>` : '') + `<div class="cmdk-i ${i === sel ? 'sel' : ''}" data-i="${i}">${icon(x.ic, 15)}<span>${esc(x.t)}</span><span class="sub">${esc(x.s)}</span></div>`).join('') : '<div class="empty">No results</div>';
+  };
+  const close = () => wrap.remove();
+  const pickIt = i => { if (items[i]) { close(); go(items[i].href); } };
+  inp.addEventListener('input', () => { sel = 0; draw(); });
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { sel = Math.min(items.length - 1, sel + 1); draw(); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { sel = Math.max(0, sel - 1); draw(); e.preventDefault(); }
+    else if (e.key === 'Enter') pickIt(sel);
+    else if (e.key === 'Escape') close();
+  });
+  wrap.addEventListener('click', e => { const it = e.target.closest('.cmdk-i'); if (it) pickIt(+it.dataset.i); else if (e.target === wrap) close(); });
+  draw(); inp.focus();
+}
+
+/* =====================================================================
+   20. RENDER
+   ===================================================================== */
+function render(){
+  CHARTS = {};
+  const app = document.getElementById('app'), focus = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.filter : null;
+  if (!STATE.user) { document.body.removeAttribute('data-role'); document.body.dataset.density = 'medium'; app.innerHTML = viewLogin(); const f = document.getElementById('login'); f.addEventListener('submit', e => { e.preventDefault(); doLogin(f); }); document.getElementById('uid').focus(); return; }
+  const r = role(), rt = parseHash();
+  if (!rt.page) { location.replace('#/' + HOME[r]); return; }
+  document.body.dataset.role = r; document.body.dataset.density = DENSITY[r];
+
+  const titleOf = p => { const n = NAV[r].find(x => Array.isArray(x) && x[0] === p); return n ? n[1] : p; };
+  const V = { today: viewToday, patients: viewPatientList, review: viewPatientList, equipment: viewEquipment, outcomes: viewOutcomes, fleet: viewFleet, service: viewService, requests: viewRequests, overview: viewOverview, members: viewMembers, audit: viewAudit };
+  let content, back = '';
+  const backTo = (href, label) => `<a class="back" href="${href}">${icon('chev', 13).replace('M9 6l6 6-6 6', 'M15 6l-6 6 6 6')}${label}</a>`;
+  if (!allowed(rt.page)) content = notAllowed();
+  else if (rt.page === 'patient') { const lp = r === 'therapist' ? 'patients' : 'review'; content = viewPatient(rt.id, rt.tab); back = backTo('#/' + lp, titleOf(lp)); }
+  else if (rt.page === 'device') { content = viewDevice(rt.id, rt.tab); back = backTo('#/fleet', 'Fleet'); }
+  else content = V[rt.page] ? V[rt.page]() : notAllowed();
+
+  const mineU = scopeUnits().map(u => u.id);
+  const counts = {
+    today: r === 'therapist' ? therapistActions().filter(a => a.tone === 'crit' || a.tone === 'warn').length : 0,
+    review: r === 'consultant' ? DB.patients.filter(p => p.status === 'Active' && reviewReasons(p, patientMetrics(p)).length).length : 0,
+    service: (r === 'engineer' || r === 'admin') ? DB.faults.filter(f => OPEN_FAULT(f) && mineU.includes(f.unitId)).length : 0,
+    requests: DB.requests.filter(q => q.status === 'Pending' && (r === 'admin' || (me().owns || []).includes(q.typeId))).length,
+  };
+  const cur = rt.page === 'patient' ? (r === 'therapist' ? 'patients' : 'review') : rt.page === 'device' ? 'fleet' : rt.page;
+  const nav = NAV[r].map(n => typeof n === 'string' ? `<div class="sec">${n.slice(1)}</div>` : `<a href="#/${n[0]}" class="${n[0] === cur ? 'on' : ''}">${icon(n[2])}<span>${n[1]}</span>${counts[n[0]] && (r !== 'admin' || n[0] !== 'requests') ? `<span class="cnt ${n[0] === 'today' || n[0] === 'service' ? '' : ''}">${counts[n[0]]}</span>` : ''}</a>`).join('');
+  const notes = notifications(), unread = notes.filter(n => !STATE.read.has(n.id)).length;
+  const dark = document.documentElement.dataset.theme === 'dark';
+  const openT = DB.faults.filter(f => OPEN_FAULT(f) && mineU.includes(f.unitId) && (f.severity === 'Critical' || f.severity === 'High')).length;
+
+  app.innerHTML = `<div class="shell">
+    <aside class="side">
+      <div class="ws"><span class="logo">${icon('pulse', 16)}</span><div class="grow" style="min-width:0"><b>NeuroDash</b><span class="nowrap" style="display:block;overflow:hidden;text-overflow:ellipsis">Neuro Rehab Unit</span></div><button class="icon-btn" title="Notifications" data-act="pop" data-pop="notif">${icon('bell', 17)}${unread ? '<span class="dot"></span>' : ''}</button></div>
+      <button class="searchbtn" data-act="search">${icon('search', 14)}Search<span class="kbd">Ctrl K</span></button>
+      <nav class="nav">${nav}</nav>
+      <button class="userbtn" data-act="pop" data-pop="user"><span class="av">${me().initials}</span><div style="min-width:0;flex:1"><b>${esc(me().name)}</b><span>${ROLE_LABEL[r]}</span></div>${icon('chevd', 14)}</button>
+    </aside>
+    <div class="main"><main class="content">${back}${content}</main></div></div>` + popover(notes);
+  mountCharts();
+  if (focus) { const el = document.querySelector(`[data-filter="${focus}"]`); if (el) { el.focus(); if (el.setSelectionRange && el.value) el.setSelectionRange(el.value.length, el.value.length); } }
+}
+
+function popover(notes){
+  if (!STATE.pop || !STATE.popAnchor) return '';
+  const a = STATE.popAnchor;
+  if (STATE.pop === 'user') {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    return `<div class="pop menu" style="left:${a.left}px;bottom:${innerHeight - a.top + 6}px;width:${Math.max(230, a.width)}px">
+      <div class="mh"><b>${esc(me().name)}</b><span>${esc(me().email)}</span></div>
+      <div class="mi" style="cursor:default">${icon(dark ? 'moon' : 'sun', 15)}<span class="grow">Theme</span><div class="segs" style="padding:2px"><button data-act="theme" data-val="light" class="${dark ? '' : 'on'}" style="padding:2px 8px;font-size:12px">Light</button><button data-act="theme" data-val="dark" class="${dark ? 'on' : ''}" style="padding:2px 8px;font-size:12px">Dark</button></div></div>
+      <button class="mi" data-act="search">${icon('search', 15)}Search<span class="kbd">Ctrl K</span></button>
+      <hr><button class="mi" data-act="signOut">${icon('logout', 15)}Sign out</button></div>`;
+  }
+  if (STATE.pop === 'more') {
+    const d = STATE.popData || {};
+    return `<div class="pop menu" style="right:${innerWidth - a.right}px;top:${a.bottom + 6}px;width:220px">
+      <button class="mi" data-act="requestDevice" data-pid="${d.pid}">${icon('robot', 15)}Request device</button>
+      <button class="mi" data-act="reportFault" data-unit="${d.unit || ''}">${icon('alert', 15)}Report device issue</button></div>`;
+  }
+  const unread = notes.filter(n => !STATE.read.has(n.id)).length;
+  return `<div class="pop notif" style="left:${Math.min(a.left, innerWidth - 400)}px;top:${a.bottom + 6}px">
+    <div class="notif-h"><b>Notifications</b>${unread ? `<span class="xs muted">${unread} unread</span><button class="btn sm ghost" data-act="readAll">Mark all read</button>` : ''}</div>
+    <div class="notif-b">${notes.length ? notes.map(n => `<div class="ni ${STATE.read.has(n.id) ? '' : 'unread'}" data-href="${n.href}" data-nid="${esc(n.id)}"><div class="li" style="padding:0;border:0"><div class="ico ${n.tone}">${icon(n.tone === 'crit' ? 'alert' : n.tone === 'good' ? 'check' : n.tone === 'warn' ? 'clock' : 'bell', 14)}</div></div><div class="grow"><div class="t">${n.title}</div><div class="d">${n.desc}</div><div class="w">${rel(n.date)}</div></div></div>`).join('') : '<div class="empty">You’re all caught up.</div>'}</div></div>`;
+}
+
+/* =====================================================================
+   21. EVENTS
+   ===================================================================== */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act]');
+  if (a) { e.preventDefault(); const f = ACTIONS[a.dataset.act]; if (f) { if (a.closest('.pop') && !['theme', 'readAll'].includes(a.dataset.act)) STATE.pop = null; f(a); } return; }
+  if (STATE.pop && !e.target.closest('.pop')) { STATE.pop = null; const h0 = e.target.closest('[data-href]'); if (!h0 && !e.target.closest('a[href]')) { render(); return; } }
+  const tv = e.target.closest('[data-tv]'); if (tv) { const t = document.getElementById(tv.dataset.tv + '-tv'); t.classList.toggle('hidden'); tv.textContent = t.classList.contains('hidden') ? 'Table' : 'Hide table'; return; }
+  const so = e.target.closest('[data-sort]'); if (so) { const [k, c] = so.dataset.sort.split(':'); const cur = STATE.sort[k]; STATE.sort[k] = { col: +c, dir: cur && cur.col === +c ? -cur.dir : 1 }; render(); return; }
+  const sf = e.target.closest('[data-setf]'); if (sf) { STATE.filters[sf.dataset.setf] = sf.dataset.val; render(); return; }
+  if (e.target.closest('a[href], button, input, select, textarea, label')) return;
+  const h = e.target.closest('[data-href]');
+  if (h && h.dataset.href) { if (h.dataset.nid) { STATE.read.add(h.dataset.nid); STATE.pop = null; } go(h.dataset.href); }
+});
+let _ft;
+document.addEventListener('input', e => { const f = e.target.dataset && e.target.dataset.filter; if (f) { STATE.filters[f] = e.target.value; clearTimeout(_ft); _ft = setTimeout(render, e.target.tagName === 'INPUT' ? 180 : 0); } });
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape' && STATE.pop) { STATE.pop = null; render(); }
+});
+window.addEventListener('hashchange', () => { STATE.pop = null; render(); window.scrollTo(0, 0); });
+let _rt; window.addEventListener('resize', () => { clearTimeout(_rt); _rt = setTimeout(() => { if (STATE.pop) { STATE.pop = null; render(); } else mountCharts(); }, 120); });
+
+const tip = document.getElementById('tip');
+document.addEventListener('mousemove', e => {
+  const el = e.target.closest && e.target.closest('[data-tip]');
+  if (!el) { tip.style.opacity = 0; return; }
+  tip.innerHTML = el.getAttribute('data-tip'); tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + 14, y = e.clientY - h - 12;
+  if (x + w > innerWidth - 8) x = e.clientX - w - 14;
+  if (y < 8) y = e.clientY + 18;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+});
+
+(function boot(){
+  const th = store.get('theme'); if (th === 'dark' || th === 'light') document.documentElement.dataset.theme = th;
+  const u = store.get('user'); if (u && userOf(u)) STATE.user = userOf(u);
+  render();
+})();
+</script>
+</body>
+</html>
