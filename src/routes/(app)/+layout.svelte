@@ -23,7 +23,23 @@
 		document.body.dataset.role = user.role;
 		document.body.dataset.density = densityFor(user.role);
 	});
+
+	function closePopovers() {
+		notifOpen = false;
+		userMenuOpen = false;
+	}
+	function handleWindowClick(e: MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (!target.closest('.pop') && !target.closest('.icon-btn') && !target.closest('.userbtn')) {
+			closePopovers();
+		}
+	}
+	function handleWindowKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') closePopovers();
+	}
 </script>
+
+<svelte:window onclick={handleWindowClick} onkeydown={handleWindowKeydown} />
 
 <div class="shell">
 	<Sidebar
