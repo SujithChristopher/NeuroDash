@@ -1,0 +1,228 @@
+{
+  "id": "adverse_event",
+  "version": 1,
+  "title": "Adverse Event",
+  "redcapForm": "adverse_event",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "ADVERSE EVENT FORM",
+      "items": [
+        {
+          "id": "ae_no_events",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "No adverse events"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "At end of study only: Check this box if participant had no adverse events"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "ADVERSE EVENT",
+      "items": [
+        {
+          "id": "ae_name",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Adverse Event"
+        },
+        {
+          "id": "ae_start_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Start Date"
+        },
+        {
+          "id": "ae_stop_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Stop Date"
+        },
+        {
+          "id": "ae_severity",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Mild"
+            },
+            {
+              "value": 2,
+              "label": "Moderate"
+            },
+            {
+              "value": 3,
+              "label": "Severe"
+            },
+            {
+              "value": 4,
+              "label": "Life-Threatening"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Severity"
+        },
+        {
+          "id": "ae_relationship",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Not related"
+            },
+            {
+              "value": 1,
+              "label": "Unlikely related"
+            },
+            {
+              "value": 2,
+              "label": "Possibly related"
+            },
+            {
+              "value": 3,
+              "label": "Probably related"
+            },
+            {
+              "value": 4,
+              "label": "Definitely related"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Study Intervention Relationship"
+        },
+        {
+          "id": "ae_action_taken",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Dose modification"
+            },
+            {
+              "value": 2,
+              "label": "Medical Intervention"
+            },
+            {
+              "value": 3,
+              "label": "Hospitalization"
+            },
+            {
+              "value": 4,
+              "label": "Intervention discontinued"
+            },
+            {
+              "value": 5,
+              "label": "Other"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Action Taken Regarding Study Intervention"
+        },
+        {
+          "id": "ae_outcome",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Resolved"
+            },
+            {
+              "value": 2,
+              "label": "Recovered with minor sequelae"
+            },
+            {
+              "value": 3,
+              "label": "Recovered with major sequelae"
+            },
+            {
+              "value": 4,
+              "label": "Ongoing/Continuing treatment"
+            },
+            {
+              "value": 5,
+              "label": "Condition worsening"
+            },
+            {
+              "value": 6,
+              "label": "Death"
+            },
+            {
+              "value": 7,
+              "label": "Unknown"
+            }
+          ],
+          "widget": "segmented",
+          "label": "Outcome of AE"
+        },
+        {
+          "id": "ae_expected",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 2,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Expected?"
+        },
+        {
+          "id": "ae_sae",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 2,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Serious Adverse Event (SAE)? (If yes, complete SAE form)"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

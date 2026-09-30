@@ -1,0 +1,406 @@
+{
+  "id": "homer_screening_form",
+  "version": 1,
+  "title": "Homer Screening Form",
+  "redcapForm": "homer_screening_form",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "scr_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "scr_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "HOMER SCREENING FORM - Inclusion Criteria",
+      "items": [
+        {
+          "id": "scr_inc_heading",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Inclusion Criteria Checklist"
+        },
+        {
+          "id": "scr_inc_age",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Age between 18 and 80 years"
+        },
+        {
+          "id": "scr_inc_stroke",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Supratentorial stroke leading to upper limb weakness (FMA <50)",
+          "labelHtml": "Supratentorial stroke leading to upper limb weakness (FMA <50)"
+        },
+        {
+          "id": "scr_inc_duration",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Post-stroke duration between 30 to 90 days"
+        },
+        {
+          "id": "scr_inc_moca",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Adequate cognitive abilities (MoCA score >=24)"
+        },
+        {
+          "id": "scr_inc_vision",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Functional vision"
+        },
+        {
+          "id": "scr_inc_residence",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Discharged and residing within a 100 km radius of the hospital"
+        },
+        {
+          "id": "scr_inc_pluto",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "PLUTO criteria: A minimum of 10 degrees of active range of motion with reversal of movement in any one of the mechanisms (WFE or WURD or FPS, or 2 cm on the HOC assessment)"
+        },
+        {
+          "id": "scr_inc_mars",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "MARS criteria: A minimum of 10 cm of active range of motion in medial/lateral movement of the arm or anterior/posterior movement of the elbow"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Exclusion Criteria",
+      "items": [
+        {
+          "id": "scr_exc_heading",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Exclusion Criteria Checklist"
+        },
+        {
+          "id": "scr_exc_recurrent",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Recurrent or bilateral stroke"
+        },
+        {
+          "id": "scr_exc_caregiver",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Absence of caregiver at home"
+        },
+        {
+          "id": "scr_exc_therapy",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Receiving home or in-clinic therapy for upper limb"
+        },
+        {
+          "id": "scr_exc_depression",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Clinically diagnosed depression"
+        },
+        {
+          "id": "scr_exc_aphasia",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Global/Wernicke's Aphasia"
+        },
+        {
+          "id": "scr_exc_psychiatric",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Psychiatric disorders"
+        },
+        {
+          "id": "scr_exc_other_neuro",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Other conditions (Neurological/medical) contributing to upper limb impairment"
+        },
+        {
+          "id": "scr_exc_musculoskeletal",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Musculoskeletal complications of upper limb, such as periarthritis, shoulder subluxation, CRPS, contracture, and deformity"
+        },
+        {
+          "id": "scr_exc_pain",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pain in the upper limb limiting therapy (NPRS>5)"
+        },
+        {
+          "id": "scr_exc_spasticity",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Severe spasticity (MAS>=3)"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Eligibility Summary",
+      "items": [
+        {
+          "id": "scr_summary_heading",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Eligibility Summary"
+        },
+        {
+          "id": "scr_included",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Included"
+        },
+        {
+          "id": "scr_exclude_reason",
+          "redcapType": "notes",
+          "showIf": "scr_included = '0'",
+          "type": "text",
+          "widget": "textarea",
+          "label": "If No, Specify"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

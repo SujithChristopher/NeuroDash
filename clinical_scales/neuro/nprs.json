@@ -1,0 +1,97 @@
+{
+  "id": "nprs",
+  "version": 1,
+  "title": "Numeric Pain Rating Scale (NPRS)",
+  "redcapForm": "numeric_pain_rating_scale",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "nprs_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "nprs_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "NUMERIC PAIN RATING SCALE (NPRS)",
+      "items": [
+        {
+          "id": "nprs_score",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - No pain"
+            },
+            {
+              "value": 1,
+              "label": "1 - Mild pain"
+            },
+            {
+              "value": 2,
+              "label": "2 - Mild pain"
+            },
+            {
+              "value": 3,
+              "label": "3 - Mild pain"
+            },
+            {
+              "value": 4,
+              "label": "4 - Moderate pain"
+            },
+            {
+              "value": 5,
+              "label": "5 - Moderate pain"
+            },
+            {
+              "value": 6,
+              "label": "6 - Moderate pain"
+            },
+            {
+              "value": 7,
+              "label": "7 - Severe pain"
+            },
+            {
+              "value": 8,
+              "label": "8 - Severe pain"
+            },
+            {
+              "value": 9,
+              "label": "9 - Severe pain"
+            },
+            {
+              "value": 10,
+              "label": "10 - Severe pain"
+            }
+          ],
+          "widget": "segmented",
+          "label": "Numeric Pain Rating Scale (NPRS) Score"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

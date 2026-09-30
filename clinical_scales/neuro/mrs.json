@@ -1,0 +1,81 @@
+{
+  "id": "mrs",
+  "version": 1,
+  "title": "Modified Rankin Scale (mRS)",
+  "redcapForm": "modified_rankin_scale",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "mrs_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "mrs_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "MODIFIED RANKIN SCALE (mRS)",
+      "items": [
+        {
+          "id": "mrs_score",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - No symptoms at all"
+            },
+            {
+              "value": 1,
+              "label": "1 - No significant disability despite symptoms; able to carry out all usual duties and activities"
+            },
+            {
+              "value": 2,
+              "label": "2 - Slight disability; unable to carry out all previous activities, but able to look after own affairs without assistance"
+            },
+            {
+              "value": 3,
+              "label": "3 - Moderate disability; requiring some help, but able to walk without assistance"
+            },
+            {
+              "value": 4,
+              "label": "4 - Moderately severe disability; unable to walk without assistance and unable to attend to own bodily needs without assistance"
+            },
+            {
+              "value": 5,
+              "label": "5 - Severe disability; bedridden, incontinent and requiring constant nursing care and attention"
+            },
+            {
+              "value": 6,
+              "label": "6 - Dead"
+            }
+          ],
+          "widget": "segmented",
+          "label": "Modified Rankin Scale (mRS) Score"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

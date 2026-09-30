@@ -1,0 +1,1140 @@
+{
+  "id": "arat",
+  "version": 1,
+  "title": "Action Research Arm Test (ARAT)",
+  "redcapForm": "action_research_arm_test",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "arat_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "arat_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "ACTION RESEARCH ARM TEST (ARAT) - SCORING SCALE",
+      "items": [
+        {
+          "id": "arat_scoring_info",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "0 - Unable to finish the task\n1 - Can finish the task partially regardless of position/movements\n2 - Can finish the task but takes abnormally long, has great difficulty, or has improper body posture/hand/arm movements\n3 - Finished the task quickly with the appropriate body position and normal hand/arm movements",
+          "labelHtml": "<b>0</b> - Unable to finish the task<br><b>1</b> - Can finish the task partially regardless of position/movements<br><b>2</b> - Can finish the task but takes abnormally long, has great difficulty, or has improper body posture/hand/arm movements<br><b>3</b> - Finished the task quickly with the appropriate body position and normal hand/arm movements"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "GRASP",
+      "items": [
+        {
+          "id": "arat_grasp_table",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "ItemLeft ScoreRight Score\n1. Block 10cm (Wood){arat_grasp_1_l}{arat_grasp_1_r}\n2. Block 2.5cm (Wood){arat_grasp_2_l}{arat_grasp_2_r}\n3. Block 5cm (Wood){arat_grasp_3_l}{arat_grasp_3_r}\n4. Block 7.5cm (Wood){arat_grasp_4_l}{arat_grasp_4_r}\n5. Cricket Ball{arat_grasp_5_l}{arat_grasp_5_r}\n6. Sharpening stone{arat_grasp_6_l}{arat_grasp_6_r}",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse; table-layout: fixed;'><tr style='background-color: #f2f2f2;'><th style='width:40%; padding: 5px;'>Item</th><th style='width:30%; padding: 5px;'>Left Score</th><th style='width:30%; padding: 5px;'>Right Score</th></tr><tr><td style='padding: 5px;'>1. Block 10cm (Wood)</td><td style='padding: 5px;'>{arat_grasp_1_l}</td><td style='padding: 5px;'>{arat_grasp_1_r}</td></tr><tr><td style='padding: 5px;'>2. Block 2.5cm (Wood)</td><td style='padding: 5px;'>{arat_grasp_2_l}</td><td style='padding: 5px;'>{arat_grasp_2_r}</td></tr><tr><td style='padding: 5px;'>3. Block 5cm (Wood)</td><td style='padding: 5px;'>{arat_grasp_3_l}</td><td style='padding: 5px;'>{arat_grasp_3_r}</td></tr><tr><td style='padding: 5px;'>4. Block 7.5cm (Wood)</td><td style='padding: 5px;'>{arat_grasp_4_l}</td><td style='padding: 5px;'>{arat_grasp_4_r}</td></tr><tr><td style='padding: 5px;'>5. Cricket Ball</td><td style='padding: 5px;'>{arat_grasp_5_l}</td><td style='padding: 5px;'>{arat_grasp_5_r}</td></tr><tr><td style='padding: 5px;'>6. Sharpening stone</td><td style='padding: 5px;'>{arat_grasp_6_l}</td><td style='padding: 5px;'>{arat_grasp_6_r}</td></tr></table>"
+        },
+        {
+          "id": "arat_grasp_1_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 1 Left"
+        },
+        {
+          "id": "arat_grasp_1_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 1 Right"
+        },
+        {
+          "id": "arat_grasp_2_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 2 Left"
+        },
+        {
+          "id": "arat_grasp_2_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 2 Right"
+        },
+        {
+          "id": "arat_grasp_3_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 3 Left"
+        },
+        {
+          "id": "arat_grasp_3_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 3 Right"
+        },
+        {
+          "id": "arat_grasp_4_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 4 Left"
+        },
+        {
+          "id": "arat_grasp_4_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 4 Right"
+        },
+        {
+          "id": "arat_grasp_5_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 5 Left"
+        },
+        {
+          "id": "arat_grasp_5_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 5 Right"
+        },
+        {
+          "id": "arat_grasp_6_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 6 Left"
+        },
+        {
+          "id": "arat_grasp_6_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp 6 Right"
+        },
+        {
+          "id": "arat_sub_grasp_l",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_grasp_1_l+arat_grasp_2_l+arat_grasp_3_l+arat_grasp_4_l+arat_grasp_5_l+arat_grasp_6_l",
+          "exprRaw": "[arat_grasp_1_l]+[arat_grasp_2_l]+[arat_grasp_3_l]+[arat_grasp_4_l]+[arat_grasp_5_l]+[arat_grasp_6_l]",
+          "label": "Subtotal Grasp LEFT"
+        },
+        {
+          "id": "arat_sub_grasp_r",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_grasp_1_r+arat_grasp_2_r+arat_grasp_3_r+arat_grasp_4_r+arat_grasp_5_r+arat_grasp_6_r",
+          "exprRaw": "[arat_grasp_1_r]+[arat_grasp_2_r]+[arat_grasp_3_r]+[arat_grasp_4_r]+[arat_grasp_5_r]+[arat_grasp_6_r]",
+          "label": "Subtotal Grasp RIGHT"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "GRIP",
+      "items": [
+        {
+          "id": "arat_grip_table",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "ItemLeft ScoreRight Score\n7. Pour water (cup to cup){arat_grip_7_l}{arat_grip_7_r}\n8. Tube 2.25cm{arat_grip_8_l}{arat_grip_8_r}\n9. Tube 1cm{arat_grip_9_l}{arat_grip_9_r}\n10. Washer over bolt{arat_grip_10_l}{arat_grip_10_r}",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse; table-layout: fixed;'><tr style='background-color: #f2f2f2;'><th style='width:40%; padding: 5px;'>Item</th><th style='width:30%; padding: 5px;'>Left Score</th><th style='width:30%; padding: 5px;'>Right Score</th></tr><tr><td style='padding: 5px;'>7. Pour water (cup to cup)</td><td style='padding: 5px;'>{arat_grip_7_l}</td><td style='padding: 5px;'>{arat_grip_7_r}</td></tr><tr><td style='padding: 5px;'>8. Tube 2.25cm</td><td style='padding: 5px;'>{arat_grip_8_l}</td><td style='padding: 5px;'>{arat_grip_8_r}</td></tr><tr><td style='padding: 5px;'>9. Tube 1cm</td><td style='padding: 5px;'>{arat_grip_9_l}</td><td style='padding: 5px;'>{arat_grip_9_r}</td></tr><tr><td style='padding: 5px;'>10. Washer over bolt</td><td style='padding: 5px;'>{arat_grip_10_l}</td><td style='padding: 5px;'>{arat_grip_10_r}</td></tr></table>"
+        },
+        {
+          "id": "arat_grip_7_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 7 Left"
+        },
+        {
+          "id": "arat_grip_7_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 7 Right"
+        },
+        {
+          "id": "arat_grip_8_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 8 Left"
+        },
+        {
+          "id": "arat_grip_8_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 8 Right"
+        },
+        {
+          "id": "arat_grip_9_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 9 Left"
+        },
+        {
+          "id": "arat_grip_9_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 9 Right"
+        },
+        {
+          "id": "arat_grip_10_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 10 Left"
+        },
+        {
+          "id": "arat_grip_10_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grip 10 Right"
+        },
+        {
+          "id": "arat_sub_grip_l",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_grip_7_l+arat_grip_8_l+arat_grip_9_l+arat_grip_10_l",
+          "exprRaw": "[arat_grip_7_l]+[arat_grip_8_l]+[arat_grip_9_l]+[arat_grip_10_l]",
+          "label": "Subtotal Grip LEFT"
+        },
+        {
+          "id": "arat_sub_grip_r",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_grip_7_r+arat_grip_8_r+arat_grip_9_r+arat_grip_10_r",
+          "exprRaw": "[arat_grip_7_r]+[arat_grip_8_r]+[arat_grip_9_r]+[arat_grip_10_r]",
+          "label": "Subtotal Grip RIGHT"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "PINCH",
+      "items": [
+        {
+          "id": "arat_pinch_table",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "ItemLeft ScoreRight Score\n11. Ball bearing 10mm (thumb/idx){arat_pinch_11_l}{arat_pinch_11_r}\n12. Marble 15mm (thumb/idx){arat_pinch_12_l}{arat_pinch_12_r}\n13. Ball bearing 10mm (thumb/mid){arat_pinch_13_l}{arat_pinch_13_r}\n14. Ball bearing 10mm (thumb/ring){arat_pinch_14_l}{arat_pinch_14_r}\n15. Marble 15mm (thumb/ring){arat_pinch_15_l}{arat_pinch_15_r}\n16. Ball bearing 10mm (thumb/little){arat_pinch_16_l}{arat_pinch_16_r}",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse; table-layout: fixed;'><tr style='background-color: #f2f2f2;'><th style='width:40%; padding: 5px;'>Item</th><th style='width:30%; padding: 5px;'>Left Score</th><th style='width:30%; padding: 5px;'>Right Score</th></tr><tr><td style='padding: 5px;'>11. Ball bearing 10mm (thumb/idx)</td><td style='padding: 5px;'>{arat_pinch_11_l}</td><td style='padding: 5px;'>{arat_pinch_11_r}</td></tr><tr><td style='padding: 5px;'>12. Marble 15mm (thumb/idx)</td><td style='padding: 5px;'>{arat_pinch_12_l}</td><td style='padding: 5px;'>{arat_pinch_12_r}</td></tr><tr><td style='padding: 5px;'>13. Ball bearing 10mm (thumb/mid)</td><td style='padding: 5px;'>{arat_pinch_13_l}</td><td style='padding: 5px;'>{arat_pinch_13_r}</td></tr><tr><td style='padding: 5px;'>14. Ball bearing 10mm (thumb/ring)</td><td style='padding: 5px;'>{arat_pinch_14_l}</td><td style='padding: 5px;'>{arat_pinch_14_r}</td></tr><tr><td style='padding: 5px;'>15. Marble 15mm (thumb/ring)</td><td style='padding: 5px;'>{arat_pinch_15_l}</td><td style='padding: 5px;'>{arat_pinch_15_r}</td></tr><tr><td style='padding: 5px;'>16. Ball bearing 10mm (thumb/little)</td><td style='padding: 5px;'>{arat_pinch_16_l}</td><td style='padding: 5px;'>{arat_pinch_16_r}</td></tr></table>"
+        },
+        {
+          "id": "arat_pinch_11_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 11 Left"
+        },
+        {
+          "id": "arat_pinch_11_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 11 Right"
+        },
+        {
+          "id": "arat_pinch_12_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 12 Left"
+        },
+        {
+          "id": "arat_pinch_12_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 12 Right"
+        },
+        {
+          "id": "arat_pinch_13_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 13 Left"
+        },
+        {
+          "id": "arat_pinch_13_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 13 Right"
+        },
+        {
+          "id": "arat_pinch_14_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 14 Left"
+        },
+        {
+          "id": "arat_pinch_14_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 14 Right"
+        },
+        {
+          "id": "arat_pinch_15_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 15 Left"
+        },
+        {
+          "id": "arat_pinch_15_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 15 Right"
+        },
+        {
+          "id": "arat_pinch_16_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 16 Left"
+        },
+        {
+          "id": "arat_pinch_16_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pinch 16 Right"
+        },
+        {
+          "id": "arat_sub_pinch_l",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_pinch_11_l+arat_pinch_12_l+arat_pinch_13_l+arat_pinch_14_l+arat_pinch_15_l+arat_pinch_16_l",
+          "exprRaw": "[arat_pinch_11_l]+[arat_pinch_12_l]+[arat_pinch_13_l]+[arat_pinch_14_l]+[arat_pinch_15_l]+[arat_pinch_16_l]",
+          "label": "Subtotal Pinch LEFT"
+        },
+        {
+          "id": "arat_sub_pinch_r",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_pinch_11_r+arat_pinch_12_r+arat_pinch_13_r+arat_pinch_14_r+arat_pinch_15_r+arat_pinch_16_r",
+          "exprRaw": "[arat_pinch_11_r]+[arat_pinch_12_r]+[arat_pinch_13_r]+[arat_pinch_14_r]+[arat_pinch_15_r]+[arat_pinch_16_r]",
+          "label": "Subtotal Pinch RIGHT"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "GROSS MOVEMENT",
+      "items": [
+        {
+          "id": "arat_gross_table",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "ItemLeft ScoreRight Score\n17. Hand to top of head{arat_gross_17_l}{arat_gross_17_r}\n18. Hand to mouth{arat_gross_18_l}{arat_gross_18_r}\n19. Hand to back of head{arat_gross_19_l}{arat_gross_19_r}",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse; table-layout: fixed;'><tr style='background-color: #f2f2f2;'><th style='width:40%; padding: 5px;'>Item</th><th style='width:30%; padding: 5px;'>Left Score</th><th style='width:30%; padding: 5px;'>Right Score</th></tr><tr><td style='padding: 5px;'>17. Hand to top of head</td><td style='padding: 5px;'>{arat_gross_17_l}</td><td style='padding: 5px;'>{arat_gross_17_r}</td></tr><tr><td style='padding: 5px;'>18. Hand to mouth</td><td style='padding: 5px;'>{arat_gross_18_l}</td><td style='padding: 5px;'>{arat_gross_18_r}</td></tr><tr><td style='padding: 5px;'>19. Hand to back of head</td><td style='padding: 5px;'>{arat_gross_19_l}</td><td style='padding: 5px;'>{arat_gross_19_r}</td></tr></table>"
+        },
+        {
+          "id": "arat_gross_17_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Gross 17 Left"
+        },
+        {
+          "id": "arat_gross_17_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Gross 17 Right"
+        },
+        {
+          "id": "arat_gross_18_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Gross 18 Left"
+        },
+        {
+          "id": "arat_gross_18_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Gross 18 Right"
+        },
+        {
+          "id": "arat_gross_19_l",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Gross 19 Left"
+        },
+        {
+          "id": "arat_gross_19_r",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Gross 19 Right"
+        },
+        {
+          "id": "arat_sub_gross_l",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_gross_17_l+arat_gross_18_l+arat_gross_19_l",
+          "exprRaw": "[arat_gross_17_l]+[arat_gross_18_l]+[arat_gross_19_l]",
+          "label": "Subtotal Gross LEFT"
+        },
+        {
+          "id": "arat_sub_gross_r",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_gross_17_r+arat_gross_18_r+arat_gross_19_r",
+          "exprRaw": "[arat_gross_17_r]+[arat_gross_18_r]+[arat_gross_19_r]",
+          "label": "Subtotal Gross RIGHT"
+        },
+        {
+          "id": "arat_total_l",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_sub_grasp_l+arat_sub_grip_l+arat_sub_pinch_l+arat_sub_gross_l",
+          "exprRaw": "[arat_sub_grasp_l]+[arat_sub_grip_l]+[arat_sub_pinch_l]+[arat_sub_gross_l]",
+          "label": "Total ARAT Score LEFT"
+        },
+        {
+          "id": "arat_total_r",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "arat_sub_grasp_r+arat_sub_grip_r+arat_sub_pinch_r+arat_sub_gross_r",
+          "exprRaw": "[arat_sub_grasp_r]+[arat_sub_grip_r]+[arat_sub_pinch_r]+[arat_sub_gross_r]",
+          "label": "Total ARAT Score RIGHT"
+        },
+        {
+          "id": "arat_notes",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "Notes / Comments"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

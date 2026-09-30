@@ -1,0 +1,4361 @@
+{
+  "id": "mal",
+  "version": 1,
+  "title": "Motor Activity Log (MAL)",
+  "redcapForm": "motor_activity_log",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "mal_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "mal_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "MOTOR ACTIVITY LOG (MAL) - SCORING SCALES",
+      "items": [
+        {
+          "id": "mal_scoring_as",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Amount Scale (AS)\n 0 — Did not use my weaker arm (not used)\n 0.5 — (Halfway score)\n 1 — Occasionally used my weaker arm, but only very rarely (very rarely)\n 1.5 — (Halfway score)\n 2 — Sometimes used my weaker arm but did the activity most of the time with my stronger arm (rarely)\n 2.5 — (Halfway score)\n 3 — Used my weaker arm about half as much as before the stroke (half pre-stroke)\n 3.5 — (Halfway score)\n 4 — Used my weaker arm almost as much as before the stroke (3/4 pre-stroke)\n 4.5 — (Halfway score)\n 5 — Used my weaker arm as often as before the stroke (same as pre-stroke)",
+          "labelHtml": "<div style=\"background-color: #fcfcfc; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 10px; font-family: sans-serif;\">\n  <span style=\"font-size: 1.1em; color: #1e3d59; font-weight: bold; border-bottom: 2px solid #ffc13b; padding-bottom: 2px;\">Amount Scale (AS)</span>\n  <div style=\"margin-top: 10px; line-height: 1.5;\">\n    <b>0</b> &mdash; Did not use my weaker arm (not used)<br>\n    <span style=\"color: #888;\"><b>0.5</b> &mdash; (Halfway score)</span><br>\n    <b>1</b> &mdash; Occasionally used my weaker arm, but only very rarely (very rarely)<br>\n    <span style=\"color: #888;\"><b>1.5</b> &mdash; (Halfway score)</span><br>\n    <b>2</b> &mdash; Sometimes used my weaker arm but did the activity most of the time with my stronger arm (rarely)<br>\n    <span style=\"color: #888;\"><b>2.5</b> &mdash; (Halfway score)</span><br>\n    <b>3</b> &mdash; Used my weaker arm about half as much as before the stroke (half pre-stroke)<br>\n    <span style=\"color: #888;\"><b>3.5</b> &mdash; (Halfway score)</span><br>\n    <b>4</b> &mdash; Used my weaker arm almost as much as before the stroke (3/4 pre-stroke)<br>\n    <span style=\"color: #888;\"><b>4.5</b> &mdash; (Halfway score)</span><br>\n    <b>5</b> &mdash; Used my weaker arm as often as before the stroke (same as pre-stroke)\n  </div>\n</div>"
+        },
+        {
+          "id": "mal_scoring_hw",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "How Well Scale (HW)\n 0 — The weaker arm was not used at all for that activity (never)\n 0.5 — (Halfway score)\n 1 — The weaker arm was moved during that activity but was not helpful (very poor)\n 1.5 — (Halfway score)\n 2 — The weaker arm was of some use during that activity but needed some help from the stronger arm or moved very slowly or with difficulty (poor)\n 2.5 — (Halfway score)\n 3 — The weaker arm was used for the purpose indicated but movements were slow or were made with only some effort (fair)\n 3.5 — (Halfway score)\n 4 — The movements made by the weaker arm were almost normal, but were not quite as fast or accurate as normal (almost normal)\n 4.5 — (Halfway score)\n 5 — The ability to use the weaker arm for that activity was as good as before the stroke (normal)",
+          "labelHtml": "<div style=\"background-color: #fcfcfc; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 10px; font-family: sans-serif;\">\n  <span style=\"font-size: 1.1em; color: #1e3d59; font-weight: bold; border-bottom: 2px solid #ffc13b; padding-bottom: 2px;\">How Well Scale (HW)</span>\n  <div style=\"margin-top: 10px; line-height: 1.5;\">\n    <b>0</b> &mdash; The weaker arm was not used at all for that activity (never)<br>\n    <span style=\"color: #888;\"><b>0.5</b> &mdash; (Halfway score)</span><br>\n    <b>1</b> &mdash; The weaker arm was moved during that activity but was not helpful (very poor)<br>\n    <span style=\"color: #888;\"><b>1.5</b> &mdash; (Halfway score)</span><br>\n    <b>2</b> &mdash; The weaker arm was of some use during that activity but needed some help from the stronger arm or moved very slowly or with difficulty (poor)<br>\n    <span style=\"color: #888;\"><b>2.5</b> &mdash; (Halfway score)</span><br>\n    <b>3</b> &mdash; The weaker arm was used for the purpose indicated but movements were slow or were made with only some effort (fair)<br>\n    <span style=\"color: #888;\"><b>3.5</b> &mdash; (Halfway score)</span><br>\n    <b>4</b> &mdash; The movements made by the weaker arm were almost normal, but were not quite as fast or accurate as normal (almost normal)<br>\n    <span style=\"color: #888;\"><b>4.5</b> &mdash; (Halfway score)</span><br>\n    <b>5</b> &mdash; The ability to use the weaker arm for that activity was as good as before the stroke (normal)\n  </div>\n</div>"
+        },
+        {
+          "id": "mal_why_codes",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Codes for recording “no” responses\n 1. “I used the unaffected arm entirely.” (assign 0)\n 2. “Someone else did it for me.” (assign 0)\n 3. “I never do that activity... impossible (e.g. bald)” (assign N/A and drop from list)\n 4. “Opportunity not present since last time” (carry-over last assigned number)\n 5. Non-dominant hand hemiparesis (applicable to #24; assign N/A)",
+          "labelHtml": "<div style=\"background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; padding: 12px; font-family: sans-serif;\">\n  <span style=\"font-size: 1.1em; color: #b22222; font-weight: bold; border-bottom: 2px solid #f4a261; padding-bottom: 2px;\">Codes for recording &ldquo;no&rdquo; responses</span>\n  <div style=\"margin-top: 10px; line-height: 1.5;\">\n    <b>1.</b> &ldquo;I used the unaffected arm entirely.&rdquo; (assign <b>0</b>)<br>\n    <b>2.</b> &ldquo;Someone else did it for me.&rdquo; (assign <b>0</b>)<br>\n    <b>3.</b> &ldquo;I never do that activity... impossible (e.g. bald)&rdquo; (assign <b>N/A</b> and drop from list)<br>\n    <b>4.</b> &ldquo;Opportunity not present since last time&rdquo; (carry-over last assigned number)<br>\n    <b>5.</b> Non-dominant hand hemiparesis (applicable to #24; assign <b>N/A</b>)\n  </div>\n</div>"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "MOTOR ACTIVITY LOG TASKS",
+      "items": [
+        {
+          "id": "mal_table",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "TaskAS (0-5)HW (0-5)Code (1-5)Comments\n1. Turn on a light with a light switch{mal_as_1}{mal_hw_1}{mal_why_1}{mal_comm_1}\n2. Open drawer{mal_as_2}{mal_hw_2}{mal_why_2}{mal_comm_2}\n3. Remove an item of clothing from a drawer{mal_as_3}{mal_hw_3}{mal_why_3}{mal_comm_3}\n4. Pick up phone{mal_as_4}{mal_hw_4}{mal_why_4}{mal_comm_4}\n5. Wipe off a kitchen counter or other surface{mal_as_5}{mal_hw_5}{mal_why_5}{mal_comm_5}\n6. Get out of a car (includes only the movement needed to get body from sitting to standing outside of the car, once the door is open).{mal_as_6}{mal_hw_6}{mal_why_6}{mal_comm_6}\n7. Open refrigerator{mal_as_7}{mal_hw_7}{mal_why_7}{mal_comm_7}\n8. Open a door by turning a door knob / handle{mal_as_8}{mal_hw_8}{mal_why_8}{mal_comm_8}\n9. Use a TV remote control{mal_as_9}{mal_hw_9}{mal_why_9}{mal_comm_9}\n10. Wash your hands (includes lathering and rinsing hands; does not include turning water on and off with a faucet handle).{mal_as_10}{mal_hw_10}{mal_why_10}{mal_comm_10}\n11. Turning water on/off with knob/lever on faucet{mal_as_11}{mal_hw_11}{mal_why_11}{mal_comm_11}\n12. Dry your hands{mal_as_12}{mal_hw_12}{mal_why_12}{mal_comm_12}\n13. Put on your socks{mal_as_13}{mal_hw_13}{mal_why_13}{mal_comm_13}\n14. Take off your socks{mal_as_14}{mal_hw_14}{mal_why_14}{mal_comm_14}\n15. Put on your shoes (includes tying shoestrings and fastening straps){mal_as_15}{mal_hw_15}{mal_why_15}{mal_comm_15}\n16. Take off your shoes (includes untying shoestrings and unfastening straps){mal_as_16}{mal_hw_16}{mal_why_16}{mal_comm_16}\n17. Get up from a chair with armrests{mal_as_17}{mal_hw_17}{mal_why_17}{mal_comm_17}\n18. Pull chair away from table before sitting down{mal_as_18}{mal_hw_18}{mal_why_18}{mal_comm_18}\n19. Pull chair toward table after sitting down{mal_as_19}{mal_hw_19}{mal_why_19}{mal_comm_19}\n20. Pick up a glass, bottle, drinking cup, or can (does not need to include drinking){mal_as_20}{mal_hw_20}{mal_why_20}{mal_comm_20}\n21. Brush your teeth (does not include preparation of toothbrush or brushing dentures unless the dentures are brushed while left in the mouth){mal_as_21}{mal_hw_21}{mal_why_21}{mal_comm_21}\n22. Put on makeup base, lotion, or shaving cream on face{mal_as_22}{mal_hw_22}{mal_why_22}{mal_comm_22}\n23. Use a key to unlock a door{mal_as_23}{mal_hw_23}{mal_why_23}{mal_comm_23}\n24. Write on paper (If hand used to write pre-stroke is more affected, score item; if non-writing hand pre-stroke is more affected, drop item and assign N/A){mal_as_24}{mal_hw_24}{mal_why_24}{mal_comm_24}\n25. Carry an object in your hand (draping an item over the arm is not acceptable){mal_as_25}{mal_hw_25}{mal_why_25}{mal_comm_25}\n26. Use a fork or spoon for eating (refers to the action of bringing food to the mouth with fork or spoon){mal_as_26}{mal_hw_26}{mal_why_26}{mal_comm_26}\n27. Comb your hair{mal_as_27}{mal_hw_27}{mal_why_27}{mal_comm_27}\n28. Pick up a cup by a handle{mal_as_28}{mal_hw_28}{mal_why_28}{mal_comm_28}\n29. Button a shirt{mal_as_29}{mal_hw_29}{mal_why_29}{mal_comm_29}\n30. Eat half a sandwich or finger foods{mal_as_30}{mal_hw_30}{mal_why_30}{mal_comm_30}",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse; table-layout: fixed;'><tr style='background-color: #f2f2f2;'><th style='width:31%; padding: 5px;'>Task</th><th style='width:12%; padding: 5px;'>AS (0-5)</th><th style='width:12%; padding: 5px;'>HW (0-5)</th><th style='width:12%; padding: 5px;'>Code (1-5)</th><th style='width:33%; padding: 5px;'>Comments</th></tr><tr><td style='padding: 5px;'>1. Turn on a light with a light switch</td><td style='padding: 5px;'>{mal_as_1}</td><td style='padding: 5px;'>{mal_hw_1}</td><td style='padding: 5px;'>{mal_why_1}</td><td style='padding: 5px;'>{mal_comm_1}</td></tr><tr><td style='padding: 5px;'>2. Open drawer</td><td style='padding: 5px;'>{mal_as_2}</td><td style='padding: 5px;'>{mal_hw_2}</td><td style='padding: 5px;'>{mal_why_2}</td><td style='padding: 5px;'>{mal_comm_2}</td></tr><tr><td style='padding: 5px;'>3. Remove an item of clothing from a drawer</td><td style='padding: 5px;'>{mal_as_3}</td><td style='padding: 5px;'>{mal_hw_3}</td><td style='padding: 5px;'>{mal_why_3}</td><td style='padding: 5px;'>{mal_comm_3}</td></tr><tr><td style='padding: 5px;'>4. Pick up phone</td><td style='padding: 5px;'>{mal_as_4}</td><td style='padding: 5px;'>{mal_hw_4}</td><td style='padding: 5px;'>{mal_why_4}</td><td style='padding: 5px;'>{mal_comm_4}</td></tr><tr><td style='padding: 5px;'>5. Wipe off a kitchen counter or other surface</td><td style='padding: 5px;'>{mal_as_5}</td><td style='padding: 5px;'>{mal_hw_5}</td><td style='padding: 5px;'>{mal_why_5}</td><td style='padding: 5px;'>{mal_comm_5}</td></tr><tr><td style='padding: 5px;'>6. Get out of a car (includes only the movement needed to get body from sitting to standing outside of the car, once the door is open).</td><td style='padding: 5px;'>{mal_as_6}</td><td style='padding: 5px;'>{mal_hw_6}</td><td style='padding: 5px;'>{mal_why_6}</td><td style='padding: 5px;'>{mal_comm_6}</td></tr><tr><td style='padding: 5px;'>7. Open refrigerator</td><td style='padding: 5px;'>{mal_as_7}</td><td style='padding: 5px;'>{mal_hw_7}</td><td style='padding: 5px;'>{mal_why_7}</td><td style='padding: 5px;'>{mal_comm_7}</td></tr><tr><td style='padding: 5px;'>8. Open a door by turning a door knob / handle</td><td style='padding: 5px;'>{mal_as_8}</td><td style='padding: 5px;'>{mal_hw_8}</td><td style='padding: 5px;'>{mal_why_8}</td><td style='padding: 5px;'>{mal_comm_8}</td></tr><tr><td style='padding: 5px;'>9. Use a TV remote control</td><td style='padding: 5px;'>{mal_as_9}</td><td style='padding: 5px;'>{mal_hw_9}</td><td style='padding: 5px;'>{mal_why_9}</td><td style='padding: 5px;'>{mal_comm_9}</td></tr><tr><td style='padding: 5px;'>10. Wash your hands (includes lathering and rinsing hands; does not include turning water on and off with a faucet handle).</td><td style='padding: 5px;'>{mal_as_10}</td><td style='padding: 5px;'>{mal_hw_10}</td><td style='padding: 5px;'>{mal_why_10}</td><td style='padding: 5px;'>{mal_comm_10}</td></tr><tr><td style='padding: 5px;'>11. Turning water on/off with knob/lever on faucet</td><td style='padding: 5px;'>{mal_as_11}</td><td style='padding: 5px;'>{mal_hw_11}</td><td style='padding: 5px;'>{mal_why_11}</td><td style='padding: 5px;'>{mal_comm_11}</td></tr><tr><td style='padding: 5px;'>12. Dry your hands</td><td style='padding: 5px;'>{mal_as_12}</td><td style='padding: 5px;'>{mal_hw_12}</td><td style='padding: 5px;'>{mal_why_12}</td><td style='padding: 5px;'>{mal_comm_12}</td></tr><tr><td style='padding: 5px;'>13. Put on your socks</td><td style='padding: 5px;'>{mal_as_13}</td><td style='padding: 5px;'>{mal_hw_13}</td><td style='padding: 5px;'>{mal_why_13}</td><td style='padding: 5px;'>{mal_comm_13}</td></tr><tr><td style='padding: 5px;'>14. Take off your socks</td><td style='padding: 5px;'>{mal_as_14}</td><td style='padding: 5px;'>{mal_hw_14}</td><td style='padding: 5px;'>{mal_why_14}</td><td style='padding: 5px;'>{mal_comm_14}</td></tr><tr><td style='padding: 5px;'>15. Put on your shoes (includes tying shoestrings and fastening straps)</td><td style='padding: 5px;'>{mal_as_15}</td><td style='padding: 5px;'>{mal_hw_15}</td><td style='padding: 5px;'>{mal_why_15}</td><td style='padding: 5px;'>{mal_comm_15}</td></tr><tr><td style='padding: 5px;'>16. Take off your shoes (includes untying shoestrings and unfastening straps)</td><td style='padding: 5px;'>{mal_as_16}</td><td style='padding: 5px;'>{mal_hw_16}</td><td style='padding: 5px;'>{mal_why_16}</td><td style='padding: 5px;'>{mal_comm_16}</td></tr><tr><td style='padding: 5px;'>17. Get up from a chair with armrests</td><td style='padding: 5px;'>{mal_as_17}</td><td style='padding: 5px;'>{mal_hw_17}</td><td style='padding: 5px;'>{mal_why_17}</td><td style='padding: 5px;'>{mal_comm_17}</td></tr><tr><td style='padding: 5px;'>18. Pull chair away from table before sitting down</td><td style='padding: 5px;'>{mal_as_18}</td><td style='padding: 5px;'>{mal_hw_18}</td><td style='padding: 5px;'>{mal_why_18}</td><td style='padding: 5px;'>{mal_comm_18}</td></tr><tr><td style='padding: 5px;'>19. Pull chair toward table after sitting down</td><td style='padding: 5px;'>{mal_as_19}</td><td style='padding: 5px;'>{mal_hw_19}</td><td style='padding: 5px;'>{mal_why_19}</td><td style='padding: 5px;'>{mal_comm_19}</td></tr><tr><td style='padding: 5px;'>20. Pick up a glass, bottle, drinking cup, or can (does not need to include drinking)</td><td style='padding: 5px;'>{mal_as_20}</td><td style='padding: 5px;'>{mal_hw_20}</td><td style='padding: 5px;'>{mal_why_20}</td><td style='padding: 5px;'>{mal_comm_20}</td></tr><tr><td style='padding: 5px;'>21. Brush your teeth (does not include preparation of toothbrush or brushing dentures unless the dentures are brushed while left in the mouth)</td><td style='padding: 5px;'>{mal_as_21}</td><td style='padding: 5px;'>{mal_hw_21}</td><td style='padding: 5px;'>{mal_why_21}</td><td style='padding: 5px;'>{mal_comm_21}</td></tr><tr><td style='padding: 5px;'>22. Put on makeup base, lotion, or shaving cream on face</td><td style='padding: 5px;'>{mal_as_22}</td><td style='padding: 5px;'>{mal_hw_22}</td><td style='padding: 5px;'>{mal_why_22}</td><td style='padding: 5px;'>{mal_comm_22}</td></tr><tr><td style='padding: 5px;'>23. Use a key to unlock a door</td><td style='padding: 5px;'>{mal_as_23}</td><td style='padding: 5px;'>{mal_hw_23}</td><td style='padding: 5px;'>{mal_why_23}</td><td style='padding: 5px;'>{mal_comm_23}</td></tr><tr><td style='padding: 5px;'>24. Write on paper (If hand used to write pre-stroke is more affected, score item; if non-writing hand pre-stroke is more affected, drop item and assign N/A)</td><td style='padding: 5px;'>{mal_as_24}</td><td style='padding: 5px;'>{mal_hw_24}</td><td style='padding: 5px;'>{mal_why_24}</td><td style='padding: 5px;'>{mal_comm_24}</td></tr><tr><td style='padding: 5px;'>25. Carry an object in your hand (draping an item over the arm is not acceptable)</td><td style='padding: 5px;'>{mal_as_25}</td><td style='padding: 5px;'>{mal_hw_25}</td><td style='padding: 5px;'>{mal_why_25}</td><td style='padding: 5px;'>{mal_comm_25}</td></tr><tr><td style='padding: 5px;'>26. Use a fork or spoon for eating (refers to the action of bringing food to the mouth with fork or spoon)</td><td style='padding: 5px;'>{mal_as_26}</td><td style='padding: 5px;'>{mal_hw_26}</td><td style='padding: 5px;'>{mal_why_26}</td><td style='padding: 5px;'>{mal_comm_26}</td></tr><tr><td style='padding: 5px;'>27. Comb your hair</td><td style='padding: 5px;'>{mal_as_27}</td><td style='padding: 5px;'>{mal_hw_27}</td><td style='padding: 5px;'>{mal_why_27}</td><td style='padding: 5px;'>{mal_comm_27}</td></tr><tr><td style='padding: 5px;'>28. Pick up a cup by a handle</td><td style='padding: 5px;'>{mal_as_28}</td><td style='padding: 5px;'>{mal_hw_28}</td><td style='padding: 5px;'>{mal_why_28}</td><td style='padding: 5px;'>{mal_comm_28}</td></tr><tr><td style='padding: 5px;'>29. Button a shirt</td><td style='padding: 5px;'>{mal_as_29}</td><td style='padding: 5px;'>{mal_hw_29}</td><td style='padding: 5px;'>{mal_why_29}</td><td style='padding: 5px;'>{mal_comm_29}</td></tr><tr><td style='padding: 5px;'>30. Eat half a sandwich or finger foods</td><td style='padding: 5px;'>{mal_as_30}</td><td style='padding: 5px;'>{mal_hw_30}</td><td style='padding: 5px;'>{mal_why_30}</td><td style='padding: 5px;'>{mal_comm_30}</td></tr></table>"
+        },
+        {
+          "id": "mal_as_1",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 1"
+        },
+        {
+          "id": "mal_hw_1",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 1"
+        },
+        {
+          "id": "mal_why_1",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 1"
+        },
+        {
+          "id": "mal_comm_1",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 1"
+        },
+        {
+          "id": "mal_as_2",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 2"
+        },
+        {
+          "id": "mal_hw_2",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 2"
+        },
+        {
+          "id": "mal_why_2",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 2"
+        },
+        {
+          "id": "mal_comm_2",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 2"
+        },
+        {
+          "id": "mal_as_3",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 3"
+        },
+        {
+          "id": "mal_hw_3",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 3"
+        },
+        {
+          "id": "mal_why_3",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 3"
+        },
+        {
+          "id": "mal_comm_3",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 3"
+        },
+        {
+          "id": "mal_as_4",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 4"
+        },
+        {
+          "id": "mal_hw_4",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 4"
+        },
+        {
+          "id": "mal_why_4",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 4"
+        },
+        {
+          "id": "mal_comm_4",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 4"
+        },
+        {
+          "id": "mal_as_5",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 5"
+        },
+        {
+          "id": "mal_hw_5",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 5"
+        },
+        {
+          "id": "mal_why_5",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 5"
+        },
+        {
+          "id": "mal_comm_5",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 5"
+        },
+        {
+          "id": "mal_as_6",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 6"
+        },
+        {
+          "id": "mal_hw_6",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 6"
+        },
+        {
+          "id": "mal_why_6",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 6"
+        },
+        {
+          "id": "mal_comm_6",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 6"
+        },
+        {
+          "id": "mal_as_7",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 7"
+        },
+        {
+          "id": "mal_hw_7",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 7"
+        },
+        {
+          "id": "mal_why_7",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 7"
+        },
+        {
+          "id": "mal_comm_7",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 7"
+        },
+        {
+          "id": "mal_as_8",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 8"
+        },
+        {
+          "id": "mal_hw_8",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 8"
+        },
+        {
+          "id": "mal_why_8",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 8"
+        },
+        {
+          "id": "mal_comm_8",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 8"
+        },
+        {
+          "id": "mal_as_9",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 9"
+        },
+        {
+          "id": "mal_hw_9",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 9"
+        },
+        {
+          "id": "mal_why_9",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 9"
+        },
+        {
+          "id": "mal_comm_9",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 9"
+        },
+        {
+          "id": "mal_as_10",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 10"
+        },
+        {
+          "id": "mal_hw_10",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 10"
+        },
+        {
+          "id": "mal_why_10",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 10"
+        },
+        {
+          "id": "mal_comm_10",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 10"
+        },
+        {
+          "id": "mal_as_11",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 11"
+        },
+        {
+          "id": "mal_hw_11",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 11"
+        },
+        {
+          "id": "mal_why_11",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 11"
+        },
+        {
+          "id": "mal_comm_11",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 11"
+        },
+        {
+          "id": "mal_as_12",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 12"
+        },
+        {
+          "id": "mal_hw_12",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 12"
+        },
+        {
+          "id": "mal_why_12",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 12"
+        },
+        {
+          "id": "mal_comm_12",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 12"
+        },
+        {
+          "id": "mal_as_13",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 13"
+        },
+        {
+          "id": "mal_hw_13",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 13"
+        },
+        {
+          "id": "mal_why_13",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 13"
+        },
+        {
+          "id": "mal_comm_13",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 13"
+        },
+        {
+          "id": "mal_as_14",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 14"
+        },
+        {
+          "id": "mal_hw_14",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 14"
+        },
+        {
+          "id": "mal_why_14",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 14"
+        },
+        {
+          "id": "mal_comm_14",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 14"
+        },
+        {
+          "id": "mal_as_15",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 15"
+        },
+        {
+          "id": "mal_hw_15",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 15"
+        },
+        {
+          "id": "mal_why_15",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 15"
+        },
+        {
+          "id": "mal_comm_15",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 15"
+        },
+        {
+          "id": "mal_as_16",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 16"
+        },
+        {
+          "id": "mal_hw_16",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 16"
+        },
+        {
+          "id": "mal_why_16",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 16"
+        },
+        {
+          "id": "mal_comm_16",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 16"
+        },
+        {
+          "id": "mal_as_17",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 17"
+        },
+        {
+          "id": "mal_hw_17",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 17"
+        },
+        {
+          "id": "mal_why_17",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 17"
+        },
+        {
+          "id": "mal_comm_17",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 17"
+        },
+        {
+          "id": "mal_as_18",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 18"
+        },
+        {
+          "id": "mal_hw_18",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 18"
+        },
+        {
+          "id": "mal_why_18",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 18"
+        },
+        {
+          "id": "mal_comm_18",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 18"
+        },
+        {
+          "id": "mal_as_19",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 19"
+        },
+        {
+          "id": "mal_hw_19",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 19"
+        },
+        {
+          "id": "mal_why_19",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 19"
+        },
+        {
+          "id": "mal_comm_19",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 19"
+        },
+        {
+          "id": "mal_as_20",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 20"
+        },
+        {
+          "id": "mal_hw_20",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 20"
+        },
+        {
+          "id": "mal_why_20",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 20"
+        },
+        {
+          "id": "mal_comm_20",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 20"
+        },
+        {
+          "id": "mal_as_21",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 21"
+        },
+        {
+          "id": "mal_hw_21",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 21"
+        },
+        {
+          "id": "mal_why_21",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 21"
+        },
+        {
+          "id": "mal_comm_21",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 21"
+        },
+        {
+          "id": "mal_as_22",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 22"
+        },
+        {
+          "id": "mal_hw_22",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 22"
+        },
+        {
+          "id": "mal_why_22",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 22"
+        },
+        {
+          "id": "mal_comm_22",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 22"
+        },
+        {
+          "id": "mal_as_23",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 23"
+        },
+        {
+          "id": "mal_hw_23",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 23"
+        },
+        {
+          "id": "mal_why_23",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 23"
+        },
+        {
+          "id": "mal_comm_23",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 23"
+        },
+        {
+          "id": "mal_as_24",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 24"
+        },
+        {
+          "id": "mal_hw_24",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 24"
+        },
+        {
+          "id": "mal_why_24",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 24"
+        },
+        {
+          "id": "mal_comm_24",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 24"
+        },
+        {
+          "id": "mal_as_25",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 25"
+        },
+        {
+          "id": "mal_hw_25",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 25"
+        },
+        {
+          "id": "mal_why_25",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 25"
+        },
+        {
+          "id": "mal_comm_25",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 25"
+        },
+        {
+          "id": "mal_as_26",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 26"
+        },
+        {
+          "id": "mal_hw_26",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 26"
+        },
+        {
+          "id": "mal_why_26",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 26"
+        },
+        {
+          "id": "mal_comm_26",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 26"
+        },
+        {
+          "id": "mal_as_27",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 27"
+        },
+        {
+          "id": "mal_hw_27",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 27"
+        },
+        {
+          "id": "mal_why_27",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 27"
+        },
+        {
+          "id": "mal_comm_27",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 27"
+        },
+        {
+          "id": "mal_as_28",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 28"
+        },
+        {
+          "id": "mal_hw_28",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 28"
+        },
+        {
+          "id": "mal_why_28",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 28"
+        },
+        {
+          "id": "mal_comm_28",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 28"
+        },
+        {
+          "id": "mal_as_29",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 29"
+        },
+        {
+          "id": "mal_hw_29",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 29"
+        },
+        {
+          "id": "mal_why_29",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 29"
+        },
+        {
+          "id": "mal_comm_29",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 29"
+        },
+        {
+          "id": "mal_as_30",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "AS 30"
+        },
+        {
+          "id": "mal_hw_30",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 0.5,
+              "label": "0.5"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 1.5,
+              "label": "1.5"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 2.5,
+              "label": "2.5"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 3.5,
+              "label": "3.5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 4.5,
+              "label": "4.5"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "segmented",
+          "label": "HW 30"
+        },
+        {
+          "id": "mal_why_30",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Why 30"
+        },
+        {
+          "id": "mal_comm_30",
+          "redcapType": "text",
+          "type": "text",
+          "widget": "text",
+          "label": "Comm 30"
+        },
+        {
+          "id": "mal_mean_as",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "(mal_as_1+mal_as_2+mal_as_3+mal_as_4+mal_as_5+mal_as_6+mal_as_7+mal_as_8+mal_as_9+mal_as_10+mal_as_11+mal_as_12+mal_as_13+mal_as_14+mal_as_15+mal_as_16+mal_as_17+mal_as_18+mal_as_19+mal_as_20+mal_as_21+mal_as_22+mal_as_23+mal_as_24+mal_as_25+mal_as_26+mal_as_27+mal_as_28+mal_as_29+mal_as_30) / 30",
+          "exprRaw": "([mal_as_1]+[mal_as_2]+[mal_as_3]+[mal_as_4]+[mal_as_5]+[mal_as_6]+[mal_as_7]+[mal_as_8]+[mal_as_9]+[mal_as_10]+[mal_as_11]+[mal_as_12]+[mal_as_13]+[mal_as_14]+[mal_as_15]+[mal_as_16]+[mal_as_17]+[mal_as_18]+[mal_as_19]+[mal_as_20]+[mal_as_21]+[mal_as_22]+[mal_as_23]+[mal_as_24]+[mal_as_25]+[mal_as_26]+[mal_as_27]+[mal_as_28]+[mal_as_29]+[mal_as_30]) / 30",
+          "label": "Mean Amount Score"
+        },
+        {
+          "id": "mal_mean_hw",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "(mal_hw_1+mal_hw_2+mal_hw_3+mal_hw_4+mal_hw_5+mal_hw_6+mal_hw_7+mal_hw_8+mal_hw_9+mal_hw_10+mal_hw_11+mal_hw_12+mal_hw_13+mal_hw_14+mal_hw_15+mal_hw_16+mal_hw_17+mal_hw_18+mal_hw_19+mal_hw_20+mal_hw_21+mal_hw_22+mal_hw_23+mal_hw_24+mal_hw_25+mal_hw_26+mal_hw_27+mal_hw_28+mal_hw_29+mal_hw_30) / 30",
+          "exprRaw": "([mal_hw_1]+[mal_hw_2]+[mal_hw_3]+[mal_hw_4]+[mal_hw_5]+[mal_hw_6]+[mal_hw_7]+[mal_hw_8]+[mal_hw_9]+[mal_hw_10]+[mal_hw_11]+[mal_hw_12]+[mal_hw_13]+[mal_hw_14]+[mal_hw_15]+[mal_hw_16]+[mal_hw_17]+[mal_hw_18]+[mal_hw_19]+[mal_hw_20]+[mal_hw_21]+[mal_hw_22]+[mal_hw_23]+[mal_hw_24]+[mal_hw_25]+[mal_hw_26]+[mal_hw_27]+[mal_hw_28]+[mal_hw_29]+[mal_hw_30]) / 30",
+          "label": "Mean How Well Score"
+        },
+        {
+          "id": "mal_final_notes",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "Final Observer Notes"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

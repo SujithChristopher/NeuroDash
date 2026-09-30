@@ -1,0 +1,51 @@
+{
+  "id": "consent_form",
+  "version": 1,
+  "title": "Consent Form",
+  "redcapForm": "consent_form",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Patient Consent Information",
+      "items": [
+        {
+          "id": "consent_obtained",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Has the patient provided informed consent?"
+        },
+        {
+          "id": "consent_date",
+          "redcapType": "text",
+          "showIf": "consent_obtained(1) = '1'",
+          "required": true,
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of informed consent"
+        }
+      ]
+    }
+  ],
+  "kind": "bookkeeping"
+}

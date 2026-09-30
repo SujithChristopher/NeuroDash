@@ -1,0 +1,91 @@
+{
+  "id": "exit_questionnaire_intervention",
+  "version": 1,
+  "title": "Exit Questionnaire Intervention",
+  "redcapForm": "exit_questionnaire_intervention",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "EXIT QUESTIONNAIRE - INTERVENTION GROUP",
+      "items": [
+        {
+          "id": "eqi_opt_out_reasons",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Training at home without the therapist was difficult"
+            },
+            {
+              "value": 2,
+              "label": "Training for 2 hours a day was tiring"
+            },
+            {
+              "value": 3,
+              "label": "I had pain when training with the robot"
+            },
+            {
+              "value": 4,
+              "label": "I felt this kind of therapy was not interesting"
+            },
+            {
+              "value": 5,
+              "label": "I was not able to use the system independently"
+            },
+            {
+              "value": 6,
+              "label": "The robot was not safe to use"
+            },
+            {
+              "value": 7,
+              "label": "Recurrent hardware/software/electricity/UPS related technical issues"
+            },
+            {
+              "value": 8,
+              "label": "The caregiver had limited familiarity with technology"
+            },
+            {
+              "value": 9,
+              "label": "Unavailable to use the device because I was away/unwell during that period"
+            },
+            {
+              "value": 10,
+              "label": "Other"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Why did you opt out of the study?"
+        },
+        {
+          "id": "eqi_continue_reason",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "What would have made you continue the study?"
+        },
+        {
+          "id": "eqi_other_comments",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "Other Comments"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

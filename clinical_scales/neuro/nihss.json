@@ -1,0 +1,585 @@
+{
+  "id": "nihss",
+  "version": 1,
+  "title": "NIH Stroke Scale (NIHSS)",
+  "redcapForm": "nih_stroke_scale",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "nihss_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "nihss_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "NIH STROKE SCALE (NIHSS) - INSTRUCTIONS",
+      "items": [
+        {
+          "id": "nihss_instructions",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Administer stroke scale items in the order listed. Record performance in each category after each subscale exam. Do not go back and change scores. Follow directions provided for each exam technique. Scores should reflect what the patient does, not what the clinician thinks the patient can do. The clinician should record answers while administering the exam and work quickly. Except where indicated, the patient should not be coached (i.e., repeated requests to patient to make a special effort)."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "1a. Level of Consciousness",
+      "items": [
+        {
+          "id": "nihss_1a",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Alert; keenly responsive."
+            },
+            {
+              "value": 1,
+              "label": "1 = Not alert; but arousable by minor stimulation to obey, answer, or respond."
+            },
+            {
+              "value": 2,
+              "label": "2 = Not alert; requires repeated stimulation to attend, or is obtunded and requires strong or painful stimulation to make movements (not stereotyped)."
+            },
+            {
+              "value": 3,
+              "label": "3 = Responds only with reflex motor or autonomic effects or totally unresponsive, flaccid, and areflexic."
+            }
+          ],
+          "widget": "buttons",
+          "label": "1a. Level of Consciousness: The investigator must choose a response if a full evaluation is prevented by such obstacles as an endotracheal tube, language barrier, orotracheal trauma/bandages. A 3 is scored only if the patient makes no movement (other than reflexive posturing) in response to noxious stimulation.",
+          "labelHtml": "<b>1a. Level of Consciousness</b>: The investigator must choose a response if a full evaluation is prevented by such obstacles as an endotracheal tube, language barrier, orotracheal trauma/bandages. A 3 is scored only if the patient makes no movement (other than reflexive posturing) in response to noxious stimulation."
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "1b. LOC Questions",
+      "items": [
+        {
+          "id": "nihss_1b",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Answers both questions correctly."
+            },
+            {
+              "value": 1,
+              "label": "1 = Answers one question correctly."
+            },
+            {
+              "value": 2,
+              "label": "2 = Answers neither question correctly."
+            }
+          ],
+          "widget": "buttons",
+          "label": "1b. LOC Questions: The patient is asked the month and his/her age. The answer must be correct - there is no partial credit for being close. Aphasic and stuporous patients who do not comprehend the questions will score 2. Patients unable to speak because of endotracheal intubation, orotracheal trauma, severe dysarthria from any cause, language barrier, or any other problem not secondary to aphasia are given a 1. It is important that only the initial answer be graded and that the examiner not 'help' the patient with verbal or non-verbal cues.",
+          "labelHtml": "<b>1b. LOC Questions</b>: The patient is asked the month and his/her age. The answer must be correct - there is no partial credit for being close. Aphasic and stuporous patients who do not comprehend the questions will score 2. Patients unable to speak because of endotracheal intubation, orotracheal trauma, severe dysarthria from any cause, language barrier, or any other problem not secondary to aphasia are given a 1. It is important that only the initial answer be graded and that the examiner not 'help' the patient with verbal or non-verbal cues."
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "1c. LOC Commands",
+      "items": [
+        {
+          "id": "nihss_1c",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Performs both tasks correctly."
+            },
+            {
+              "value": 1,
+              "label": "1 = Performs one task correctly."
+            },
+            {
+              "value": 2,
+              "label": "2 = Performs neither task correctly."
+            }
+          ],
+          "widget": "buttons",
+          "label": "1c. LOC Commands: The patient is asked to open and close the eyes and then to grip and release the non-paretic hand. Substitute another one step command if the hands cannot be used. Credit is given if an unequivocal attempt is made but not completed due to weakness. If the patient does not respond to command, the task should be demonstrated to him or her (pantomime), and the result scored (i.e., follows none, one or two commands). Patients with trauma, amputation, or other physical impediments should be given suitable one-step commands. Only the first attempt is scored.",
+          "labelHtml": "<b>1c. LOC Commands</b>: The patient is asked to open and close the eyes and then to grip and release the non-paretic hand. Substitute another one step command if the hands cannot be used. Credit is given if an unequivocal attempt is made but not completed due to weakness. If the patient does not respond to command, the task should be demonstrated to him or her (pantomime), and the result scored (i.e., follows none, one or two commands). Patients with trauma, amputation, or other physical impediments should be given suitable one-step commands. Only the first attempt is scored."
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "2. Best Gaze",
+      "items": [
+        {
+          "id": "nihss_2",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Normal."
+            },
+            {
+              "value": 1,
+              "label": "1 = Partial gaze palsy; gaze is abnormal in one or both eyes, but forced deviation or total gaze paresis is not present."
+            },
+            {
+              "value": 2,
+              "label": "2 = Forced deviation, or total gaze paresis not overcome by the oculocephalic maneuver."
+            }
+          ],
+          "widget": "buttons",
+          "label": "2. Best Gaze: Only horizontal eye movements will be tested. Voluntary or reflexive (oculocephalic) eye movements will be scored, but caloric testing is not done. If the patient has a conjugate deviation of the eyes that can be overcome by voluntary or reflexive activity, the score will be 1. If a patient has an isolated peripheral nerve paresis (CN III, IV or VI), score a 1. Gaze is testable in all aphasic patients. Patients with ocular trauma, bandages, pre-existing blindness, or other disorder of visual acuity or fields should be tested with reflexive movements, and a choice made by the investigator. Establishing eye contact and then moving about the patient from side to side will occasionally clarify the presence of a partial gaze palsy.",
+          "labelHtml": "<b>2. Best Gaze</b>: Only horizontal eye movements will be tested. Voluntary or reflexive (oculocephalic) eye movements will be scored, but caloric testing is not done. If the patient has a conjugate deviation of the eyes that can be overcome by voluntary or reflexive activity, the score will be 1. If a patient has an isolated peripheral nerve paresis (CN III, IV or VI), score a 1. Gaze is testable in all aphasic patients. Patients with ocular trauma, bandages, pre-existing blindness, or other disorder of visual acuity or fields should be tested with reflexive movements, and a choice made by the investigator. Establishing eye contact and then moving about the patient from side to side will occasionally clarify the presence of a partial gaze palsy."
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "3. Visual",
+      "items": [
+        {
+          "id": "nihss_3",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No visual loss."
+            },
+            {
+              "value": 1,
+              "label": "1 = Partial hemianopia."
+            },
+            {
+              "value": 2,
+              "label": "2 = Complete hemianopia."
+            },
+            {
+              "value": 3,
+              "label": "3 = Bilateral hemianopia (blind including cortical blindness)."
+            }
+          ],
+          "widget": "buttons",
+          "label": "3. Visual: Visual fields (upper and lower quadrants) are tested by confrontation, using finger counting or visual threat, as appropriate. Patients may be encouraged, but if they look at the side of the moving fingers appropriately, this can be scored as normal. If there is unilateral blindness or enucleation, visual fields in the remaining eye are scored. Score 1 only if a clear-cut asymmetry, including quadrantanopia, is found. If patient is blind from any cause, score 3. Double simultaneous stimulation is performed at this point. If there is extinction, patient receives a 1, and the results are used to respond to item 11.",
+          "labelHtml": "<b>3. Visual</b>: Visual fields (upper and lower quadrants) are tested by confrontation, using finger counting or visual threat, as appropriate. Patients may be encouraged, but if they look at the side of the moving fingers appropriately, this can be scored as normal. If there is unilateral blindness or enucleation, visual fields in the remaining eye are scored. Score 1 only if a clear-cut asymmetry, including quadrantanopia, is found. If patient is blind from any cause, score 3. Double simultaneous stimulation is performed at this point. If there is extinction, patient receives a 1, and the results are used to respond to item 11."
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "4. Facial Palsy",
+      "items": [
+        {
+          "id": "nihss_4",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Normal symmetrical movements."
+            },
+            {
+              "value": 1,
+              "label": "1 = Minor paralysis (flattened nasolabial fold, asymmetry on smiling)."
+            },
+            {
+              "value": 2,
+              "label": "2 = Partial paralysis (total or near-total paralysis of lower face)."
+            },
+            {
+              "value": 3,
+              "label": "3 = Complete paralysis of one or both sides (absence of facial movement in the upper and lower face)."
+            }
+          ],
+          "widget": "buttons",
+          "label": "4. Facial Palsy: Ask – or use pantomime to encourage – the patient to show teeth or raise eyebrows and close eyes. Score symmetry of grimace in response to noxious stimuli in the poorly responsive or non-comprehending patient. If facial trauma/bandages, orotracheal tube, tape or other physical barriers obscure the face, these should be removed to the extent possible.",
+          "labelHtml": "<b>4. Facial Palsy</b>: Ask – or use pantomime to encourage – the patient to show teeth or raise eyebrows and close eyes. Score symmetry of grimace in response to noxious stimuli in the poorly responsive or non-comprehending patient. If facial trauma/bandages, orotracheal tube, tape or other physical barriers obscure the face, these should be removed to the extent possible."
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "title": "5. Motor Arm",
+      "items": [
+        {
+          "id": "nihss_5_desc",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "5. Motor Arm: The limb is placed in the appropriate position: extend the arms (palms down) 90 degrees (if sitting) or 45 degrees (if supine). Drift is scored if the arm falls before 10 seconds. The aphasic patient is encouraged using urgency in the voice and pantomime, but not noxious stimulation. Each limb is tested in turn, beginning with the non-paretic arm. Only in the case of amputation or joint fusion at the shoulder, the examiner should record the score as untestable (UN), and clearly write the explanation for this choice.",
+          "labelHtml": "<b>5. Motor Arm</b>: The limb is placed in the appropriate position: extend the arms (palms down) 90 degrees (if sitting) or 45 degrees (if supine). Drift is scored if the arm falls before 10 seconds. The aphasic patient is encouraged using urgency in the voice and pantomime, but not noxious stimulation. Each limb is tested in turn, beginning with the non-paretic arm. Only in the case of amputation or joint fusion at the shoulder, the examiner should record the score as untestable (UN), and clearly write the explanation for this choice."
+        },
+        {
+          "id": "nihss_5a",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No drift; limb holds 90 (or 45) degrees for full 10 seconds."
+            },
+            {
+              "value": 1,
+              "label": "1 = Drift; limb holds 90 (or 45) degrees, but drifts down before full 10 seconds; does not hit bed or other support."
+            },
+            {
+              "value": 2,
+              "label": "2 = Some effort against gravity; limb cannot get to or maintain (if cued) 90 (or 45) degrees, drifts down to bed, but has some effort against gravity."
+            },
+            {
+              "value": 3,
+              "label": "3 = No effort against gravity; limb falls."
+            },
+            {
+              "value": 4,
+              "label": "4 = No movement."
+            },
+            {
+              "value": "UN",
+              "label": "UN = Amputation or joint fusion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "5a. Left Arm"
+        },
+        {
+          "id": "nihss_5b",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No drift; limb holds 90 (or 45) degrees for full 10 seconds."
+            },
+            {
+              "value": 1,
+              "label": "1 = Drift; limb holds 90 (or 45) degrees, but drifts down before full 10 seconds; does not hit bed or other support."
+            },
+            {
+              "value": 2,
+              "label": "2 = Some effort against gravity; limb cannot get to or maintain (if cued) 90 (or 45) degrees, drifts down to bed, but has some effort against gravity."
+            },
+            {
+              "value": 3,
+              "label": "3 = No effort against gravity; limb falls."
+            },
+            {
+              "value": 4,
+              "label": "4 = No movement."
+            },
+            {
+              "value": "UN",
+              "label": "UN = Amputation or joint fusion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "5b. Right Arm"
+        },
+        {
+          "id": "nihss_5_un_explain",
+          "redcapType": "text",
+          "showIf": "nihss_5a = 'UN' or nihss_5b = 'UN'",
+          "type": "text",
+          "widget": "text",
+          "label": "Explanation if UN selected for Arm"
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "title": "6. Motor Leg",
+      "items": [
+        {
+          "id": "nihss_6_desc",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "6. Motor Leg: The limb is placed in the appropriate position: hold the leg at 30 degrees (always tested supine). Drift is scored if the leg falls before 5 seconds. The aphasic patient is encouraged using urgency in the voice and pantomime, but not noxious stimulation. Each limb is tested in turn, beginning with the non-paretic leg. Only in the case of amputation or joint fusion at the hip, the examiner should record the score as untestable (UN), and clearly write the explanation for this choice.",
+          "labelHtml": "<b>6. Motor Leg</b>: The limb is placed in the appropriate position: hold the leg at 30 degrees (always tested supine). Drift is scored if the leg falls before 5 seconds. The aphasic patient is encouraged using urgency in the voice and pantomime, but not noxious stimulation. Each limb is tested in turn, beginning with the non-paretic leg. Only in the case of amputation or joint fusion at the hip, the examiner should record the score as untestable (UN), and clearly write the explanation for this choice."
+        },
+        {
+          "id": "nihss_6a",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No drift; leg holds 30-degree position for full 5 seconds."
+            },
+            {
+              "value": 1,
+              "label": "1 = Drift; leg falls by the end of the 5-second period but does not hit bed."
+            },
+            {
+              "value": 2,
+              "label": "2 = Some effort against gravity; leg falls to bed by 5 seconds, but has some effort against gravity."
+            },
+            {
+              "value": 3,
+              "label": "3 = No effort against gravity; leg falls to bed immediately."
+            },
+            {
+              "value": 4,
+              "label": "4 = No movement."
+            },
+            {
+              "value": "UN",
+              "label": "UN = Amputation or joint fusion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "6a. Left Leg"
+        },
+        {
+          "id": "nihss_6b",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No drift; leg holds 30-degree position for full 5 seconds."
+            },
+            {
+              "value": 1,
+              "label": "1 = Drift; leg falls by the end of the 5-second period but does not hit bed."
+            },
+            {
+              "value": 2,
+              "label": "2 = Some effort against gravity; leg falls to bed by 5 seconds, but has some effort against gravity."
+            },
+            {
+              "value": 3,
+              "label": "3 = No effort against gravity; leg falls to bed immediately."
+            },
+            {
+              "value": 4,
+              "label": "4 = No movement."
+            },
+            {
+              "value": "UN",
+              "label": "UN = Amputation or joint fusion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "6b. Right Leg"
+        },
+        {
+          "id": "nihss_6_un_explain",
+          "redcapType": "text",
+          "showIf": "nihss_6a = 'UN' or nihss_6b = 'UN'",
+          "type": "text",
+          "widget": "text",
+          "label": "Explanation if UN selected for Leg"
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "title": "7. Limb Ataxia",
+      "items": [
+        {
+          "id": "nihss_7",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Absent."
+            },
+            {
+              "value": 1,
+              "label": "1 = Present in one limb."
+            },
+            {
+              "value": 2,
+              "label": "2 = Present in two limbs."
+            },
+            {
+              "value": "UN",
+              "label": "UN = Amputation or joint fusion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "7. Limb Ataxia: This item is aimed at finding evidence of a unilateral cerebellar lesion. Test with eyes open. In case of visual defect, ensure testing is done in intact visual field. The finger-nose-finger and heel-shin tests are performed on both sides, and ataxia is scored only if present out of proportion to weakness. Ataxia is absent in the patient who cannot understand or is paralyzed. Only in the case of amputation or joint fusion, the examiner should record the score as untestable (UN), and clearly write the explanation for this choice. In case of blindness, test by having the patient touch nose from extended arm position.",
+          "labelHtml": "<b>7. Limb Ataxia</b>: This item is aimed at finding evidence of a unilateral cerebellar lesion. Test with eyes open. In case of visual defect, ensure testing is done in intact visual field. The finger-nose-finger and heel-shin tests are performed on both sides, and ataxia is scored only if present out of proportion to weakness. Ataxia is absent in the patient who cannot understand or is paralyzed. Only in the case of amputation or joint fusion, the examiner should record the score as untestable (UN), and clearly write the explanation for this choice. In case of blindness, test by having the patient touch nose from extended arm position."
+        },
+        {
+          "id": "nihss_7_un_explain",
+          "redcapType": "text",
+          "showIf": "nihss_7 = 'UN'",
+          "type": "text",
+          "widget": "text",
+          "label": "Explanation if UN selected for Ataxia"
+        }
+      ]
+    },
+    {
+      "id": "s12",
+      "title": "8. Sensory",
+      "items": [
+        {
+          "id": "nihss_8",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Normal; no sensory loss."
+            },
+            {
+              "value": 1,
+              "label": "1 = Mild-to-moderate sensory loss; patient feels pinprick is less sharp or is dull on the affected side; or there is a loss of superficial pain with pinprick, but patient is aware of being touched."
+            },
+            {
+              "value": 2,
+              "label": "2 = Severe to total sensory loss; patient is not aware of being touched in the face, arm, and leg."
+            }
+          ],
+          "widget": "buttons",
+          "label": "8. Sensory: Sensation or grimace to pinprick when tested, or withdrawal from noxious stimulus in the obtunded or aphasic patient. Only sensory loss attributed to stroke is scored as abnormal and the examiner should test as many body areas (arms [not hands], legs, trunk, face) as needed to accurately check for hemisensory loss. A score of 2, “severe or total sensory loss,” should only be given when a severe or total loss of sensation can be clearly demonstrated. Stuporous and aphasic patients will, therefore, probably score 1 or 0. The patient with brainstem stroke who has bilateral loss of sensation is scored 2. If the patient does not respond and is quadriplegic, score 2. Patients in a coma (item 1a=3) are automatically given a 2 on this item.",
+          "labelHtml": "<b>8. Sensory</b>: Sensation or grimace to pinprick when tested, or withdrawal from noxious stimulus in the obtunded or aphasic patient. Only sensory loss attributed to stroke is scored as abnormal and the examiner should test as many body areas (arms [not hands], legs, trunk, face) as needed to accurately check for hemisensory loss. A score of 2, “severe or total sensory loss,” should only be given when a severe or total loss of sensation can be clearly demonstrated. Stuporous and aphasic patients will, therefore, probably score 1 or 0. The patient with brainstem stroke who has bilateral loss of sensation is scored 2. If the patient does not respond and is quadriplegic, score 2. Patients in a coma (item 1a=3) are automatically given a 2 on this item."
+        }
+      ]
+    },
+    {
+      "id": "s13",
+      "title": "9. Best Language",
+      "items": [
+        {
+          "id": "nihss_9",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No aphasia; normal."
+            },
+            {
+              "value": 1,
+              "label": "1 = Mild-to-moderate aphasia; some obvious loss of fluency or facility of comprehension, without significant limitation on ideas expressed or form of expression."
+            },
+            {
+              "value": 2,
+              "label": "2 = Severe aphasia; all communication is through fragmentary expression; great need for inference, questioning, and guessing by the listener."
+            },
+            {
+              "value": 3,
+              "label": "3 = Mute, global aphasia; no usable speech or auditory comprehension."
+            }
+          ],
+          "widget": "buttons",
+          "label": "9. Best Language: A great deal of information about comprehension will be obtained during the preceding sections of the examination. For this scale item, the patient is asked to describe what is happening in the attached picture, to name the items on the attached naming sheet and to read from the attached list of sentences. Comprehension is judged from responses here, as well as to all of the commands in the preceding general neurological exam. If visual loss interferes with the tests, ask the patient to identify objects placed in the hand, repeat, and produce speech. The intubated patient should be asked to write. The patient in a coma (item 1a=3) will automatically score 3 on this item. The examiner must choose a score for the patient with stupor or limited cooperation, but a score of 3 should be used only if the patient is mute and follows no one-step commands.",
+          "labelHtml": "<b>9. Best Language</b>: A great deal of information about comprehension will be obtained during the preceding sections of the examination. For this scale item, the patient is asked to describe what is happening in the attached picture, to name the items on the attached naming sheet and to read from the attached list of sentences. Comprehension is judged from responses here, as well as to all of the commands in the preceding general neurological exam. If visual loss interferes with the tests, ask the patient to identify objects placed in the hand, repeat, and produce speech. The intubated patient should be asked to write. The patient in a coma (item 1a=3) will automatically score 3 on this item. The examiner must choose a score for the patient with stupor or limited cooperation, but a score of 3 should be used only if the patient is mute and follows no one-step commands."
+        }
+      ]
+    },
+    {
+      "id": "s14",
+      "title": "10. Dysarthria",
+      "items": [
+        {
+          "id": "nihss_10",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = Normal."
+            },
+            {
+              "value": 1,
+              "label": "1 = Mild-to-moderate dysarthria; patient slurs at least some words and, at worst, can be understood with some difficulty."
+            },
+            {
+              "value": 2,
+              "label": "2 = Severe dysarthria; patient's speech is so slurred as to be unintelligible in the absence of or out of proportion to any dysphasia, or is mute/anarthric."
+            },
+            {
+              "value": "UN",
+              "label": "UN = Intubated or other physical barrier"
+            }
+          ],
+          "widget": "buttons",
+          "label": "10. Dysarthria: If patient is thought to be normal, an adequate sample of speech must be obtained by asking patient to read or repeat words from the attached list. If the patient has severe aphasia, the clarity of articulation of spontaneous speech can be rated. Only if the patient is intubated or has other physical barriers to producing speech, the examiner should record the score as untestable (UN), and clearly write an explanation for this choice. Do not tell the patient why he or she is being tested.",
+          "labelHtml": "<b>10. Dysarthria</b>: If patient is thought to be normal, an adequate sample of speech must be obtained by asking patient to read or repeat words from the attached list. If the patient has severe aphasia, the clarity of articulation of spontaneous speech can be rated. Only if the patient is intubated or has other physical barriers to producing speech, the examiner should record the score as untestable (UN), and clearly write an explanation for this choice. Do not tell the patient why he or she is being tested."
+        },
+        {
+          "id": "nihss_10_un_explain",
+          "redcapType": "text",
+          "showIf": "nihss_10 = 'UN'",
+          "type": "text",
+          "widget": "text",
+          "label": "Explanation if UN selected for Dysarthria"
+        }
+      ]
+    },
+    {
+      "id": "s15",
+      "title": "11. Extinction and Inattention",
+      "items": [
+        {
+          "id": "nihss_11",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 = No abnormality."
+            },
+            {
+              "value": 1,
+              "label": "1 = Visual, tactile, auditory, spatial, or personal inattention or extinction to bilateral simultaneous stimulation in one of the sensory modalities."
+            },
+            {
+              "value": 2,
+              "label": "2 = Profound hemi-inattention or extinction to more than one modality; does not recognize own hand or orients to only one side of space."
+            }
+          ],
+          "widget": "buttons",
+          "label": "11. Extinction and Inattention (formerly Neglect): Sufficient information to identify neglect may be obtained during the prior testing. If the patient has a severe visual loss preventing visual double simultaneous stimulation, and the cutaneous stimuli are normal, the score is normal. If the patient has aphasia but does appear to attend to both sides, the score is normal. The presence of visual spatial neglect or anosagnosia may also be taken as evidence of abnormality. Since the abnormality is scored only if present, the item is never untestable.",
+          "labelHtml": "<b>11. Extinction and Inattention (formerly Neglect)</b>: Sufficient information to identify neglect may be obtained during the prior testing. If the patient has a severe visual loss preventing visual double simultaneous stimulation, and the cutaneous stimuli are normal, the score is normal. If the patient has aphasia but does appear to attend to both sides, the score is normal. The presence of visual spatial neglect or anosagnosia may also be taken as evidence of abnormality. Since the abnormality is scored only if present, the item is never untestable."
+        }
+      ]
+    },
+    {
+      "id": "s16",
+      "title": "Notes",
+      "items": [
+        {
+          "id": "nihss_notes",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "Additional Notes"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

@@ -1,0 +1,270 @@
+{
+  "id": "csi",
+  "version": 1,
+  "title": "Caregiver Strain Index (CSI)",
+  "redcapForm": "caregiver_strain_index",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "csi_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "csi_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "CAREGIVER STRAIN INDEX (CSI)",
+      "items": [
+        {
+          "id": "csi_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "I am going to read a list of things that other people have found to be difficult in helping out after a relative or friend comes home from the hospital. Would you tell me whether any of these apply to you? (Give examples)",
+          "labelHtml": "I am going to read a list of things that other people have found to be difficult in helping out after a relative or friend comes home from the hospital. Would you tell me whether any of these apply to you? <b>(Give examples)</b>"
+        },
+        {
+          "id": "csi_1_sleep",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "1. Sleep is disturbed (e.g., because . . . is in and out of bed or wanders around at night)"
+        },
+        {
+          "id": "csi_2_inconvenient",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "2. It is inconvenient (e.g., because helping takes so much time or it’s a long drive over to help)"
+        },
+        {
+          "id": "csi_3_physical",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "3. It is a physical strain (e.g., because of lifting in and out of a chair; effort or concentration is required)"
+        },
+        {
+          "id": "csi_4_confining",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "4. It is confining (e.g., helping restricts free time or cannot go visiting)"
+        },
+        {
+          "id": "csi_5_family",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "5. There have been family adjustments (e.g., because helping has disrupted routine; there has been no privacy)"
+        },
+        {
+          "id": "csi_6_plans",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "6. There have been changes in personal plans (e.g., had to turn down a job; could not go on vacation)"
+        },
+        {
+          "id": "csi_7_emotional",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "7. There have been emotional adjustments (e.g., because of severe arguments)"
+        },
+        {
+          "id": "csi_8_behavior",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "8. Some behavior is upsetting (e.g., because of incontinence; . . . has trouble remembering things; or . . . accuses people of taking things)"
+        },
+        {
+          "id": "csi_9_changed",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "9. It is upsetting to find . . . has changed so much from his/her former self (e.g., he/she is a different person than he/she used to be)"
+        },
+        {
+          "id": "csi_10_work",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "10. There have been work adjustments (e.g., because of having to take time off)"
+        },
+        {
+          "id": "csi_11_financial",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "11. It is a financial strain"
+        },
+        {
+          "id": "csi_12_overwhelmed",
+          "redcapType": "yesno",
+          "type": "yesno",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Yes"
+            },
+            {
+              "value": 0,
+              "label": "No"
+            }
+          ],
+          "widget": "buttons",
+          "label": "12. Feeling completely overwhelmed (e.g., because of worry about . . . ; concerns about how you will manage)"
+        },
+        {
+          "id": "csi_total_score",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "csi_1_sleep + csi_2_inconvenient + csi_3_physical + csi_4_confining + csi_5_family + csi_6_plans + csi_7_emotional + csi_8_behavior + csi_9_changed + csi_10_work + csi_11_financial + csi_12_overwhelmed",
+          "exprRaw": "[csi_1_sleep] + [csi_2_inconvenient] + [csi_3_physical] + [csi_4_confining] + [csi_5_family] + [csi_6_plans] + [csi_7_emotional] + [csi_8_behavior] + [csi_9_changed] + [csi_10_work] + [csi_11_financial] + [csi_12_overwhelmed]",
+          "label": "CSI Total Score (Count yes responses)"
+        },
+        {
+          "id": "csi_interpretation",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Note: Any positive answer may indicate a need for intervention in that area. A score of 7 or higher indicates a high level of stress.",
+          "labelHtml": "<b>Note</b>: Any positive answer may indicate a need for intervention in that area. A score of 7 or higher indicates a high level of stress."
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

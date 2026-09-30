@@ -1,0 +1,393 @@
+{
+  "id": "cahai7",
+  "version": 1,
+  "title": "Chedoke Arm and Hand Activity Inventory (CAHAI-7)",
+  "redcapForm": "cahai7_score_form",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "CHEDOKE ARM AND HAND ACTIVITY INVENTORY (CAHAI-7) - Activity Scale",
+      "items": [
+        {
+          "id": "cahai7_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "1. total assist (weak U/L 75%)\n5. supervision\n6. modified independence (device)\n7. complete independence (timely, safely)",
+          "labelHtml": "1. total assist (weak U/L < 25%)<br>2. maximal assist (weak U/L = 25-49%)<br>3. moderate assist (weak U/L = 50-74%)<br>4. minimal assist (weak U/L > 75%)<br>5. supervision<br>6. modified independence (device)<br>7. complete independence (timely, safely)"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Activity Items",
+      "items": [
+        {
+          "id": "cahai7_1_jar_role",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "holds jar"
+            },
+            {
+              "value": 2,
+              "label": "holds lid"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Affected Limb (Item 1)"
+        },
+        {
+          "id": "cahai7_1_jar",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "1. Open jar of coffee"
+        },
+        {
+          "id": "cahai7_2_call_role",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "holds receiver"
+            },
+            {
+              "value": 2,
+              "label": "dials phone"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Affected Limb (Item 2)"
+        },
+        {
+          "id": "cahai7_2_call",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "2. Call 911"
+        },
+        {
+          "id": "cahai7_3_ruler_role",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "holds ruler"
+            },
+            {
+              "value": 2,
+              "label": "holds pen"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Affected Limb (Item 3)"
+        },
+        {
+          "id": "cahai7_3_ruler",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "3. Draw a line with a ruler"
+        },
+        {
+          "id": "cahai7_4_water_role",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "holds glass"
+            },
+            {
+              "value": 2,
+              "label": "holds pitcher"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Affected Limb (Item 4)"
+        },
+        {
+          "id": "cahai7_4_water",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "4. Pour a glass of water"
+        },
+        {
+          "id": "cahai7_5_washcloth",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "5. Wring out washcloth"
+        },
+        {
+          "id": "cahai7_6_buttons",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "6. Do up five buttons"
+        },
+        {
+          "id": "cahai7_7_towel_role",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "reachs for towel"
+            },
+            {
+              "value": 2,
+              "label": "grasps towel end"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Affected Limb (Item 7)"
+        },
+        {
+          "id": "cahai7_7_towel",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - total assist"
+            },
+            {
+              "value": 2,
+              "label": "2 - maximal assist"
+            },
+            {
+              "value": 3,
+              "label": "3 - moderate assist"
+            },
+            {
+              "value": 4,
+              "label": "4 - minimal assist"
+            },
+            {
+              "value": 5,
+              "label": "5 - supervision"
+            },
+            {
+              "value": 6,
+              "label": "6 - modified independence"
+            },
+            {
+              "value": 7,
+              "label": "7 - complete independence"
+            }
+          ],
+          "widget": "segmented",
+          "label": "7. Dry back with towel"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Scoring",
+      "items": [
+        {
+          "id": "cahai7_total_score",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "cahai7_1_jar+cahai7_2_call+cahai7_3_ruler+cahai7_4_water+cahai7_5_washcloth+cahai7_6_buttons+cahai7_7_towel",
+          "exprRaw": "[cahai7_1_jar]+[cahai7_2_call]+[cahai7_3_ruler]+[cahai7_4_water]+[cahai7_5_washcloth]+[cahai7_6_buttons]+[cahai7_7_towel]",
+          "label": "Total Score (Max 49)"
+        },
+        {
+          "id": "cahai7_comments",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "Comments"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

@@ -1,0 +1,104 @@
+{
+  "id": "vafs",
+  "version": 1,
+  "title": "Visual Analogue Fatigue Scale (VAFS)",
+  "redcapForm": "visual_analogue_fatigue_scale",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "vafs_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "vafs_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "VISUAL ANALOGUE FATIGUE SCALE (VAFS)",
+      "items": [
+        {
+          "id": "vafs_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Please mark on the number line the point which describes your global fatigue, with 0 being worst and 10 being normal.\nNotes: Higher numbers represent more fatigue.",
+          "labelHtml": "Please mark on the number line the point which describes your global fatigue, with 0 being worst and 10 being normal.<br><b>Notes: Higher numbers represent more fatigue.</b>"
+        },
+        {
+          "id": "vafs_score",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Worst"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7"
+            },
+            {
+              "value": 8,
+              "label": "8"
+            },
+            {
+              "value": 9,
+              "label": "9"
+            },
+            {
+              "value": 10,
+              "label": "10 - Normal"
+            }
+          ],
+          "widget": "segmented",
+          "label": "Visual Analogue Fatigue Scale (VAFS) Score"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

@@ -1,0 +1,1007 @@
+{
+  "id": "fma",
+  "version": 1,
+  "title": "Fugl-Meyer Assessment (Upper Extremity)",
+  "redcapForm": "fugl_meyer_assessment_ue",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "date_of_assessment",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "fma_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "FUGL-MEYER ASSESSMENT UPPER EXTREMITY (FMA-UE) - Sitting Position",
+      "items": [
+        {
+          "id": "fma_ue_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "A. UPPER EXTREMITY"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "I. Reflex Activity",
+      "items": [
+        {
+          "id": "fma_ue_reflex_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None (can be elicited)"
+            },
+            {
+              "value": 2,
+              "label": "Reflexes present"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Flexors: biceps and finger flexors (at least one)"
+        },
+        {
+          "id": "fma_ue_reflex_ext",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None (can be elicited)"
+            },
+            {
+              "value": 2,
+              "label": "Reflexes present"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Extensors: triceps"
+        },
+        {
+          "id": "fma_ue_subtotal_i",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_ue_reflex_flex + fma_ue_reflex_ext",
+          "exprRaw": "[fma_ue_reflex_flex] + [fma_ue_reflex_ext]",
+          "label": "Subtotal I (max 4)"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "II. Volitional movement within synergies",
+      "items": [
+        {
+          "id": "fma_ue_flex_desc",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Flexor synergy: Hand from contralateral knee to ipsilateral ear. From extensor synergy (shoulder adduction/ internal rotation, elbow extension, forearm pronation) to flexor synergy (shoulder abduction/ external rotation, elbow flexion, forearm supination)."
+        },
+        {
+          "id": "fma_ue_flex_retract",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder retraction"
+        },
+        {
+          "id": "fma_ue_flex_elev",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder elevation"
+        },
+        {
+          "id": "fma_ue_flex_abd",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder abduction (90 degrees)"
+        },
+        {
+          "id": "fma_ue_flex_extrot",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder external rotation"
+        },
+        {
+          "id": "fma_ue_flex_elb",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Elbow flexion"
+        },
+        {
+          "id": "fma_ue_flex_sup",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Forearm supination"
+        },
+        {
+          "id": "fma_ue_ext_desc",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Extensor synergy: Hand from ipsilateral ear to the contralateral knee."
+        },
+        {
+          "id": "fma_ue_ext_add",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder adduction/internal rotation"
+        },
+        {
+          "id": "fma_ue_ext_elb",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Elbow extension"
+        },
+        {
+          "id": "fma_ue_ext_pron",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Forearm pronation"
+        },
+        {
+          "id": "fma_ue_subtotal_ii",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_ue_flex_retract+fma_ue_flex_elev+fma_ue_flex_abd+fma_ue_flex_extrot+fma_ue_flex_elb+fma_ue_flex_sup+fma_ue_ext_add+fma_ue_ext_elb+fma_ue_ext_pron",
+          "exprRaw": "[fma_ue_flex_retract]+[fma_ue_flex_elev]+[fma_ue_flex_abd]+[fma_ue_flex_extrot]+[fma_ue_flex_elb]+[fma_ue_flex_sup]+[fma_ue_ext_add]+[fma_ue_ext_elb]+[fma_ue_ext_pron]",
+          "label": "Subtotal II (max 18)"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "III. Volitional movement mixing synergies",
+      "items": [
+        {
+          "id": "fma_ue_mix_lumbar",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot perform"
+            },
+            {
+              "value": 1,
+              "label": "Hand behind ant-sup iliac spine"
+            },
+            {
+              "value": 2,
+              "label": "Hand to lumbar spine"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Hand to lumbar spine"
+        },
+        {
+          "id": "fma_ue_mix_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Immediate abduction/elbow flexion"
+            },
+            {
+              "value": 1,
+              "label": "Abduction/elbow flexion during movement"
+            },
+            {
+              "value": 2,
+              "label": "Flexion 90 deg / no abduction or elbow flexion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder flexion 0-90 degrees (elbow at 0)"
+        },
+        {
+          "id": "fma_ue_mix_prosup",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "No pron/sup / starting pos impossible"
+            },
+            {
+              "value": 1,
+              "label": "Limited pron/sup / maintains start pos"
+            },
+            {
+              "value": 2,
+              "label": "Full pron/sup / maintains start pos"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pronation-supination (elbow at 90, shoulder at 0)"
+        },
+        {
+          "id": "fma_ue_subtotal_iii",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_ue_mix_lumbar + fma_ue_mix_flex + fma_ue_mix_prosup",
+          "exprRaw": "[fma_ue_mix_lumbar] + [fma_ue_mix_flex] + [fma_ue_mix_prosup]",
+          "label": "Subtotal III (max 6)"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "IV. Volitional movement little/no synergy",
+      "items": [
+        {
+          "id": "fma_ue_vol_abd",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Immediate supination/elbow flexion"
+            },
+            {
+              "value": 1,
+              "label": "Supination/elbow flexion during movement"
+            },
+            {
+              "value": 2,
+              "label": "Abduction 90 deg / maintains ext & pron"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder abduction 0-90 degrees (elbow at 0, forearm pronated)"
+        },
+        {
+          "id": "fma_ue_vol_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Immediate abduction/elbow flexion"
+            },
+            {
+              "value": 1,
+              "label": "Abduction/elbow flexion during movement"
+            },
+            {
+              "value": 2,
+              "label": "Flexion 180 deg / no abduction or elbow flexion"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Shoulder flexion 90-180 degrees (elbow at 0, pron-sup at 0)"
+        },
+        {
+          "id": "fma_ue_vol_prosup",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "No pron/sup / starting pos impossible"
+            },
+            {
+              "value": 1,
+              "label": "Limited pron/sup / maintains start pos"
+            },
+            {
+              "value": 2,
+              "label": "Full pron/sup / maintains start pos"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pronation/supination (elbow at 0, shoulder at 30-90 flexion)"
+        },
+        {
+          "id": "fma_ue_subtotal_iv",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_ue_vol_abd + fma_ue_vol_flex + fma_ue_vol_prosup",
+          "exprRaw": "[fma_ue_vol_abd] + [fma_ue_vol_flex] + [fma_ue_vol_prosup]",
+          "label": "Subtotal IV (max 6)"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "V. Normal reflex activity",
+      "items": [
+        {
+          "id": "fma_ue_norm_reflex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "2 of 3 markedly hyperactive OR score 0 in part IV"
+            },
+            {
+              "value": 1,
+              "label": "1 reflex markedly hyperactive or >=2 lively"
+            },
+            {
+              "value": 2,
+              "label": "Max 1 reflex lively / none hyperactive"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Normal reflex activity (assessed only if full score of 6 in part IV)"
+        },
+        {
+          "id": "fma_ue_total_a",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_ue_subtotal_i+fma_ue_subtotal_ii+fma_ue_subtotal_iii+fma_ue_subtotal_iv+fma_ue_norm_reflex",
+          "exprRaw": "[fma_ue_subtotal_i]+[fma_ue_subtotal_ii]+[fma_ue_subtotal_iii]+[fma_ue_subtotal_iv]+[fma_ue_norm_reflex]",
+          "label": "Total A (max 36)"
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "B. WRIST",
+      "items": [
+        {
+          "id": "fma_wrist_stab_15",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "<15 deg active dorsiflexion"
+            },
+            {
+              "value": 1,
+              "label": "Dorsiflexion 15 deg / no resistance tolerated"
+            },
+            {
+              "value": 2,
+              "label": "Maintains dorsiflexion against resistance"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Stability at 15 deg dorsiflexion (elbow 90, forearm pronated)"
+        },
+        {
+          "id": "fma_wrist_rep_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot perform volitionally"
+            },
+            {
+              "value": 1,
+              "label": "Limited active ROM"
+            },
+            {
+              "value": 2,
+              "label": "Full active ROM smoothly"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Repeated dorsiflexion / volar flexion (elbow 90, forearm pronated)"
+        },
+        {
+          "id": "fma_wrist_stab_0",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "<15 deg active dorsiflexion"
+            },
+            {
+              "value": 1,
+              "label": "Dorsiflexion 15 deg / no resistance tolerated"
+            },
+            {
+              "value": 2,
+              "label": "Maintains dorsiflexion against resistance"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Stability at 15 deg dorsiflexion (elbow 0, forearm pronated)"
+        },
+        {
+          "id": "fma_wrist_rep_flex_0",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot perform volitionally"
+            },
+            {
+              "value": 1,
+              "label": "Limited active ROM"
+            },
+            {
+              "value": 2,
+              "label": "Full active ROM smoothly"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Repeated dorsiflexion / volar flexion (elbow 0, forearm pronated)"
+        },
+        {
+          "id": "fma_wrist_circum",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot perform volitionally"
+            },
+            {
+              "value": 1,
+              "label": "Jerky movement or incomplete"
+            },
+            {
+              "value": 2,
+              "label": "Complete and smooth circumduction"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Circumduction"
+        },
+        {
+          "id": "fma_ue_total_b",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_wrist_stab_15+fma_wrist_rep_flex+fma_wrist_stab_0+fma_wrist_rep_flex_0+fma_wrist_circum",
+          "exprRaw": "[fma_wrist_stab_15]+[fma_wrist_rep_flex]+[fma_wrist_stab_0]+[fma_wrist_rep_flex_0]+[fma_wrist_circum]",
+          "label": "Total B (max 10)"
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "title": "C. HAND",
+      "items": [
+        {
+          "id": "fma_hand_mass_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Mass flexion (from full extension)"
+        },
+        {
+          "id": "fma_hand_mass_ext",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "None"
+            },
+            {
+              "value": 1,
+              "label": "Partial"
+            },
+            {
+              "value": 2,
+              "label": "Full"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Mass extension (from full flexion)"
+        },
+        {
+          "id": "fma_hand_grasp_a",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot be performed"
+            },
+            {
+              "value": 1,
+              "label": "Can hold position but weak"
+            },
+            {
+              "value": 2,
+              "label": "Maintains position against resistance"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp A: Hook grasp (flexion PIP/DIP, ext MCP II-V)"
+        },
+        {
+          "id": "fma_hand_grasp_b",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot be performed"
+            },
+            {
+              "value": 1,
+              "label": "Can hold paper but not against tug"
+            },
+            {
+              "value": 2,
+              "label": "Can hold paper against tug"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp B: Thumb adduction (hold paper)"
+        },
+        {
+          "id": "fma_hand_grasp_c",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot be performed"
+            },
+            {
+              "value": 1,
+              "label": "Can hold pencil but not against tug"
+            },
+            {
+              "value": 2,
+              "label": "Can hold pencil against tug"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp C: Pincer grasp (pencil)"
+        },
+        {
+          "id": "fma_hand_grasp_d",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot be performed"
+            },
+            {
+              "value": 1,
+              "label": "Can hold cylinder but not against tug"
+            },
+            {
+              "value": 2,
+              "label": "Can hold cylinder against tug"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp D: Cylinder grasp (small can)"
+        },
+        {
+          "id": "fma_hand_grasp_e",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Cannot be performed"
+            },
+            {
+              "value": 1,
+              "label": "Can hold ball but not against tug"
+            },
+            {
+              "value": 2,
+              "label": "Can hold ball against tug"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Grasp E: Spherical grasp (tennis ball)"
+        },
+        {
+          "id": "fma_ue_total_c",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_hand_mass_flex+fma_hand_mass_ext+fma_hand_grasp_a+fma_hand_grasp_b+fma_hand_grasp_c+fma_hand_grasp_d+fma_hand_grasp_e",
+          "exprRaw": "[fma_hand_mass_flex]+[fma_hand_mass_ext]+[fma_hand_grasp_a]+[fma_hand_grasp_b]+[fma_hand_grasp_c]+[fma_hand_grasp_d]+[fma_hand_grasp_e]",
+          "label": "Total C (max 14)"
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "title": "D. COORDINATION/SPEED",
+      "items": [
+        {
+          "id": "fma_coord_tremor",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Marked"
+            },
+            {
+              "value": 1,
+              "label": "Slight"
+            },
+            {
+              "value": 2,
+              "label": "None"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Tremor"
+        },
+        {
+          "id": "fma_coord_dysmetria",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Pronounced or unsystematic"
+            },
+            {
+              "value": 1,
+              "label": "Slight and systematic"
+            },
+            {
+              "value": 2,
+              "label": "No dysmetria"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Dysmetria"
+        },
+        {
+          "id": "fma_coord_time",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": ">=6 sec slower"
+            },
+            {
+              "value": 1,
+              "label": "2-5 sec slower"
+            },
+            {
+              "value": 2,
+              "label": "<2 sec difference"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Time (compared to unaffected side)"
+        },
+        {
+          "id": "fma_ue_total_d",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_coord_tremor+fma_coord_dysmetria+fma_coord_time",
+          "exprRaw": "[fma_coord_tremor]+[fma_coord_dysmetria]+[fma_coord_time]",
+          "label": "Total D (max 6)"
+        },
+        {
+          "id": "fma_ue_total_motor",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_ue_total_a+fma_ue_total_b+fma_ue_total_c+fma_ue_total_d",
+          "exprRaw": "[fma_ue_total_a]+[fma_ue_total_b]+[fma_ue_total_c]+[fma_ue_total_d]",
+          "label": "TOTAL A-D (Motor Function max 66)"
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "title": "H. SENSATION",
+      "items": [
+        {
+          "id": "fma_sens_light_up",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Anesthesia"
+            },
+            {
+              "value": 1,
+              "label": "Hypoesthesia/dysesthesia"
+            },
+            {
+              "value": 2,
+              "label": "Normal"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Light touch: upper arm/forearm"
+        },
+        {
+          "id": "fma_sens_light_palm",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Anesthesia"
+            },
+            {
+              "value": 1,
+              "label": "Hypoesthesia/dysesthesia"
+            },
+            {
+              "value": 2,
+              "label": "Normal"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Light touch: palm"
+        },
+        {
+          "id": "fma_sens_pos_sh",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Absence / <3/4 correct"
+            },
+            {
+              "value": 1,
+              "label": "3/4 correct / considerable diff"
+            },
+            {
+              "value": 2,
+              "label": "Correct 100% / little or no diff"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Position: shoulder"
+        },
+        {
+          "id": "fma_sens_pos_elb",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Absence / <3/4 correct"
+            },
+            {
+              "value": 1,
+              "label": "3/4 correct / considerable diff"
+            },
+            {
+              "value": 2,
+              "label": "Correct 100% / little or no diff"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Position: elbow"
+        },
+        {
+          "id": "fma_sens_pos_wrist",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Absence / <3/4 correct"
+            },
+            {
+              "value": 1,
+              "label": "3/4 correct / considerable diff"
+            },
+            {
+              "value": 2,
+              "label": "Correct 100% / little or no diff"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Position: wrist"
+        },
+        {
+          "id": "fma_sens_pos_thumb",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "Absence / <3/4 correct"
+            },
+            {
+              "value": 1,
+              "label": "3/4 correct / considerable diff"
+            },
+            {
+              "value": 2,
+              "label": "Correct 100% / little or no diff"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Position: thumb (IP-joint)"
+        },
+        {
+          "id": "fma_ue_total_h",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "fma_sens_light_up+fma_sens_light_palm+fma_sens_pos_sh+fma_sens_pos_elb+fma_sens_pos_wrist+fma_sens_pos_thumb",
+          "exprRaw": "[fma_sens_light_up]+[fma_sens_light_palm]+[fma_sens_pos_sh]+[fma_sens_pos_elb]+[fma_sens_pos_wrist]+[fma_sens_pos_thumb]",
+          "label": "Total H (Sensation max 12)"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}
