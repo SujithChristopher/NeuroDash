@@ -1,53 +1,189 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { login, currentUser } from '$lib/stores/auth';
-	import { HOME } from '$lib/data/users';
-	import Icon from '$lib/components/ui/Icon.svelte';
+	import { enhance } from '$app/forms';
+	import Icon from '$lib/components/Icon.svelte';
+	import Logo from '$lib/components/Logo.svelte';
+	import { ROLE_LABEL } from '$lib/utils';
 
-	let userid = $state('');
-	let password = $state('');
-	let remember = $state(true);
-	let showPw = $state(false);
-	let error = $state('');
+	let { data, form } = $props();
 
-	function handleSubmit(e: SubmitEvent) {
-		e.preventDefault();
-		const result = login(userid, password, remember);
-		if (!result.ok) {
-			error = result.message;
-			password = '';
-			return;
-		}
-		error = '';
-		const u = $currentUser!;
-		goto('/' + HOME[u.role]);
+	let email = $state('');
+	let mode = $state<'signin' | 'forgot'>('signin');
+	let busy = $state(false);
+
+	const mustReset = $derived(data.mustResetPassword || form?.mustResetPassword === true);
+
+	$effect(() => {
+		const prev = (form as { email?: string } | null)?.email;
+		if (prev) email = prev;
+	});
+
+	function submitting() {
+		busy = true;
+		return async ({ update }: { update: () => Promise<void> }) => {
+			await update();
+			busy = false;
+		};
 	}
 </script>
 
-<div class="login">
-	<div class="login-logo"><span class="logo"><Icon name="pulse" size={17} /></span>NeuroDash</div>
-	<form class="login-card" onsubmit={handleSubmit} autocomplete="on">
-		<h1>Sign in</h1>
-		<p>Welcome back. Enter your details to continue.</p>
-		{#if error}
-			<div class="login-err"><Icon name="alert" size={15} /><span>{error}</span></div>
-		{/if}
-		<div class="field">
-			<label for="uid">User ID</label>
-			<input id="uid" bind:value={userid} autocomplete="username" placeholder="firstname.lastname" required />
-		</div>
-		<div class="field">
-			<label for="pwd">Password</label>
-			<div class="pw">
-				<input id="pwd" type={showPw ? 'text' : 'password'} bind:value={password} autocomplete="current-password" required />
-				<button type="button" onclick={() => (showPw = !showPw)}>{showPw ? 'Hide' : 'Show'}</button>
+<div class="login-wrap">
+	<div class="login-visual">
+		<div class="brand">
+			<Logo size={34} />
+			<div class="txt">
+				<div class="brand-name">NeuroDash</div>
+				<div class="brand-org">Bio Rehabilitation Group</div>
 			</div>
 		</div>
-		<div class="login-row">
-			<label><input type="checkbox" bind:checked={remember} style="accent-color:var(--brand)" /> Keep me signed in</label>
-			<a href="/login" class="lnk" style="color:var(--brand)" onclick={(e) => e.preventDefault()}>Forgot password?</a>
+		<div class="pitch">
+			<h1>One connected record for every stroke recovery, from first assessment to discharge.</h1>
+			<p>
+				NeuroDash unifies rehabilitation devices, clinical assessments, therapy plans and progress
+				analytics into a single clinical workspace for lab-based physical therapy and stroke
+				rehabilitation.
+			</p>
+			<div class="flow-strip">
+				<span class="node">Assessment</span><span class="arrow">→</span><span class="node">Therapy Plan</span>
+				<span class="arrow">→</span><span class="node">Device</span><span class="arrow">→</span>
+				<span class="node">Session Data</span><span class="arrow">→</span><span class="node">Progress</span>
+			</div>
 		</div>
-		<button class="btn pri block" type="submit" style="background:var(--brand)">Sign in</button>
-	</form>
-	<div class="login-foot"><span>© {new Date().getFullYear()} NeuroDash</span><span>v2.0</span></div>
+		<div>
+			<div class="stat-row">
+				<div><div class="k">{data.stats.patients}</div><div class="l">Active Patients</div></div>
+				<div><div class="k">{data.stats.devices}</div><div class="l">Connected Devices</div></div>
+				<div><div class="k">{data.stats.deviceTypes}</div><div class="l">Device Types</div></div>
+			</div>
+			<div class="foot" style="margin-top:22px">
+				Secure clinical platform · Role-based access · Full audit trail
+			</div>
+		</div>
+	</div>
+
+	<div class="login-panel">
+		<div class="login-card">
+			{#if mustReset}
+				<div class="lc-head">
+					<div class="eyebrow">First Sign-In</div>
+					<h2>Set a new password</h2>
+					<div class="lc-sub">
+						You signed in with a temporary password. Choose a new one to continue.
+					</div>
+				</div>
+				<form method="POST" action="?/setPassword" use:enhance={submitting}>
+					<div class="field">
+						<label for="np">New password</label>
+						<input id="np" name="password" type="password" autocomplete="new-password" required />
+						<div class="field-hint">At least 8 characters.</div>
+					</div>
+					<div class="field">
+						<label for="cp">Confirm password</label>
+						<input id="cp" name="confirm" type="password" autocomplete="new-password" required />
+					</div>
+					{#if form?.error}
+						<div class="alert alert-critical" style="margin-bottom:14px">
+							<Icon name="alert" size={15} /><span>{form.error}</span>
+						</div>
+					{/if}
+					<button class="btn btn-primary btn-block" disabled={busy}>
+						<Icon name="shield" size={15} /> Save password & continue
+					</button>
+				</form>
+			{:else if mode === 'forgot'}
+				<div class="lc-head">
+					<div class="eyebrow">Account Recovery</div>
+					<h2>Forgot password</h2>
+					<div class="lc-sub">
+						Enter your account email. Your administrator will be notified and can share a temporary
+						password.
+					</div>
+				</div>
+				<form method="POST" action="?/forgotPassword" use:enhance={submitting}>
+					<div class="field">
+						<label for="fe">Email</label>
+						<input id="fe" name="email" type="email" autocomplete="email" required bind:value={email} />
+					</div>
+					{#if form?.forgotMessage}
+						<div class="alert alert-good" style="margin-bottom:14px">
+							<Icon name="check" size={15} /><span>{form.forgotMessage}</span>
+						</div>
+					{/if}
+					{#if form?.forgotError}
+						<div class="alert alert-critical" style="margin-bottom:14px">
+							<Icon name="alert" size={15} /><span>{form.forgotError}</span>
+						</div>
+					{/if}
+					<button class="btn btn-primary btn-block" disabled={busy}>Request reset</button>
+					<div style="text-align:center;margin-top:14px">
+						<button type="button" class="link-btn" onclick={() => (mode = 'signin')}>
+							Back to sign in
+						</button>
+					</div>
+				</form>
+			{:else}
+				<div class="lc-head">
+					<div class="eyebrow">Clinical Sign-In</div>
+					<h2>Welcome back</h2>
+					<div class="lc-sub">
+						Sign in with your NeuroDash credentials. Accounts are provisioned by your system
+						administrator.
+					</div>
+				</div>
+
+				{#if data.demoUsers.length}
+					<div class="field">
+						<label for="demo-accounts">Demo account</label>
+						<div class="demo-accounts" id="demo-accounts">
+							{#each data.demoUsers as u (u.email)}
+								<button
+									type="button"
+									class="demo-acct"
+									class:active={email === u.email}
+									onclick={() => (email = u.email)}
+								>
+									<div class="da-role">{ROLE_LABEL[u.role]}</div>
+									<div class="da-name">{u.name}</div>
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+
+				<form method="POST" action="?/login" use:enhance={submitting}>
+					<div class="field">
+						<label for="email">Email</label>
+						<input id="email" name="email" type="email" autocomplete="username" required bind:value={email} />
+					</div>
+					<div class="field">
+						<label for="pw">Password</label>
+						<input id="pw" name="password" type="password" autocomplete="current-password" required />
+						{#if data.showDemoHint}
+							<div class="field-hint">Demo accounts use the password <span class="mono">neurodash123</span>.</div>
+						{/if}
+					</div>
+					<div class="row-check">
+						<span></span>
+						<button type="button" class="link-btn" onclick={() => (mode = 'forgot')}>
+							Forgot password?
+						</button>
+					</div>
+					{#if form?.error}
+						<div class="alert alert-critical" style="margin-bottom:14px">
+							<Icon name="alert" size={15} /><span>{form.error}</span>
+						</div>
+					{/if}
+					<button class="btn btn-primary btn-block" disabled={busy}>
+						<Icon name="shield" size={15} /> Sign in
+					</button>
+				</form>
+				<div class="login-alert">
+					<Icon name="info" size={15} />
+					<span>
+						Public registration is disabled. All roles — Therapist, Consultant, Engineer, Admin — are
+						provisioned internally.
+					</span>
+				</div>
+			{/if}
+		</div>
+	</div>
 </div>

@@ -1,40 +1,29 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import type { User } from '$lib/data/users';
-	import { theme, toggleTheme } from '$lib/stores/theme';
-	import { logout } from '$lib/stores/auth';
-	import { commandPaletteOpen } from '$lib/stores/ui';
-	import Icon from '$lib/components/ui/Icon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import Badge from '$lib/components/Badge.svelte';
+	import { ROLE_LABEL } from '$lib/utils';
 
-	let { user, open, onClose }: { user: User; open: boolean; onClose: () => void } = $props();
-
-	function signOut() {
-		onClose();
-		logout();
-		goto('/login');
-	}
-	function openSearch() {
-		onClose();
-		commandPaletteOpen.set(true);
-	}
+	let {
+		user,
+		onclose
+	}: {
+		user: { name: string; title: string | null; role: keyof typeof ROLE_LABEL };
+		onclose: () => void;
+	} = $props();
 </script>
 
-{#if open}
-	<div class="pop menu" style="right:16px;top:52px;width:230px">
-		<div class="mh">
-			<b>{user.name}</b>
-			<span>{user.email}</span>
-		</div>
-		<div class="mi" style="cursor:default">
-			<Icon name={$theme === 'dark' ? 'moon' : 'sun'} size={15} />
-			<span class="grow">Theme</span>
-			<div class="segs" style="padding:2px">
-				<button type="button" class={$theme === 'dark' ? '' : 'on'} style="padding:2px 8px;font-size:12px" onclick={() => toggleTheme()}>Light</button>
-				<button type="button" class={$theme === 'dark' ? 'on' : ''} style="padding:2px 8px;font-size:12px" onclick={() => toggleTheme()}>Dark</button>
-			</div>
-		</div>
-		<button class="mi" onclick={openSearch}><Icon name="search" size={15} />Search<span class="kbd">Ctrl K</span></button>
-		<hr />
-		<button class="mi" onclick={signOut}><Icon name="logout" size={15} />Sign out</button>
+<div class="dropdown" style="width:230px">
+	<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+		<div style="font-weight:700;font-size:13px">{user.name}</div>
+		{#if user.title}<div style="font-size:11.5px;color:var(--ink-500)">{user.title}</div>{/if}
+		<div style="margin-top:6px"><Badge text={ROLE_LABEL[user.role]} tone="accent" /></div>
 	</div>
-{/if}
+	<a class="side-link" href="/profile" onclick={onclose} style="padding:11px 16px">
+		<Icon name="users" /><span class="lbl">My Profile</span>
+	</a>
+	<form method="POST" action="/logout">
+		<button class="side-link" style="padding:11px 16px">
+			<Icon name="logout" /><span class="lbl">Sign out</span>
+		</button>
+	</form>
+</div>
