@@ -1,0 +1,589 @@
+// ============================================================================
+// NeuroDash Rehabilitation Platform - Prisma Schema
+// Derived from database/neurodash_database_design_2.md, matching the data
+// model used by the neurodash_7.html prototype.
+//
+// Status-style columns that contain spaces/punctuation in the UI (patient
+// status, device status, issue/request status, day-log status) are kept as
+// plain String columns rather than native Postgres enums, validated at the
+// API layer — this avoids enum-value/identifier mapping friction while still
+// matching the exact strings the prototype displays. Enums are used only for
+// values that are already valid identifiers (user role, trial type).
+// ============================================================================
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================================================
+// USERS & AUTH
+// ============================================================================
+
+enum UserRole {
+  THERAPIST
+  CONSULTANT
+  ENGINEER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid())
+  displayCode  String   @unique @map("display_code") // e.g. 'U-T1'
+  name         String
+  role         UserRole
+  title        String?
+  email        String   @unique
+  initials     String?
+  isActive     Boolean  @default(true) @map("is_active")
+  passwordHash String   @map("password_hash")
+  // Set whenever an admin creates the account (or a forgot-password request
+  // reissues one) — forces the temp password to be exchanged for a real one
+  // via /api/auth/set-password before any other endpoint will accept the token.
+  mustResetPassword Boolean @default(false) @map("must_reset_password")
+  // Site assignment — required for THERAPIST/CONSULTANT at creation, unused
+  // for ENGINEER/ADMIN. Drives patient visibility: a therapist sees every
+  // patient at their location (not just their own), and a consultant is
+  // scoped to their location too rather than the whole program.
+  locationId   String?  @map("location_id")
+  location     Location? @relation(fields: [locationId], references: [id])
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  patients            Patient[]           @relation("PatientTherapist")
+  assessmentsGiven     Assessment[]        @relation("AssessmentAdministrator")
+  plansCreated         TherapyPlan[]       @relation("PlanCreatedBy")
+  planRevisions        PlanRevision[]      @relation("PlanRevisionModifiedBy")
+  documentsUploaded    PatientDocument[]   @relation("DocumentUploadedBy")
+  notesAuthored        PatientNote[]       @relation("NoteAuthor")
+  sessionNotesAuthored SessionNote[]       @relation("SessionNoteAuthor")
+  deviceAssignmentsMade DeviceAssignment[] @relation("AssignmentAssignedBy")
+  deviceRequestsMade    DeviceRequest[]    @relation("RequestTherapist")
+  deviceRequestsCleared DeviceRequest[]    @relation("RequestEngineer")
+  issuesOpened          DeviceIssue[]      @relation("IssueOpenedBy")
+  issuesAssigned        DeviceIssue[]      @relation("IssueEngineer")
+  issuesVerified        DeviceIssue[]      @relation("IssueVerifiedBy")
+  troubleshootingLogs   IssueTroubleshootingLog[] @relation("LogAuthor")
+  maintenanceDone       DeviceMaintenance[] @relation("MaintenanceEngineer")
+  notifications         Notification[]     @relation("NotificationTargetUser")
+  auditLogEntries        AuditLog[]         @relation("AuditActor")
+  sessions               Session[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users User[]
+
+  @@map("locations")
+}
+
+// ============================================================================
+// REFERENCE DATA — assessment & device catalogs
+// ============================================================================
+
+// Assessment scale definitions are NOT in the database: they are data files in
+// clinical_scales/neuro/*.json (one generic renderer/evaluator handles all of them).
+
+model DeviceType {
+  id          String @id // 'PLUTO','MARS',...
+  name        String
+  category    String
+  colorSeries String? @map("color_series")
+
+  mechanisms      DeviceMechanism[]
+  games           DeviceGame[]
+  devices         Device[]
+  planDevices     PlanDevice[]
+  deviceRequests  DeviceRequest[]
+
+  @@map("device_types")
+}
+
+model DeviceMechanism {
+  id             String     @id @default(uuid())
+  deviceTypeId   String     @map("device_type_id")
+  deviceType     DeviceType @relation(fields: [deviceTypeId], references: [id], onDelete: Cascade)
+  mechanismName  String     @map("mechanism_name")
+
+  @@map("device_mechanisms")
+}
+
+model DeviceGame {
+  id            String     @id // 'HAT','PongGame',...
+  deviceTypeId  String     @map("device_type_id")
+  deviceType    DeviceType @relation(fields: [deviceTypeId], references: [id], onDelete: Cascade)
+  displayLabel  String     @map("display_label")
+
+  trials SessionTrial[]
+
+  @@map("device_games")
+}
+
+// ============================================================================
+// PATIENTS
+// ============================================================================
+
+model Patient {
+  id                  String   @id @default(uuid())
+  displayCode         String   @unique @map("display_code") // 'P-00124'
+  name                String
+  dob                 DateTime? @db.Date
+  gender              String?
+  contactPhone        String?  @map("contact_phone")
+  emergencyContact    String?  @map("emergency_contact")
+  registrationDate    DateTime @default(now()) @db.Date @map("registration_date")
+  therapistId         String   @map("therapist_id")
+  therapist           User     @relation("PatientTherapist", fields: [therapistId], references: [id])
+  diagnosis           String?
+  affectedSide        String?  @map("affected_side")
+  strokeDate          DateTime? @db.Date @map("stroke_date")
+  mobilityStatus      String?  @map("mobility_status")
+  therapyGoals        String[] @map("therapy_goals")
+  initialObservations String?  @map("initial_observations")
+  clinicalInfo        String?  @map("clinical_info")
+  status              String   @default("New") // New|Assessment Pending|Active|Paused|Completed|Discontinued
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  documents         PatientDocument[]
+  notes             PatientNote[]
+  assessments       Assessment[]
+  therapyPlans      TherapyPlan[]
+  therapySessions   TherapySession[]
+  deviceAssignments DeviceAssignment[]
+  deviceRequests    DeviceRequest[]
+  currentDevices    Device[]           @relation("DeviceCurrentPatient")
+
+  @@index([therapistId])
+  @@index([status])
+  @@index([registrationDate])
+  @@map("patients")
+}
+
+model PatientDocument {
+  id           String   @id @default(uuid())
+  patientId    String   @map("patient_id")
+  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name         String
+  docType      String?  @map("doc_type")
+  uploadDate   DateTime @default(now()) @map("upload_date")
+  uploadedById String?  @map("uploaded_by")
+  uploadedBy   User?    @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+  sizeKb       Int?     @map("size_kb")
+  storageRef   String?  @map("storage_ref")
+  // Scanned documents are stored as bytes in Postgres (capped at 10MB, type-checked by file signature).
+  mimeType     String?  @map("mime_type")
+  data         Bytes?
+  // Set when the scan was attached while recording an assessment.
+  assessmentId String?     @map("assessment_id")
+  assessment   Assessment? @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+
+  @@index([patientId])
+  @@index([assessmentId])
+  @@map("patient_documents")
+}
+
+model PatientNote {
+  id         String   @id @default(uuid())
+  patientId  String   @map("patient_id")
+  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  authorId   String   @map("author_id")
+  author     User     @relation("NoteAuthor", fields: [authorId], references: [id])
+  noteDate   DateTime @default(now()) @map("note_date")
+  text       String
+
+  @@index([patientId, noteDate(sort: Desc)])
+  @@map("patient_notes")
+}
+
+// ============================================================================
+// ASSESSMENTS
+// ============================================================================
+
+model Assessment {
+  id               String         @id @default(uuid())
+  patientId        String         @map("patient_id")
+  patient          Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  // Id of a scale in clinical_scales/neuro (e.g. 'fma', 'phq9'); answers use the REDCap variable names.
+  scaleId          String         @map("scale_id")
+  scaleVersion     Int            @default(1) @map("scale_version")
+  administeredById String?        @map("administered_by")
+  administeredBy   User?          @relation("AssessmentAdministrator", fields: [administeredById], references: [id])
+  assessmentDate   DateTime       @db.Date @map("assessment_date")
+  label            String? // 'Baseline','Day 7','Discharge'
+  answers          Json           // { itemId: value } — scores are always recomputed from these
+  // Headline score of the scale (null when the scale has no computed total, e.g. BBT, NIHSS items).
+  scoreItem        String?        @map("score_item")
+  score            Float?
+  maxScore         Float?         @map("max_score")
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  documents PatientDocument[]
+
+  @@index([patientId, assessmentDate])
+  @@index([scaleId])
+  @@map("assessments")
+}
+
+// ============================================================================
+// THERAPY PLANS
+// ============================================================================
+
+model TherapyPlan {
+  id                  String   @id @default(uuid())
+  patientId           String   @map("patient_id")
+  patient             Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name                String
+  startDate           DateTime @db.Date @map("start_date")
+  durationDays        Int      @map("duration_days")
+  dailyTargetMinutes  Int      @map("daily_target_minutes")
+  targetSessions      Int?     @map("target_sessions")
+  goals               String[]
+  notes               String?
+  status              String   @default("Active") // Active|Paused|Completed|Discontinued
+  createdById         String   @map("created_by")
+  createdBy           User     @relation("PlanCreatedBy", fields: [createdById], references: [id])
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  devices          PlanDevice[]
+  revisions        PlanRevision[]
+  dayLog           PlanDayLog[]
+  therapySessions  TherapySession[]
+
+  @@index([patientId])
+  @@index([status])
+  @@map("therapy_plans")
+}
+
+model PlanDevice {
+  planId       String     @map("plan_id")
+  plan         TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  deviceTypeId String     @map("device_type_id")
+  deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
+
+  @@id([planId, deviceTypeId])
+  @@map("plan_devices")
+}
+
+model PlanRevision {
+  id             String   @id @default(uuid())
+  planId         String   @map("plan_id")
+  plan           TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  fieldChanged   String   @map("field_changed")
+  previousValue  String?  @map("previous_value")
+  newValue       String?  @map("new_value")
+  modifiedById   String   @map("modified_by")
+  modifiedBy     User     @relation("PlanRevisionModifiedBy", fields: [modifiedById], references: [id])
+  modifiedByRole String   @map("modified_by_role")
+  modifiedAt     DateTime @default(now()) @map("modified_at")
+  reason         String?
+
+  @@index([planId, modifiedAt])
+  @@map("plan_revisions")
+}
+
+model PlanDayLog {
+  id             String   @id @default(uuid())
+  planId         String   @map("plan_id")
+  plan           TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayNumber      Int      @map("day_number")
+  logDate        DateTime @db.Date @map("log_date")
+  status         String   @default("upcoming") // done|partial|missed|upcoming
+  targetMinutes  Int      @map("target_minutes")
+  actualMinutes  Int      @default(0) @map("actual_minutes")
+
+  therapySessions TherapySession[]
+
+  @@unique([planId, dayNumber])
+  @@index([planId, logDate])
+  @@map("plan_day_log")
+}
+
+// ============================================================================
+// DEVICES
+// ============================================================================
+
+model Device {
+  id                String     @id @default(uuid())
+  displayCode       String     @unique @map("display_code") // 'PLUTO-003'
+  deviceTypeId      String     @map("device_type_id")
+  deviceType        DeviceType @relation(fields: [deviceTypeId], references: [id])
+  serialNumber      String     @map("serial_number")
+  firmwareVersion   String?    @map("firmware_version")
+  status            String     @default("Available") // Available|In Use|Issue Detected|Awaiting Engineer|Maintenance
+  location          String?
+  registeredOn      DateTime   @default(now()) @db.Date @map("registered_on")
+  currentPatientId  String?    @map("current_patient_id")
+  currentPatient    Patient?   @relation("DeviceCurrentPatient", fields: [currentPatientId], references: [id])
+  lastSyncAt        DateTime?  @map("last_sync_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+
+  assignments      DeviceAssignment[]
+  issues           DeviceIssue[]
+  maintenance      DeviceMaintenance[]
+  events           DeviceEvent[]
+  therapySessions  TherapySession[]
+
+  @@index([deviceTypeId])
+  @@index([status])
+  @@index([currentPatientId])
+  @@map("devices")
+}
+
+model DeviceAssignment {
+  id             String   @id @default(uuid())
+  deviceId       String   @map("device_id")
+  device         Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  patientId      String   @map("patient_id")
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  assignedDate   DateTime @db.Date @map("assigned_date")
+  returnedDate   DateTime? @db.Date @map("returned_date")
+  status         String   @default("In Use") // In Use|Returned
+  assignedById   String?  @map("assigned_by")
+  assignedBy     User?    @relation("AssignmentAssignedBy", fields: [assignedById], references: [id])
+
+  @@index([deviceId])
+  @@index([patientId])
+  @@map("device_assignments")
+}
+
+model DeviceRequest {
+  id           String     @id @default(uuid())
+  patientId    String     @map("patient_id")
+  patient      Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  therapistId  String     @map("therapist_id")
+  therapist    User       @relation("RequestTherapist", fields: [therapistId], references: [id])
+  deviceTypeId String     @map("device_type_id")
+  deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
+  requestedAt  DateTime   @default(now()) @map("requested_at")
+  status       String     @default("Pending Engineer Review") // Pending Engineer Review|Cleared — Ready to Assign|Assigned
+  engineerId   String?    @map("engineer_id")
+  engineer     User?      @relation("RequestEngineer", fields: [engineerId], references: [id])
+  notes        String?
+  clearedAt    DateTime?  @map("cleared_at")
+
+  @@index([status])
+  @@index([therapistId])
+  @@map("device_requests")
+}
+
+model DeviceIssue {
+  id             String    @id @default(uuid())
+  deviceId       String    @map("device_id")
+  device         Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  description    String
+  severity       String // Low|Medium|High|Critical
+  status         String    @default("Open") // Open|Investigating|Resolved|Cleared
+  openedAt       DateTime  @default(now()) @map("opened_at")
+  openedById     String    @map("opened_by")
+  openedBy       User      @relation("IssueOpenedBy", fields: [openedById], references: [id])
+  engineerId     String?   @map("engineer_id")
+  engineer       User?     @relation("IssueEngineer", fields: [engineerId], references: [id])
+  diagnostics    String?
+  partsReplaced  String?   @map("parts_replaced")
+  resolution     String?
+  resolvedAt     DateTime? @map("resolved_at")
+  clearedAt      DateTime? @map("cleared_at")
+  verifiedById   String?   @map("verified_by")
+  verifiedBy     User?     @relation("IssueVerifiedBy", fields: [verifiedById], references: [id])
+
+  troubleshootingLog IssueTroubleshootingLog[]
+
+  @@index([deviceId])
+  @@index([status])
+  @@index([severity])
+  @@map("device_issues")
+}
+
+model IssueTroubleshootingLog {
+  id         String      @id @default(uuid())
+  issueId    String      @map("issue_id")
+  issue      DeviceIssue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  loggedAt   DateTime    @default(now()) @map("logged_at")
+  loggedById String      @map("logged_by")
+  loggedBy   User        @relation("LogAuthor", fields: [loggedById], references: [id])
+  note       String
+
+  @@index([issueId, loggedAt])
+  @@map("issue_troubleshooting_log")
+}
+
+model DeviceMaintenance {
+  id                String   @id @default(uuid())
+  deviceId          String   @map("device_id")
+  device            Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  maintenanceDate   DateTime @db.Date @map("maintenance_date")
+  maintenanceType   String   @map("maintenance_type")
+  engineerId        String   @map("engineer_id")
+  engineer          User     @relation("MaintenanceEngineer", fields: [engineerId], references: [id])
+  notes             String?
+
+  @@index([deviceId, maintenanceDate(sort: Desc)])
+  @@map("device_maintenance")
+}
+
+model DeviceEvent {
+  id          String   @id @default(uuid())
+  deviceId    String   @map("device_id")
+  device      Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  eventDate   DateTime @default(now()) @map("event_date")
+  eventType   String   @map("event_type") // registered|assigned|maintenance|issue|investigating|resolved|cleared
+  description String
+
+  @@index([deviceId, eventDate(sort: Desc)])
+  @@map("device_events")
+}
+
+// ============================================================================
+// SESSIONS & TRIALS (device CSV ingestion lands here)
+// ============================================================================
+
+model TherapySession {
+  id               String      @id @default(uuid())
+  patientId        String      @map("patient_id")
+  patient          Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  planId           String?     @map("plan_id")
+  plan             TherapyPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planDayLogId     String?     @map("plan_day_log_id")
+  planDayLog       PlanDayLog? @relation(fields: [planDayLogId], references: [id], onDelete: SetNull)
+  deviceId         String      @map("device_id")
+  device           Device      @relation(fields: [deviceId], references: [id])
+  sessionNumber    Int?        @map("session_number")
+  sessionDate      DateTime    @db.Date @map("session_date")
+  startTime        DateTime    @map("start_time")
+  endTime          DateTime?   @map("end_time")
+  durationMinutes  Decimal?    @map("duration_minutes") @db.Decimal(6, 2)
+  totalTargets     Int         @default(0) @map("total_targets")
+  totalHits        Int         @default(0) @map("total_hits")
+  totalMisses      Int         @default(0) @map("total_misses")
+  totalStars       Int         @default(0) @map("total_stars")
+
+  trials SessionTrial[]
+  notes  SessionNote[]
+
+  @@index([patientId, sessionDate])
+  @@index([deviceId, sessionDate])
+  @@index([planId])
+  @@map("therapy_sessions")
+}
+
+// Clinical notes attached to a specific therapy session, with an optional
+// photo. No object storage is configured for this app, so the image is
+// stored as a data URL (base64) directly in the row — fine at the size this
+// feature is used at (single photos per note, size-capped at the API layer),
+// avoids standing up S3/blob infra for one feature.
+model SessionNote {
+  id          String         @id @default(uuid())
+  sessionId   String         @map("session_id")
+  session     TherapySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  authorId    String         @map("author_id")
+  author      User           @relation("SessionNoteAuthor", fields: [authorId], references: [id])
+  text        String
+  imageDataUrl String?       @map("image_data_url")
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  @@index([sessionId, createdAt])
+  @@map("session_notes")
+}
+
+enum TrialType {
+  GAME
+  AROM
+  PROM
+  APROM
+}
+
+model SessionTrial {
+  id                  String         @id @default(uuid())
+  sessionId           String         @map("session_id")
+  session             TherapySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  trialNumberSession  Int            @map("trial_number_session")
+  trialNumberDay      Int?           @map("trial_number_day")
+  trialType           TrialType      @map("trial_type")
+  gameId              String?        @map("game_id")
+  game                DeviceGame?    @relation(fields: [gameId], references: [id])
+  mechanism           String?
+  targets             Int
+  hits                Int
+  misses              Int
+  stars               Int            @default(0)
+  startTime           DateTime?      @map("start_time")
+  stopTime            DateTime?      @map("stop_time")
+  cumulativeTargets   Int?           @map("cumulative_targets")
+  cumulativeHits      Int?           @map("cumulative_hits")
+  cumulativeMisses    Int?           @map("cumulative_misses")
+  cumulativeStars     Int?           @map("cumulative_stars")
+  rawDataRef          String?        @map("raw_data_ref")
+
+  @@index([sessionId, trialNumberSession])
+  @@map("session_trials")
+}
+
+// ============================================================================
+// NOTIFICATIONS & AUDIT
+// ============================================================================
+
+model Notification {
+  id           String    @id @default(uuid())
+  targetRole   UserRole? @map("target_role")
+  targetUserId String?   @map("target_user_id")
+  targetUser   User?     @relation("NotificationTargetUser", fields: [targetUserId], references: [id])
+  notifType    String    @map("notif_type") // device|plan|issue|request|system|...
+  tone         String    @default("info") // good|info|warning|critical|neutral
+  icon         String?
+  title        String
+  description  String
+  createdAt    DateTime  @default(now()) @map("created_at")
+  isRead       Boolean   @default(false) @map("is_read")
+  link         Json?
+
+  @@index([targetUserId, isRead])
+  @@index([targetRole, isRead])
+  @@index([createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  actorUserId   String?  @map("actor_user_id")
+  actorUser     User?    @relation("AuditActor", fields: [actorUserId], references: [id])
+  actorRole     String   @map("actor_role")
+  action        String // 'Plan Created','Issue Resolved','Device Cleared',...
+  entityType    String   @map("entity_type") // 'Patient'|'Therapy Plan'|'Device'|'Device Issue'|...
+  entityId      String   @map("entity_id")
+  occurredAt    DateTime @default(now()) @map("occurred_at")
+  previousValue Json?    @map("previous_value")
+  newValue      Json?    @map("new_value")
+  notes         String?
+
+  @@index([entityType, entityId])
+  @@index([actorUserId, occurredAt(sort: Desc)])
+  @@index([occurredAt(sort: Desc)])
+  @@map("audit_log")
+}
+
+// ============================================================================
+// SESSIONS (cookie-based auth — replaces the original stateless JWT)
+// ============================================================================
+
+model Session {
+  id        String   @id // random token, this IS the cookie value
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // "access" | "password-reset" — a reset session is only valid for finishing
+  // the forced password reset, nothing else.
+  purpose   String   @default("access")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("sessions")
+}
