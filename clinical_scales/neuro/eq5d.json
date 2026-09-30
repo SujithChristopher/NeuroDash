@@ -1,0 +1,252 @@
+{
+  "id": "eq5d",
+  "version": 1,
+  "title": "EQ-5D",
+  "redcapForm": "eq_5d_5l",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "eq5d_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "EQ-5D-5L HEALTH QUESTIONNAIRE",
+      "items": [
+        {
+          "id": "eq5d_intro",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Health Questionnaire\nEnglish version for India\n© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (English) v2.0\nUnder each heading, please tick the ONE box that best describes your health TODAY.",
+          "labelHtml": "Health Questionnaire<br>English version for India<br><br>© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (English) v2.0<br><br>Under each heading, please tick the ONE box that best describes your health TODAY."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "MOBILITY",
+      "items": [
+        {
+          "id": "eq5d_mobility",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "I have no problems in walking"
+            },
+            {
+              "value": 2,
+              "label": "I have slight problems in walking"
+            },
+            {
+              "value": 3,
+              "label": "I have moderate problems in walking"
+            },
+            {
+              "value": 4,
+              "label": "I have severe problems in walking"
+            },
+            {
+              "value": 5,
+              "label": "I am unable to walk"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Mobility"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "SELF-CARE",
+      "items": [
+        {
+          "id": "eq5d_self_care",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "I have no problems bathing or dressing myself"
+            },
+            {
+              "value": 2,
+              "label": "I have slight problems bathing or dressing myself"
+            },
+            {
+              "value": 3,
+              "label": "I have moderate problems bathing or dressing myself"
+            },
+            {
+              "value": 4,
+              "label": "I have severe problems bathing or dressing myself"
+            },
+            {
+              "value": 5,
+              "label": "I am unable to bathe or dress myself"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Self-care"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "USUAL ACTIVITIES",
+      "items": [
+        {
+          "id": "eq5d_usual_activities",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "I have no problems doing my usual activities"
+            },
+            {
+              "value": 2,
+              "label": "I have slight problems doing my usual activities"
+            },
+            {
+              "value": 3,
+              "label": "I have moderate problems doing my usual activities"
+            },
+            {
+              "value": 4,
+              "label": "I have severe problems doing my usual activities"
+            },
+            {
+              "value": 5,
+              "label": "I am unable to do my usual activities"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Usual activities (e.g. work, study, housework, family or leisure activities)"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "PAIN / DISCOMFORT",
+      "items": [
+        {
+          "id": "eq5d_pain_discomfort",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "I have no pain or discomfort"
+            },
+            {
+              "value": 2,
+              "label": "I have slight pain or discomfort"
+            },
+            {
+              "value": 3,
+              "label": "I have moderate pain or discomfort"
+            },
+            {
+              "value": 4,
+              "label": "I have severe pain or discomfort"
+            },
+            {
+              "value": 5,
+              "label": "I have extreme pain or discomfort"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pain / Discomfort"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "ANXIETY / DEPRESSION",
+      "items": [
+        {
+          "id": "eq5d_anxiety_depression",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "I am not anxious or depressed"
+            },
+            {
+              "value": 2,
+              "label": "I am slightly anxious or depressed"
+            },
+            {
+              "value": 3,
+              "label": "I am moderately anxious or depressed"
+            },
+            {
+              "value": 4,
+              "label": "I am severely anxious or depressed"
+            },
+            {
+              "value": 5,
+              "label": "I am extremely anxious or depressed"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Anxiety / Depression"
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "EQ VAS",
+      "items": [
+        {
+          "id": "eq5d_vas_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "• We would like to know how good or bad your health is TODAY.\n• This scale is numbered from 0 to 100.\n• 100 means the best health you can imagine. 0 means the worst health you can imagine.\n• Mark an X on the scale to indicate how your health is TODAY.\n• Now, please write the number you marked on the scale in the box",
+          "labelHtml": "• We would like to know how good or bad your health is TODAY.<br>• This scale is numbered from 0 to 100.<br>• 100 means the best health you can imagine. 0 means the worst health you can imagine.<br>• Mark an X on the scale to indicate how your health is TODAY.<br>• Now, please write the number you marked on the scale in the box"
+        },
+        {
+          "id": "eq5d_vas",
+          "redcapType": "text",
+          "type": "number",
+          "widget": "stepper",
+          "min": 0,
+          "max": 100,
+          "label": "EQ VAS Score (0-100)"
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "title": "COPYRIGHT",
+      "items": [
+        {
+          "id": "eq5d_copyright",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (English) v2.0"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

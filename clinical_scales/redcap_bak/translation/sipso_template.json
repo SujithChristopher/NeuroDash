@@ -1,0 +1,427 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-03-02 06:37:20",
+    "instructions": "How to use this file: The essential elements are all 'id', 'type', 'form', 'order', and 'translation' items and the paths leading to them, as well as the root elements 'creator' (must be left as is), 'key', 'display', and 'rtl'. All other items, including this text, are non-essential and will not be regarded during an import operation. Furthermore, subsets of this file can be created and used at will, as long as it remains valid JSON. The 'hash' items are not essential, but assist in tracking if a default value has changed since the file was created, and thus a translation may be out of date. During an import operation, a best-effort approach is taken. Any paths and/or ids that do not match the target will be silently ignored. Thus, a cross-project import of field translations would only work for fields of the same name.",
+    "key": "ta",
+    "display": "Tamil",
+    "rtl": false,
+    "sort": "",
+    "fieldTranslations": [
+        {
+            "id": "sipso_header",
+            "form": "sipso_questionnaire",
+            "header": {
+                "hash": "fadb730cb7",
+                "translation": ""
+            },
+            "label": {
+                "hash": "14e22afadc",
+                "translation": ""
+            }
+        },
+        {
+            "id": "sipso_1_dress",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "6525db3f29",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "5879f9637a",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "81c032b69f",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "9ee5601c1b",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "7d87008dc2",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "74dff10138",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_2_move_home",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "58d3a9b94e",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "5879f9637a",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "81c032b69f",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "9ee5601c1b",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "7d87008dc2",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "9d4049ed61",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_3_satisfaction",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "59dbf4783c",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "0ae8d1104f",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "d00f71a6f4",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "484234494e",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "ed3cb8dbf8",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "9f1defdfcb",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_4_shop",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "0f3cde81db",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "5879f9637a",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "81c032b69f",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "9ee5601c1b",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "7d87008dc2",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "7084594fe2",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_5_indep_neigh",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "67e02afce9",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "1b016c5b16",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "a8746b5915",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "3ba3c6ece8",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "50e13ea29d",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "ab20c804a3",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_physical",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "f87d8a69bc",
+                "translation": ""
+            }
+        },
+        {
+            "id": "sipso_6_bored",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "76a838fb07",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "fa47a55f7d",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "36e070bd9c",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "c5bcf0a902",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "8e17fc2710",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "a7a5055e3a",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_7_comm",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "fed5193e04",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "5025b2d310",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "c7b7c42e0e",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "00b2aad45d",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "cafdd12066",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "6eef664840",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_8_social_sat",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "d1fbdf076d",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "0ae8d1104f",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "d00f71a6f4",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "484234494e",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "ed3cb8dbf8",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "9f1defdfcb",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_9_visit",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "89ededb75e",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "0599f59a8f",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "67a03fcd2c",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "b63e0f73a2",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "69b004a976",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "80c3052d33",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_10_appearance",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "2899301c72",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "hash": "63b54d6dc7",
+                    "translation": ""
+                },
+                {
+                    "id": 3,
+                    "hash": "4d452c47c0",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "eacd9b1d1e",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "8a34bb0431",
+                    "translation": ""
+                },
+                {
+                    "id": 0,
+                    "hash": "76163d2ec7",
+                    "translation": ""
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_social",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "f6e6602851",
+                "translation": ""
+            }
+        },
+        {
+            "id": "sipso_total_score",
+            "form": "sipso_questionnaire",
+            "label": {
+                "hash": "0cb0020067",
+                "translation": ""
+            }
+        },
+        {
+            "id": "sipso_questionnaire_complete",
+            "form": "sipso_questionnaire",
+            "header": {
+                "hash": "c91e0b9151",
+                "translation": ""
+            },
+            "label": {
+                "hash": "fc84b4a6d8",
+                "translation": ""
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "hash": "387fd1bbc1",
+                    "translation": ""
+                },
+                {
+                    "id": 1,
+                    "hash": "eb27a190c0",
+                    "translation": ""
+                },
+                {
+                    "id": 2,
+                    "hash": "1f5a1abf2f",
+                    "translation": ""
+                }
+            ]
+        }
+    ]
+}

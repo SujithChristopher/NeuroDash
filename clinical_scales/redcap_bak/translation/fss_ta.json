@@ -1,0 +1,367 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "ta",
+    "display": "Tamil",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "fss_date",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "fss_header",
+            "form": "fatigue_severity_scale",
+            "header": {
+                "translation": "FATIGUE SEVERITY SCALE (FSS)"
+            },
+            "label": {
+                "translation": "Please circle the number that best describes your fatigue over the past week. / ஒரு எண்ணை படித்து வட்டமிடவும் | 1 | 2 | 3 | 4 | 5 | 6 | 7"
+            }
+        },
+        {
+            "id": "fss_1_motivation",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "1. My motivation is lower when I am fatigued / 1. நான் சோர்வாக இருக்கும்போது என் ஆதரவு குறைகிறது."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_2_exercise",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "2. Exercise brings on my fatigue / 2. உடற்பயிற்சி என் சோர்வை ஏற்படுத்துகிறது."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_3_easily",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "3. I am easily fatigued / 3. நான் எளிதில் சோர்வடைகிறேன்."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_4_interferes",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "4. Fatigue interferes with my physical functioning / 4. சோர்வு என் உடல் செயல்பாட்டில் தலையிடுகிறது."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_5_problems",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "5. Fatigue causes frequent problems for me / 5. சோர்வு எனக்கு அடிக்கடி பிரச்சனைகளை ஏற்படுத்துகிறது."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_6_sustained",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "6. My fatigue prevents sustained physical functioning / 6. என் சோர்வு நிலையான உடல் செயல்பாட்டை தடுக்கிறது."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_7_duties",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "7. Fatigue interferes with carrying out certain duties and responsibilities / 7. சோர்வு சில கடமைகளையும் பொறுப்புகளையும் நிறைவேற்றுவதில் இடையூறு செய்கிறது."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_8_disabling",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "8. Fatigue is among my three most disabling symptoms / 8. சோர்வு என்னை மிகவும் செயலிழக்கச் செய்யும் அறிகுறிகளில் ஒன்றாகும்."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "fss_9_work",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "9. Fatigue interferes with my work, family, or social life / 9. சோர்வு என்னுடைய வேலை, குடும்பம் அல்லது சமூக வாழ்க்கையில் தடையாக உள்ளது ."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - கடுமையாக எதிர்க்கிறேன்"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - கடுமையாக ஒப்புக்கொள்கிறேன்"
+                }
+            ]
+        }
+    ]
+}

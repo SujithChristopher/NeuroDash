@@ -1,0 +1,83 @@
+{
+  "id": "exit_questionnaire_control",
+  "version": 1,
+  "title": "Exit Questionnaire Control",
+  "redcapForm": "exit_questionnaire_control",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "EXIT QUESTIONNAIRE - CONTROL GROUP",
+      "items": [
+        {
+          "id": "eqc_opt_out_reasons",
+          "redcapType": "checkbox",
+          "type": "multi_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "I am unhappy about not receiving the new treatment"
+            },
+            {
+              "value": 2,
+              "label": "I don't feel any improvement from this therapy"
+            },
+            {
+              "value": 3,
+              "label": "The exercises are taking too much time and effort"
+            },
+            {
+              "value": 4,
+              "label": "I have lost interest in continuing the study"
+            },
+            {
+              "value": 5,
+              "label": "The therapy did not match my expectations"
+            },
+            {
+              "value": 6,
+              "label": "I have decided to try alternative therapies"
+            },
+            {
+              "value": 7,
+              "label": "I have hired a physiotherapist for home sessions or going to therapy at a clinic/centre"
+            },
+            {
+              "value": 8,
+              "label": "Others"
+            }
+          ],
+          "widget": "checkboxes",
+          "label": "Why did you opt out of the study?"
+        },
+        {
+          "id": "eqc_continue_reason",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "What would have made you continue the study?"
+        },
+        {
+          "id": "eqc_other_comments",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "Other Comments"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

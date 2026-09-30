@@ -1,0 +1,624 @@
+{
+  "id": "moca",
+  "version": 1,
+  "title": "Montreal Cognitive Assessment (MoCA)",
+  "redcapForm": "montreal_cognitive_assessment",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "moca_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "MONTREAL COGNITIVE ASSESSMENT (MoCA)",
+      "items": [
+        {
+          "id": "moca_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "MONTREAL COGNITIVE ASSESSMENT (MoCA)"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "1. Visuospatial / Executive",
+      "items": [
+        {
+          "id": "moca_trail",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct sequence"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Alternating Trail Making (1-A-2-B-3-C-4-D-5-E)"
+        },
+        {
+          "id": "moca_cube",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Accurate 3D reproduction"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Copy Cube"
+        },
+        {
+          "id": "moca_clock_contour",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct contour"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Clock Drawing - Contour"
+        },
+        {
+          "id": "moca_clock_numbers",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - All numbers correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Clock Drawing - Numbers"
+        },
+        {
+          "id": "moca_clock_hands",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct time"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Clock Drawing - Hands (Ten past eleven)"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "2. Naming",
+      "items": [
+        {
+          "id": "moca_animal_lion",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Name Lion"
+        },
+        {
+          "id": "moca_animal_rhino",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Name Rhinoceros"
+        },
+        {
+          "id": "moca_animal_camel",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Name Camel"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "3. Memory",
+      "items": [
+        {
+          "id": "moca_memory_info",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Trial 1 & 2: Registering the words FACE, VELVET, CHURCH, DAISY, RED. No points are awarded here; they are for the 5-minute delayed recall task."
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "4. Attention",
+      "items": [
+        {
+          "id": "moca_digit_forward",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Digit Span Forward (2-1-8-5-4)"
+        },
+        {
+          "id": "moca_digit_backward",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Digit Span Backward (7-4-2)"
+        },
+        {
+          "id": "moca_vigilance",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - >= 2 errors"
+            },
+            {
+              "value": 1,
+              "label": "1 - < 2 errors"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Vigilance (Tapping at 'A')"
+        },
+        {
+          "id": "moca_serial_7",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - 0 correct"
+            },
+            {
+              "value": 1,
+              "label": "1 - 1 correct"
+            },
+            {
+              "value": 2,
+              "label": "2 - 2 or 3 correct"
+            },
+            {
+              "value": 3,
+              "label": "3 - 4 or 5 correct subtractions"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Serial 7 Subtraction (Starting at 100)"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "5. Language",
+      "items": [
+        {
+          "id": "moca_sentence_1",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Sentence Repetition 1: \"I only know that John is the one to help today.\""
+        },
+        {
+          "id": "moca_sentence_2",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Sentence Repetition 2: \"The cat always hid under the couch when dogs were in the room.\""
+        },
+        {
+          "id": "moca_verbal_fluency",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Verbal Fluency: Naming words starting with the letter \"F\" in one minute"
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "6. Abstraction",
+      "items": [
+        {
+          "id": "moca_abstract_train",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Similarities: Train - Bicycle"
+        },
+        {
+          "id": "moca_abstract_watch",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Similarities: Watch - Ruler"
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "title": "7. Delayed Recall",
+      "items": [
+        {
+          "id": "moca_recall_face",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Uncued Recall: FACE"
+        },
+        {
+          "id": "moca_recall_velvet",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Uncued Recall: VELVET"
+        },
+        {
+          "id": "moca_recall_church",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Uncued Recall: CHURCH"
+        },
+        {
+          "id": "moca_recall_daisy",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Uncued Recall: DAISY"
+        },
+        {
+          "id": "moca_recall_red",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Uncued Recall: RED"
+        },
+        {
+          "id": "moca_mis_info",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Memory Index Score (MIS): Calculated for clinical use but not part of the 30-point total (Uncued 3; Category Cue 2; Multiple Choice 1)."
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "title": "8. Orientation",
+      "items": [
+        {
+          "id": "moca_orient_calendar",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Date"
+        },
+        {
+          "id": "moca_orient_month",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Month"
+        },
+        {
+          "id": "moca_orient_year",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Year"
+        },
+        {
+          "id": "moca_orient_day",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Day"
+        },
+        {
+          "id": "moca_orient_place",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Place"
+        },
+        {
+          "id": "moca_orient_city",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - Incorrect"
+            },
+            {
+              "value": 1,
+              "label": "1 - Correct"
+            }
+          ],
+          "widget": "buttons",
+          "label": "City"
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "title": "Total Calculation",
+      "items": [
+        {
+          "id": "moca_edu_add",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0 - No"
+            },
+            {
+              "value": 1,
+              "label": "1 - Yes"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Education Correction: Add +1 point? (if <= 12 years of education)",
+          "labelHtml": "Education Correction: Add +1 point? (if <= 12 years of education)"
+        },
+        {
+          "id": "moca_total_score",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "moca_trail + moca_cube + moca_clock_contour + moca_clock_numbers + moca_clock_hands + moca_animal_lion + moca_animal_rhino + moca_animal_camel + moca_digit_forward + moca_digit_backward + moca_vigilance + moca_serial_7 + moca_sentence_1 + moca_sentence_2 + moca_verbal_fluency + moca_abstract_train + moca_abstract_watch + moca_recall_face + moca_recall_velvet + moca_recall_church + moca_recall_daisy + moca_recall_red + moca_orient_calendar + moca_orient_month + moca_orient_year + moca_orient_day + moca_orient_place + moca_orient_city + moca_edu_add",
+          "exprRaw": "[moca_trail] + [moca_cube] + [moca_clock_contour] + [moca_clock_numbers] + [moca_clock_hands] + [moca_animal_lion] + [moca_animal_rhino] + [moca_animal_camel] + [moca_digit_forward] + [moca_digit_backward] + [moca_vigilance] + [moca_serial_7] + [moca_sentence_1] + [moca_sentence_2] + [moca_verbal_fluency] + [moca_abstract_train] + [moca_abstract_watch] + [moca_recall_face] + [moca_recall_velvet] + [moca_recall_church] + [moca_recall_daisy] + [moca_recall_red] + [moca_orient_calendar] + [moca_orient_month] + [moca_orient_year] + [moca_orient_day] + [moca_orient_place] + [moca_orient_city] + [moca_edu_add]",
+          "label": "Total Score (Max 30)"
+        },
+        {
+          "id": "moca_interpretation",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Interpretation: A final score of >= 26 is considered normal."
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

@@ -1,0 +1,331 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-03-02 07:25:00",
+    "key": "en",
+    "display": "English",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "sipso_header",
+            "form": "sipso_questionnaire",
+            "header": {
+                "translation": "Subjective Index of Physical and Social Outcome (SIPSO)"
+            },
+            "label": {
+                "translation": "Please answer all questions based on your experience since your stroke."
+            }
+        },
+        {
+            "id": "sipso_1_dress",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "1. Since your stroke, how much difficulty do you have dressing yourself fully?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "No difficulty at all"
+                },
+                {
+                    "id": 3,
+                    "translation": "Slight difficulty"
+                },
+                {
+                    "id": 2,
+                    "translation": "Some difficulty"
+                },
+                {
+                    "id": 1,
+                    "translation": "A lot of difficulty"
+                },
+                {
+                    "id": 0,
+                    "translation": "I cannot dress myself fully"
+                }
+            ]
+        },
+        {
+            "id": "sipso_2_move_home",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "2. Since your stroke, how much difficulty do you have moving around all areas of the home?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "No difficulty at all"
+                },
+                {
+                    "id": 3,
+                    "translation": "Slight difficulty"
+                },
+                {
+                    "id": 2,
+                    "translation": "Some difficulty"
+                },
+                {
+                    "id": 1,
+                    "translation": "A lot of difficulty"
+                },
+                {
+                    "id": 0,
+                    "translation": "I cannot move around all areas of the home"
+                }
+            ]
+        },
+        {
+            "id": "sipso_3_satisfaction",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "3. Since your stroke, how satisfied are you with your overall ability to perform daily activities in and around the home?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "Completely satisfied"
+                },
+                {
+                    "id": 3,
+                    "translation": "Mostly satisfied"
+                },
+                {
+                    "id": 2,
+                    "translation": "Fairly satisfied"
+                },
+                {
+                    "id": 1,
+                    "translation": "Not very satisfied"
+                },
+                {
+                    "id": 0,
+                    "translation": "Completely dissatisfied"
+                }
+            ]
+        },
+        {
+            "id": "sipso_4_shop",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "4. Since your stroke, how much difficulty do you have shopping for and carrying a few items (1 bag of shopping or less) when at the shops?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "No difficulty at all"
+                },
+                {
+                    "id": 3,
+                    "translation": "Slight difficulty"
+                },
+                {
+                    "id": 2,
+                    "translation": "Some difficulty"
+                },
+                {
+                    "id": 1,
+                    "translation": "A lot of difficulty"
+                },
+                {
+                    "id": 0,
+                    "translation": "I cannot shop for and carry a few items"
+                }
+            ]
+        },
+        {
+            "id": "sipso_5_indep_neigh",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "5. Since your stroke, how independent are you in your ability to move around your local neighbourhood?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "I am completely independent"
+                },
+                {
+                    "id": 3,
+                    "translation": "I prefer to have someone else with me"
+                },
+                {
+                    "id": 2,
+                    "translation": "I need occasional assistance from someone"
+                },
+                {
+                    "id": 1,
+                    "translation": "I need assistance much of the time"
+                },
+                {
+                    "id": 0,
+                    "translation": "I am completely dependent on others"
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_physical",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Physical Integration Subscore (Items 1-5)"
+            }
+        },
+        {
+            "id": "sipso_6_bored",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "6. Since your stroke, how often do you feel bored with your free time at home?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "I am never bored with my free time"
+                },
+                {
+                    "id": 3,
+                    "translation": "A little of my free time"
+                },
+                {
+                    "id": 2,
+                    "translation": "Some of my free time"
+                },
+                {
+                    "id": 1,
+                    "translation": "Most of my free time"
+                },
+                {
+                    "id": 0,
+                    "translation": "All of my free time"
+                }
+            ]
+        },
+        {
+            "id": "sipso_7_comm",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "7. Since your stroke, how would you describe the amount of communication between you and your friends/associates?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "A great deal"
+                },
+                {
+                    "id": 3,
+                    "translation": "Quite a lot"
+                },
+                {
+                    "id": 2,
+                    "translation": "Some"
+                },
+                {
+                    "id": 1,
+                    "translation": "A little bit"
+                },
+                {
+                    "id": 0,
+                    "translation": "None"
+                }
+            ]
+        },
+        {
+            "id": "sipso_8_social_sat",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "8. Since your stroke, how satisfied are you with the level of interests and activities you share with your friends/associates?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "Completely satisfied"
+                },
+                {
+                    "id": 3,
+                    "translation": "Mostly satisfied"
+                },
+                {
+                    "id": 2,
+                    "translation": "Fairly satisfied"
+                },
+                {
+                    "id": 1,
+                    "translation": "Not very satisfied"
+                },
+                {
+                    "id": 0,
+                    "translation": "Completely dissatisfied"
+                }
+            ]
+        },
+        {
+            "id": "sipso_9_visit",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "9. Since your stroke, how often do you visit friends/others?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "Most days"
+                },
+                {
+                    "id": 3,
+                    "translation": "At least once a week"
+                },
+                {
+                    "id": 2,
+                    "translation": "At least once a fortnight"
+                },
+                {
+                    "id": 1,
+                    "translation": "Once a month or less"
+                },
+                {
+                    "id": 0,
+                    "translation": "Never"
+                }
+            ]
+        },
+        {
+            "id": "sipso_10_appearance",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "10. Since your stroke, how do you feel about your appearance when out in public?"
+            },
+            "enum": [
+                {
+                    "id": 4,
+                    "translation": "Perfectly happy"
+                },
+                {
+                    "id": 3,
+                    "translation": "Slightly self-conscious"
+                },
+                {
+                    "id": 2,
+                    "translation": "Fairly self-conscious"
+                },
+                {
+                    "id": 1,
+                    "translation": "Very self-conscious"
+                },
+                {
+                    "id": 0,
+                    "translation": "I try to avoid going out in public"
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_social",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Social Integration Subscore (Items 6-10)"
+            }
+        },
+        {
+            "id": "sipso_total_score",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Total SIPSO Score (Max 40)"
+            }
+        }
+    ]
+}

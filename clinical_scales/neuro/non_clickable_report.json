@@ -1,0 +1,271 @@
+{
+  "adverse_event": [
+    {
+      "id": "ae_name",
+      "type": "text",
+      "widget": "text"
+    }
+  ],
+  "arat": [
+    {
+      "id": "arat_notes",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "bbt": [
+    {
+      "id": "bnb_left_trial_1",
+      "type": "number",
+      "widget": "stepper"
+    },
+    {
+      "id": "bnb_right_trial_1",
+      "type": "number",
+      "widget": "stepper"
+    }
+  ],
+  "cahai7": [
+    {
+      "id": "cahai7_comments",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "completed_assessment": [
+    {
+      "id": "completion_notes",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "completed_screening": [
+    {
+      "id": "screening_completion_notes",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "eq5d": [
+    {
+      "id": "eq5d_vas",
+      "type": "number",
+      "widget": "stepper"
+    }
+  ],
+  "exit_questionnaire_control": [
+    {
+      "id": "eqc_continue_reason",
+      "type": "text",
+      "widget": "textarea"
+    },
+    {
+      "id": "eqc_other_comments",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "exit_questionnaire_intervention": [
+    {
+      "id": "eqi_continue_reason",
+      "type": "text",
+      "widget": "textarea"
+    },
+    {
+      "id": "eqi_other_comments",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "homer_screening_form": [
+    {
+      "id": "scr_exclude_reason",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "mal": [
+    {
+      "id": "mal_comm_1",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_2",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_3",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_4",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_5",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_6",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_7",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_8",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_9",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_10",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_11",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_12",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_13",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_14",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_15",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_16",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_17",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_18",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_19",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_20",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_21",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_22",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_23",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_24",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_25",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_26",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_27",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_28",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_29",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_comm_30",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "mal_final_notes",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ],
+  "nihss": [
+    {
+      "id": "nihss_5_un_explain",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "nihss_6_un_explain",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "nihss_7_un_explain",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "nihss_10_un_explain",
+      "type": "text",
+      "widget": "text"
+    },
+    {
+      "id": "nihss_notes",
+      "type": "text",
+      "widget": "textarea"
+    }
+  ]
+}

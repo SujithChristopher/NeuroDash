@@ -1,0 +1,5 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,Choices, Calculations, OR Slider Labels,Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,numeric_pain_rating_scale,,text,Record ID,,,,,,,,,,,,,,,
+nprs_date,numeric_pain_rating_scale,,text,Date of Assessment,,,date_ymd,,,,,,,,,,,
+nprs_examiner,numeric_pain_rating_scale,,text,Examiner Name,,,,,,,,,,,,,,,
+nprs_score,numeric_pain_rating_scale,NUMERIC PAIN RATING SCALE (NPRS),dropdown,Numeric Pain Rating Scale (NPRS) Score,"0, 0 - No pain | 1, 1 - Mild pain | 2, 2 - Mild pain | 3, 3 - Mild pain | 4, 4 - Moderate pain | 5, 5 - Moderate pain | 6, 6 - Moderate pain | 7, 7 - Severe pain | 8, 8 - Severe pain | 9, 9 - Severe pain | 10, 10 - Severe pain",,,,,,,,,,,,,,

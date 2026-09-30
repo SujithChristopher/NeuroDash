@@ -1,0 +1,392 @@
+{
+  "id": "fss",
+  "version": 1,
+  "title": "Fatigue Severity Scale (FSS)",
+  "redcapForm": "fatigue_severity_scale",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "fss_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "fss_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "FATIGUE SEVERITY SCALE (FSS)",
+      "items": [
+        {
+          "id": "fss_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Please circle the number between 1 and 7 which you feel best fits the following statements. This refers to your usual way of life within the last week.\n1 indicates \"strongly disagree\" and 7 indicates \"strongly agree.\"",
+          "labelHtml": "Please circle the number between 1 and 7 which you feel best fits the following statements. This refers to your usual way of life within the last week.<br><b>1 indicates \"strongly disagree\" and 7 indicates \"strongly agree.\"</b>"
+        },
+        {
+          "id": "fss_1_motivation",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "1. My motivation is lower when I am fatigued."
+        },
+        {
+          "id": "fss_2_exercise",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "2. Exercise brings on my fatigue."
+        },
+        {
+          "id": "fss_3_easily",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "3. I am easily fatigued."
+        },
+        {
+          "id": "fss_4_physical",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "4. Fatigue interferes with my physical functioning."
+        },
+        {
+          "id": "fss_5_problems",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "5. Fatigue causes frequent problems for me."
+        },
+        {
+          "id": "fss_6_sustained",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "6. My fatigue prevents sustained physical functioning."
+        },
+        {
+          "id": "fss_7_duties",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "7. Fatigue interferes with carrying out certain duties and responsibilities."
+        },
+        {
+          "id": "fss_8_disabling",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "8. Fatigue is among my most disabling symptoms."
+        },
+        {
+          "id": "fss_9_social",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "1 - Strongly Disagree"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7 - Strongly Agree"
+            }
+          ],
+          "widget": "segmented",
+          "label": "9. Fatigue interferes with my work, family, or social life."
+        },
+        {
+          "id": "fss_mean_score",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "(fss_1_motivation+fss_2_exercise+fss_3_easily+fss_4_physical+fss_5_problems+fss_6_sustained+fss_7_duties+fss_8_disabling+fss_9_social) / 9",
+          "exprRaw": "([fss_1_motivation]+[fss_2_exercise]+[fss_3_easily]+[fss_4_physical]+[fss_5_problems]+[fss_6_sustained]+[fss_7_duties]+[fss_8_disabling]+[fss_9_social]) / 9",
+          "label": "FSS Mean Score (Average of 9 items)"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

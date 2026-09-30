@@ -1,0 +1,291 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "hi",
+    "display": "Hindi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "phq9_date",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "phq9_header",
+            "form": "patient_health_questionnaire_phq9",
+            "header": {
+                "translation": "PATIENT HEALTH QUESTIONNAIRE-9 (PHQ-9) / रोगी स्वास्थ्य प्रश्नावली – 9 (PHQ-9)"
+            },
+            "label": {
+                "translation": "Over the last 2 weeks, how often have you had any of the following problems? <br> पिछले 2 सप्ताहों में, आप इन समस्याओं में से किसी से भी कितनी बार परेशान रहे/रही हैं? (अपना उत्तर बताने के लिए “✓” का प्रयोग करें)"
+            }
+        },
+        {
+            "id": "phq9_1_interest",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "1. Little interest or pleasure in doing things <br> 1. कुछ करने में बहुत कम दिलचस्पी या मज़ा आना"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_2_depressed",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "2. Feeling down, depressed, or hopeless <br> 2. उदास, निराश या असफल महसूस करना"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_3_sleep",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "3. Trouble falling or staying asleep, or sleeping too much <br> 3. नींद आने या सोए रहने में परेशानी, या फिर बहुत अधिक सोना"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_4_tired",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "4. Feeling tired or having little energy <br> 4. थकान महसूस करना या बहुत कम ऊर्जा होना"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_5_appetite",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "5. Poor appetite or overeating <br> 5. भूख कम लगना या ज़्यादा खाना"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_6_failure",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "6. Feeling bad about yourself - or that you are a failure or have let yourself down or your family down <br> 6. अपने बारे में बुरा महसूस करना - या ऐसा महसूस करना कि आप नाकाम इंसान हैं और आपने खुद को और अपने परिवार को नीचा दिखाया है"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_7_concentrating",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "7. Trouble concentrating on things, such as reading the newspaper or watching television <br> 7. अखबार पढ़ने या टेलीविज़न देखने जैसी चीज़ों पर ध्यान देने में परेशानी"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_8_moving",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "8. Moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual <br> 8. इतना धीमे चलना-फिरना या बोलना कि लोगों का ध्यान जाए? या इसका उल्टा - इतना अस्थिर या बेचैन होना कि आप सामान्य से काफी ज़्यादा हिलते-डुलते और चलते-फिरते रहे हैं"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_9_thoughts",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "9. Thoughts that you would be better off dead or of hurting yourself in some way <br> 9. ऐसे विचार कि आप मर जाते तो अच्छा होता या किसी ढंग से ख़ुद को नुकसान पहुंचाना"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - कई दिन"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - आधे से अधिक दिन"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - लगभग हर दिन"
+                }
+            ]
+        },
+        {
+            "id": "phq9_10_difficulty",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "If you ticked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people? <br> यदि आपने इनमें से किसी समस्या को चिह्नित किया है, तो इन समस्याओं ने आपके लिए काम करना, घर पर चीज़ों की देखभाल करना, या दूसरे लोगों के साथ मेल-जोल रखना कितना मुश्किल किया है?"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "0 - बिल्कुल मुश्किल नहीं"
+                },
+                {
+                    "id": 1,
+                    "translation": "1 - थोड़ा-बहुत मुश्किल"
+                },
+                {
+                    "id": 2,
+                    "translation": "2 - बहुत मुश्किल"
+                },
+                {
+                    "id": 3,
+                    "translation": "3 - बेहद मुश्किल"
+                }
+            ]
+        },
+        {
+            "id": "phq9_total_score",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "TOTAL SCORE / कुल स्कोर"
+            }
+        }
+    ]
+}

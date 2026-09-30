@@ -1,0 +1,367 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "pa",
+    "display": "Punjabi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "fss_date",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "fss_header",
+            "form": "fatigue_severity_scale",
+            "header": {
+                "translation": "FATIGUE SEVERITY SCALE (FSS)"
+            },
+            "label": {
+                "translation": "Please circle the number that best describes your fatigue over the past week. <br> ਥਕਾਵਟ ਗੰਭੀਰਤਾ ਪੈਮਾਨਾ - ਕਿਰਪਾ ਕਰਕੇ 1 ਤੋਂ 7 ਤੱਕ ਦੀ ਅੰਕਾਂ ਵਿੱਚੋਂ ਉਹ ਚੁਣੋ ਜੋ ਤੁਹਾਡੇ ਅਨੁਭਵ ਨੂੰ ਸਭ ਤੋਂ ਵਧੀਆ ਦਰਸਾਉਂਦਾ ਹੈ। ਇਹ ਪਿਛਲੇ ਹਫ਼ਤੇ ਦੇ ਤੁਹਾਡੇ ਆਮ ਜੀਵਨ-ਸ਼ੈਲੀ ਨੂੰ ਦਰਸਾਉਂਦਾ ਹੈ। 1 ਦਾ ਅਰਥ ਹੈ 'ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ' ਅਤੇ 7 ਦਾ ਅਰਥ ਹੈ 'ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ'"
+            }
+        },
+        {
+            "id": "fss_1_motivation",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "1. My motivation is lower when I am fatigued <br> 1. ਜਦੋਂ ਮੈਂ ਥੱਕਿਆ ਹੁੰਦਾ ਹਾਂ ਤਾਂ ਮੇਰੀ ਪ੍ਰੇਰਣਾ ਘੱਟ ਹੁੰਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_2_exercise",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "2. Exercise brings on my fatigue <br> 2. ਕਸਰਤ ਮੇਰੀ ਥਕਾਵਟ ਵਧਾਉਂਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_3_easily",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "3. I am easily fatigued <br> 3. ਮੈਂ ਆਸਾਨੀ ਨਾਲ ਥੱਕ ਜਾਂਦਾ ਹਾਂ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_4_interferes",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "4. Fatigue interferes with my physical functioning <br> 4. ਥਕਾਵਟ ਮੇਰੇ ਸਰੀਰਕ ਕੰਮਾਂ ਵਿੱਚ ਰੁਕਾਵਟ ਪਾਉਂਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_5_problems",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "5. Fatigue causes frequent problems for me <br> 5. ਥਕਾਵਟ ਮੈਨੂੰ ਵਾਰ-ਵਾਰ ਸਮੱਸਿਆ ਦਿੰਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_6_sustained",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "6. My fatigue prevents sustained physical functioning <br> 6. ਮੇਰੀ ਥਕਾਵਟ ਲਗਾਤਾਰ ਸਰੀਰਕ ਕੰਮ ਕਰਨ ਤੋਂ ਰੋਕਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_7_duties",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "7. Fatigue interferes with carrying out certain duties and responsibilities <br> 7. ਥਕਾਵਟ ਕੁਝ ਫਰਜ਼ਾਂ ਅਤੇ ਜ਼ਿੰਮੇਵਾਰੀਆਂ ਨੂੰ ਨਿਭਾਉਣ ਵਿੱਚ ਰੁਕਾਵਟ ਪਾਉਂਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_8_disabling",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "8. Fatigue is among my three most disabling symptoms <br> 8. ਥਕਾਵਟ ਮੇਰੇ ਸਭ ਤੋਂ ਅਸਮਰੱਥ ਕਰਨ ਵਾਲੇ ਲੱਛਣਾਂ ਵਿੱਚੋਂ ਇੱਕ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        },
+        {
+            "id": "fss_9_work",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "9. Fatigue interferes with my work, family, or social life <br> 9. ਥਕਾਵਟ ਮੇਰੇ ਕੰਮ, ਪਰਿਵਾਰ ਜਾਂ ਸਮਾਜਿਕ ਜੀਵਨ ਵਿੱਚ ਰੁਕਾਵਟ ਪਾਉਂਦੀ ਹੈ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਹਿਮਤ"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਹਿਮਤ"
+                }
+            ]
+        }
+    ]
+}

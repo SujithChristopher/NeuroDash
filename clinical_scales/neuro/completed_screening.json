@@ -1,0 +1,56 @@
+{
+  "id": "completed_screening",
+  "version": 1,
+  "title": "Completed Screening",
+  "redcapForm": "completed_screening",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Final Screening Completion",
+      "items": [
+        {
+          "id": "screening_completion_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Completion"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Screening Status Overview",
+      "items": [
+        {
+          "id": "screening_completion_status_summary",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "InstrumentStatus (0=Incomplete, 1=Unverified, 2=Complete)\n HOMER Screening Form[homer_screening_form_complete]\n Fugl Meyer Assessment Ue[fugl_meyer_assessment_ue_complete]\n Modified Ashworth Scale[modified_ashworth_scale_complete]\n Montreal Cognitive Assessment[montreal_cognitive_assessment_complete]\n Numeric Pain Rating Scale[numeric_pain_rating_scale_complete]\nOnce this form is marked Complete, all other assessments in this event will be locked.",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse;'>\n  <tr><th style='padding: 5px;'>Instrument</th><th style='padding: 5px;'>Status (0=Incomplete, 1=Unverified, 2=Complete)</th></tr>\n  <tr><td style='padding: 5px;'>HOMER Screening Form</td><td style='padding: 5px; text-align: center;'>[homer_screening_form_complete]</td></tr>\n  <tr><td style='padding: 5px;'>Fugl Meyer Assessment Ue</td><td style='padding: 5px; text-align: center;'>[fugl_meyer_assessment_ue_complete]</td></tr>\n  <tr><td style='padding: 5px;'>Modified Ashworth Scale</td><td style='padding: 5px; text-align: center;'>[modified_ashworth_scale_complete]</td></tr>\n  <tr><td style='padding: 5px;'>Montreal Cognitive Assessment</td><td style='padding: 5px; text-align: center;'>[montreal_cognitive_assessment_complete]</td></tr>\n  <tr><td style='padding: 5px;'>Numeric Pain Rating Scale</td><td style='padding: 5px; text-align: center;'>[numeric_pain_rating_scale_complete]</td></tr>\n</table>\n<br>Once this form is marked <b>Complete</b>, all other assessments in this event will be locked."
+        },
+        {
+          "id": "screening_completion_notes",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "General Comments on Screening Completion"
+        }
+      ]
+    }
+  ],
+  "kind": "bookkeeping"
+}

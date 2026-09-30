@@ -1,0 +1,367 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "hi",
+    "display": "Hindi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "fss_date",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "fss_header",
+            "form": "fatigue_severity_scale",
+            "header": {
+                "translation": "FATIGUE SEVERITY SCALE (FSS)"
+            },
+            "label": {
+                "translation": "Please circle the number that best describes your fatigue over the past week. <br> थकान गंभीरता पैमाना - कृपया 1 से 7 तक की संख्या में से वह चुनें जो आपके अनुभव को सबसे अच्छी तरह दर्शाती है। यह पिछले सप्ताह के आपके सामान्य जीवन-शैली को संदर्भित करता है। 1 का अर्थ है 'पूरी तरह असहमत' और 7 का अर्थ है 'पूरी तरह सहमत'"
+            }
+        },
+        {
+            "id": "fss_1_motivation",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "1. My motivation is lower when I am fatigued <br> 1. जब मैं थका हुआ होता हूँ तो मेरी प्रेरणा कम होती है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_2_exercise",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "2. Exercise brings on my fatigue <br> 2. व्यायाम मेरी थकान बढ़ाता है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_3_easily",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "3. I am easily fatigued <br> 3. मैं आसानी से थक जाता/जाती हूँ।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_4_interferes",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "4. Fatigue interferes with my physical functioning <br> 4. थकान मेरे शारीरिक कार्यों में बाधा डालती है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_5_problems",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "5. Fatigue causes frequent problems for me <br> 5. थकान मुझे बार-बार समस्या देती है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_6_sustained",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "6. My fatigue prevents sustained physical functioning <br> 6. मेरी थकान लगातार शारीरिक कार्य करने से रोकती है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_7_duties",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "7. Fatigue interferes with carrying out certain duties and responsibilities <br> 7. थकान कुछ कर्तव्यों और जिम्मेदारियों को निभाने में बाधा डालती है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_8_disabling",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "8. Fatigue is among my three most disabling symptoms <br> 8. थकान मेरे सबसे अक्षम करने वाले लक्षणों में से एक है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        },
+        {
+            "id": "fss_9_work",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "9. Fatigue interferes with my work, family, or social life <br> 9. थकान मेरे काम, परिवार या सामाजिक जीवन में बाधा डालती है।"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 - Strongly Disagree / 1 - बिल्कुल असहमत"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 - Strongly Agree / 7 - बिल्कुल सहमत"
+                }
+            ]
+        }
+    ]
+}

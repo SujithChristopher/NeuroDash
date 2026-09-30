@@ -1,0 +1,12 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,adverse_event,,text,Record ID,,,,,,,,,,,,,
+ae_no_events,adverse_event,ADVERSE EVENT FORM,checkbox,"At end of study only: Check this box if participant had no adverse events","1, No adverse events",,,,,,,,,,,,
+ae_name,adverse_event,ADVERSE EVENT,text,Adverse Event,,,,,,,,,,,,, 
+ae_start_date,adverse_event,,text,Start Date,,,date_ymd,,,,,,,,,,,
+ae_stop_date,adverse_event,,text,Stop Date,,,date_ymd,,,,,,,,,,,
+ae_severity,adverse_event,,radio,Severity,"1, Mild | 2, Moderate | 3, Severe | 4, Life-Threatening",,,,,,,,,,,,
+ae_relationship,adverse_event,,radio,Study Intervention Relationship,"0, Not related | 1, Unlikely related | 2, Possibly related | 3, Probably related | 4, Definitely related",,,,,,,,,,,,
+ae_action_taken,adverse_event,,radio,Action Taken Regarding Study Intervention,"0, None | 1, Dose modification | 2, Medical Intervention | 3, Hospitalization | 4, Intervention discontinued | 5, Other",,,,,,,,,,,,
+ae_outcome,adverse_event,,radio,Outcome of AE,"1, Resolved | 2, Recovered with minor sequelae | 3, Recovered with major sequelae | 4, Ongoing/Continuing treatment | 5, Condition worsening | 6, Death | 7, Unknown",,,,,,,,,,,,
+ae_expected,adverse_event,,radio,Expected?,"1, Yes | 2, No",,,,,,,,,,,,
+ae_sae,adverse_event,,radio,"Serious Adverse Event (SAE)? (If yes, complete SAE form)","1, Yes | 2, No",,,,,,,,,,,,

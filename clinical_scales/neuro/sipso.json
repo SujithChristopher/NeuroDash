@@ -1,0 +1,364 @@
+{
+  "id": "sipso",
+  "version": 1,
+  "title": "Stroke Impact / SIPSO",
+  "redcapForm": "sipso_questionnaire",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "sipso_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "sipso_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Subjective Index of Physical and Social Outcome (SIPSO)",
+      "items": [
+        {
+          "id": "sipso_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Please answer all questions based on your experience since your stroke."
+        },
+        {
+          "id": "sipso_1_dress",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "No difficulty at all"
+            },
+            {
+              "value": 3,
+              "label": "Slight difficulty"
+            },
+            {
+              "value": 2,
+              "label": "Some difficulty"
+            },
+            {
+              "value": 1,
+              "label": "A lot of difficulty"
+            },
+            {
+              "value": 0,
+              "label": "I cannot dress myself fully"
+            }
+          ],
+          "widget": "buttons",
+          "label": "1. Since your stroke, how much difficulty do you have dressing yourself fully?"
+        },
+        {
+          "id": "sipso_2_move_home",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "No difficulty at all"
+            },
+            {
+              "value": 3,
+              "label": "Slight difficulty"
+            },
+            {
+              "value": 2,
+              "label": "Some difficulty"
+            },
+            {
+              "value": 1,
+              "label": "A lot of difficulty"
+            },
+            {
+              "value": 0,
+              "label": "I cannot move around all areas of the home"
+            }
+          ],
+          "widget": "buttons",
+          "label": "2. Since your stroke, how much difficulty do you have moving around all areas of the home?"
+        },
+        {
+          "id": "sipso_3_satisfaction",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "Completely satisfied"
+            },
+            {
+              "value": 3,
+              "label": "Mostly satisfied"
+            },
+            {
+              "value": 2,
+              "label": "Fairly satisfied"
+            },
+            {
+              "value": 1,
+              "label": "Not very satisfied"
+            },
+            {
+              "value": 0,
+              "label": "Completely dissatisfied"
+            }
+          ],
+          "widget": "buttons",
+          "label": "3. Since your stroke, how satisfied are you with your overall ability to perform daily activities in and around the home?"
+        },
+        {
+          "id": "sipso_4_shop",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "No difficulty at all"
+            },
+            {
+              "value": 3,
+              "label": "Slight difficulty"
+            },
+            {
+              "value": 2,
+              "label": "Some difficulty"
+            },
+            {
+              "value": 1,
+              "label": "A lot of difficulty"
+            },
+            {
+              "value": 0,
+              "label": "I cannot shop for and carry a few items"
+            }
+          ],
+          "widget": "buttons",
+          "label": "4. Since your stroke, how much difficulty do you have shopping for and carrying a few items (1 bag of shopping or less) when at the shops?"
+        },
+        {
+          "id": "sipso_5_indep_neigh",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "I am completely independent"
+            },
+            {
+              "value": 3,
+              "label": "I prefer to have someone else with me"
+            },
+            {
+              "value": 2,
+              "label": "I need occasional assistance from someone"
+            },
+            {
+              "value": 1,
+              "label": "I need assistance much of the time"
+            },
+            {
+              "value": 0,
+              "label": "I am completely dependent on others"
+            }
+          ],
+          "widget": "buttons",
+          "label": "5. Since your stroke, how independent are you in your ability to move around your local neighbourhood?"
+        },
+        {
+          "id": "sipso_sub_physical",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "sipso_1_dress+sipso_2_move_home+sipso_3_satisfaction+sipso_4_shop+sipso_5_indep_neigh",
+          "exprRaw": "[sipso_1_dress]+[sipso_2_move_home]+[sipso_3_satisfaction]+[sipso_4_shop]+[sipso_5_indep_neigh]",
+          "label": "Physical Integration Subscore (Items 1-5)"
+        },
+        {
+          "id": "sipso_6_bored",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "I am never bored with my free time"
+            },
+            {
+              "value": 3,
+              "label": "A little of my free time"
+            },
+            {
+              "value": 2,
+              "label": "Some of my free time"
+            },
+            {
+              "value": 1,
+              "label": "Most of my free time"
+            },
+            {
+              "value": 0,
+              "label": "All of my free time"
+            }
+          ],
+          "widget": "buttons",
+          "label": "6. Since your stroke, how often do you feel bored with your free time at home?"
+        },
+        {
+          "id": "sipso_7_comm",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "A great deal"
+            },
+            {
+              "value": 3,
+              "label": "Quite a lot"
+            },
+            {
+              "value": 2,
+              "label": "Some"
+            },
+            {
+              "value": 1,
+              "label": "A little bit"
+            },
+            {
+              "value": 0,
+              "label": "None"
+            }
+          ],
+          "widget": "buttons",
+          "label": "7. Since your stroke, how would you describe the amount of communication between you and your friends/associates?"
+        },
+        {
+          "id": "sipso_8_social_sat",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "Completely satisfied"
+            },
+            {
+              "value": 3,
+              "label": "Mostly satisfied"
+            },
+            {
+              "value": 2,
+              "label": "Fairly satisfied"
+            },
+            {
+              "value": 1,
+              "label": "Not very satisfied"
+            },
+            {
+              "value": 0,
+              "label": "Completely dissatisfied"
+            }
+          ],
+          "widget": "buttons",
+          "label": "8. Since your stroke, how satisfied are you with the level of interests and activities you share with your friends/associates?"
+        },
+        {
+          "id": "sipso_9_visit",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "Most days"
+            },
+            {
+              "value": 3,
+              "label": "At least once a week"
+            },
+            {
+              "value": 2,
+              "label": "At least once a fortnight"
+            },
+            {
+              "value": 1,
+              "label": "Once a month or less"
+            },
+            {
+              "value": 0,
+              "label": "Never"
+            }
+          ],
+          "widget": "buttons",
+          "label": "9. Since your stroke, how often do you visit friends/others?"
+        },
+        {
+          "id": "sipso_10_appearance",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 4,
+              "label": "Perfectly happy"
+            },
+            {
+              "value": 3,
+              "label": "Slightly self-conscious"
+            },
+            {
+              "value": 2,
+              "label": "Fairly self-conscious"
+            },
+            {
+              "value": 1,
+              "label": "Very self-conscious"
+            },
+            {
+              "value": 0,
+              "label": "I try to avoid going out in public"
+            }
+          ],
+          "widget": "buttons",
+          "label": "10. Since your stroke, how do you feel about your appearance when out in public?"
+        },
+        {
+          "id": "sipso_sub_social",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "sipso_6_bored+sipso_7_comm+sipso_8_social_sat+sipso_9_visit+sipso_10_appearance",
+          "exprRaw": "[sipso_6_bored]+[sipso_7_comm]+[sipso_8_social_sat]+[sipso_9_visit]+[sipso_10_appearance]",
+          "label": "Social Integration Subscore (Items 6-10)"
+        },
+        {
+          "id": "sipso_total_score",
+          "redcapType": "calc",
+          "type": "computed",
+          "expr": "sipso_sub_physical+sipso_sub_social",
+          "exprRaw": "[sipso_sub_physical]+[sipso_sub_social]",
+          "label": "Total SIPSO Score (Max 40)"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

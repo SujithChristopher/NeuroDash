@@ -1,0 +1,64 @@
+{
+  "id": "completed_assessment",
+  "version": 1,
+  "title": "Completed Assessment",
+  "redcapForm": "completed_assessment",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Final Assessment Completion",
+      "items": [
+        {
+          "id": "completion_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Completion"
+        },
+        {
+          "id": "completion_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Assessment Status Overview",
+      "items": [
+        {
+          "id": "completion_status_summary",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "InstrumentStatus (0=Incomplete, 1=Unverified, 2=Complete)\n Consent Form[consent_form_complete]\n FMA Upper Extremity[fugl_meyer_assessment_ue_complete]\n ARAT[action_research_arm_test_complete]\n MAL[motor_activity_log_complete]\n CSI[caregiver_strain_index_complete]\n PHQ-9[patient_health_questionnaire_phq9_complete]\n SIPSO[sipso_questionnaire_complete]\n mRS[modified_rankin_scale_complete]\n MAS[modified_ashworth_scale_complete]\n Box and Block[box_and_block_test_complete]\n CAHAI-7[cahai7_score_form_complete]\n EQ-5D-5L[eq_5d_5l_complete]\nOnce this form is marked Complete, all other assessments in this event will be locked.",
+          "labelHtml": "<table border='1' style='width:100%; border-collapse: collapse;'>\n  <tr><th style='padding: 5px;'>Instrument</th><th style='padding: 5px;'>Status (0=Incomplete, 1=Unverified, 2=Complete)</th></tr>\n  <tr><td style='padding: 5px;'>Consent Form</td><td style='padding: 5px; text-align: center;'>[consent_form_complete]</td></tr>\n  <tr><td style='padding: 5px;'>FMA Upper Extremity</td><td style='padding: 5px; text-align: center;'>[fugl_meyer_assessment_ue_complete]</td></tr>\n  <tr><td style='padding: 5px;'>ARAT</td><td style='padding: 5px; text-align: center;'>[action_research_arm_test_complete]</td></tr>\n  <tr><td style='padding: 5px;'>MAL</td><td style='padding: 5px; text-align: center;'>[motor_activity_log_complete]</td></tr>\n  <tr><td style='padding: 5px;'>CSI</td><td style='padding: 5px; text-align: center;'>[caregiver_strain_index_complete]</td></tr>\n  <tr><td style='padding: 5px;'>PHQ-9</td><td style='padding: 5px; text-align: center;'>[patient_health_questionnaire_phq9_complete]</td></tr>\n  <tr><td style='padding: 5px;'>SIPSO</td><td style='padding: 5px; text-align: center;'>[sipso_questionnaire_complete]</td></tr>\n  <tr><td style='padding: 5px;'>mRS</td><td style='padding: 5px; text-align: center;'>[modified_rankin_scale_complete]</td></tr>\n  <tr><td style='padding: 5px;'>MAS</td><td style='padding: 5px; text-align: center;'>[modified_ashworth_scale_complete]</td></tr>\n  <tr><td style='padding: 5px;'>Box and Block</td><td style='padding: 5px; text-align: center;'>[box_and_block_test_complete]</td></tr>\n  <tr><td style='padding: 5px;'>CAHAI-7</td><td style='padding: 5px; text-align: center;'>[cahai7_score_form_complete]</td></tr>\n  <tr><td style='padding: 5px;'>EQ-5D-5L</td><td style='padding: 5px; text-align: center;'>[eq_5d_5l_complete]</td></tr>\n</table>\n<br>Once this form is marked <b>Complete</b>, all other assessments in this event will be locked."
+        },
+        {
+          "id": "completion_notes",
+          "redcapType": "notes",
+          "type": "text",
+          "widget": "textarea",
+          "label": "General Comments on Assessment Completion"
+        }
+      ]
+    }
+  ],
+  "kind": "bookkeeping"
+}

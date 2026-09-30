@@ -1,0 +1,262 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-04-27 12:26:05",
+    "key": "kn",
+    "display": "Kannada",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "csi_date",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "csi_examiner",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Examiner Name"
+            }
+        },
+        {
+            "id": "csi_header",
+            "form": "caregiver_strain_index",
+            "header": {
+                "translation": "CAREGIVER STRAIN INDEX (CSI) <br> ಆರೈಕೆದಾರರ ಒತ್ತಡದ ಸೂಚ್ಯಂಕ (CSI)"
+            },
+            "label": {
+                "translation": "I am going to read a list of things that other people have found to be difficult in helping out after a relative or friend comes home from the hospital. Could you tell me whether any of these apply to you? (Give examples) <br> ನಿಮ್ಮ ಸಂಬಂಧಿಕರು ಅಥವಾ ಸ್ನೇಹಿತರು ಆಸ್ಪತ್ರೆಯಿಂದ ಮನೆಗೆ ಬಂದ ನಂತರ ಅವರಿಗೆ ಸಹಾಯ ಮಾಡುವಲ್ಲಿ ಇತರ ಜನರು ಅನುಭವಿಸಿದ ಕೆಲವು ಕಷ್ಟದ ವಿಷಯಗಳನ್ನು ನಾನು ಓದುತ್ತೇನೆ. ಇವುಗಳಲ್ಲಿ ಯಾವುದಾದರೂ ನಿಮಗೆ ಅನ್ವಯಿಸುತ್ತದೆಯೇ ಎಂದು ನೀವು ಹೇಳಬಲ್ಲಿರಾ? (ಉದಾಹರಣೆಗಳನ್ನು ನೀಡಿ)"
+            }
+        },
+        {
+            "id": "csi_1_sleep",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "1. Sleep is disturbed (e.g., because ... is in and out of bed or wanders around at night) <br> 1. ನಿದ್ರೆಗೆ ಅಡ್ಡಿಯಾಗುತ್ತಿದೆ (ಉದಾಹರಣೆಗೆ, ರೋಗಿಯು ರಾತ್ರಿಯಲ್ಲಿ ಪದೇ ಪದೇ ಹಾಸಿಗೆಯಿಂದ ಏಳುತ್ತಿರುವುದು ಅಥವಾ ಅಡ್ಡಾಡುತ್ತಿರುವುದು)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_2_inconvenient",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "2. It is inconvenient (e.g., because helping takes so much time or it's a long journey to help) <br> 2. ಇದು ಅನಾನುಕೂಲವಾಗಿದೆ (ಉದಾಹರಣೆಗೆ, ಸಹಾಯ ಮಾಡಲು ಹೆಚ್ಚು ಸಮಯ ಬೇಕಾಗುತ್ತದೆ ಅಥವಾ ಸಹಾಯ ಮಾಡಲು ದೂರದ ಪ್ರಯಾಣ ಮಾಡಬೇಕಾಗುತ್ತದೆ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_3_physical",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "3. It is a physical strain (e.g., because of lifting in and out of a chair; effort or concentration is required) <br> 3. ಇದು ದೈಹಿಕ ಶ್ರಮದಾಯಕವಾಗಿದೆ (ಉದಾಹರಣೆಗೆ, ಕುರ್ಚಿಯಿಂದ ಎತ್ತಿ ಕೂಡಿಸುವುದು ಅಥವಾ ಇಳಿಸುವುದು; ಶಕ್ತಿ ಅಥವಾ ಏಕಾಗ್ರತೆಯ ಅಗತ್ಯವಿರುತ್ತದೆ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_4_confining",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "4. It is confining (e.g., helping restricts free time or you cannot go visiting) <br> 4. ಇದು ನಿರ್ಬಂಧಿತವಾಗಿದೆ (ಉದಾಹರಣೆಗೆ, ಸಹಾಯ ಮಾಡುವುದು ನಿಮ್ಮ ಬಿಡುವಿನ ಸಮಯವನ್ನು ನಿರ್ಬಂಧಿಸುತ್ತದೆ ಅಥವಾ ನಿಮಗೆ ಬೇರೆಯವರ ಭೇಟಿಗೆ ಹೋಗಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_5_family",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "5. There have been family adjustments (e.g., because helping has disrupted routine; there has been no privacy) <br> 5. ಕುಟುಂಬದ ಹೊಂದಾಣಿಕೆಗಳನ್ನು ಮಾಡಿಕೊಳ್ಳಬೇಕಾಗಿ ಬಂದಿದೆ (ಉದಾಹರಣೆಗೆ, ಸಹಾಯ ಮಾಡುವುದರಿಂದ ದಿನನಿತ್ಯದ ಕೆಲಸಗಳಿಗೆ ಅಡ್ಡಿಯಾಗಿದೆ; ಖಾಸಗಿತನವಿಲ್ಲದಂತಾಗಿದೆ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_6_plans",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "6. There have been changes in personal plans (e.g., had to turn down a job; could not go on vacation) <br> 6. ವೈಯಕ್ತಿಕ ಯೋಜನೆಗಳಲ್ಲಿ ಬದಲಾವಣೆಗಳಾಗಿವೆ (ಉದಾಹರಣೆಗೆ, ಕೆಲಸವನ್ನು ಬಿಡಬೇಕಾಗಿ ಬಂದಿದೆ; ವಿಹಾರಕ್ಕೆ ಹೋಗಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_7_demands",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "7. There have been other demands on my time (e.g., from other family members) <br> 7. ನನ್ನ ಸಮಯದ ಮೇಲೆ ಇತರ ಒತ್ತಡಗಳಿವೆ (ಉದಾಹರಣೆಗೆ, ಕುಟುಂಬದ ಇತರ ಸದಸ್ಯರಿಂದ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_8_emotional",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "8. There have been emotional adjustments (e.g., because of severe arguments) <br> 8. ಭಾವನಾತ್ಮಕ ಹೊಂದಾಣಿಕೆಗಳನ್ನು ಮಾಡಿಕೊಳ್ಳಬೇಕಾಗಿ ಬಂದಿದೆ (ಉದಾಹರಣೆಗೆ, ತೀವ್ರವಾದ ವಾದ-ವಿವಾದಗಳಿಂದಾಗಿ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_9_upsetting",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "9. Some behaviour is upsetting (e.g., because of incontinence; ... has trouble remembering things; or ... accuses people of taking things) <br> 9. ಕೆಲವು ವರ್ತನೆಗಳು ಅಸಮಾಧಾನ ಉಂಟುಮಾಡುತ್ತವೆ (ಉದಾಹರಣೆಗೆ, ಮಲಮೂತ್ರ ವಿಸರ್ಜನೆಯ ಮೇಲೆ ನಿಯಂತ್ರಣವಿಲ್ಲದಿರುವುದು; ವಿಷಯಗಳನ್ನು ನೆನಪಿಟ್ಟುಕೊಳ್ಳಲು ತೊಂದರೆಯಾಗುವುದು; ಅಥವಾ ಇತರರು ವಸ್ತುಗಳನ್ನು ಕಳ್ಳತನ ಮಾಡಿದ್ದಾರೆ ಎಂದು ದೂಷಿಸುವುದು)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_10_changed",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "10. It is upsetting to find that ... has changed so much from his/her former self (e.g., he/she is a different person now) <br> 10. ವ್ಯಕ್ತಿಯು ಮೊದಲಿಗಿಂತ ಈಗ ತುಂಬಾ ಬದಲಾಗಿದ್ದಾರೆ ಎಂದು ತಿಳಿದು ಅಸಮಾಧಾನವಾಗುತ್ತದೆ (ಉದಾಹರಣೆಗೆ, ಅವರು ಈಗ ಬೇರೆಯೇ ವ್ಯಕ್ತಿಯಂತೆ ತೋರುತ್ತಾರೆ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_11_work",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "11. There have been work adjustments (e.g., because of having to take time off) <br> 11. ಕೆಲಸದಲ್ಲಿ ಹೊಂದಾಣಿಕೆಗಳನ್ನು ಮಾಡಿಕೊಳ್ಳಬೇಕಾಗಿ ಬಂದಿದೆ (ಉದಾಹರಣೆಗೆ, ಸಮಯಕ್ಕೆ ಸರಿಯಾಗಿ ಹೋಗಲು ಸಾಧ್ಯವಾಗದಿರುವುದು ಅಥವಾ ರಜೆ ತೆಗೆದುಕೊಳ್ಳಬೇಕಾಗಿ ಬರುವುದು)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_12_financial",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "12. It is a financial strain <br> 12. ಇದು ಆರ್ಥಿಕವಾಗಿ ಹೊರೆಯಾಗಿದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "csi_13_overwhelmed",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "13. Feeling completely overwhelmed (e.g., because of worry about ... ; or feeling that you cannot manage) <br> 13. ಸಂಪೂರ್ಣವಾಗಿ ಒತ್ತಡಕ್ಕೆ ಒಳಗಾದಂತೆ ಅನಿಸುವುದು (ಉದಾಹರಣೆಗೆ, ರೋಗಿಯ ಬಗ್ಗೆ ಚಿಂತೆ ಅಥವಾ ನಿಮಗೆ ನಿಭಾಯಿಸಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ ಎಂಬ ಭಾವನೆ)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes <br> ಹೌದು"
+                },
+                {
+                    "id": "0",
+                    "translation": "No <br> ಇಲ್ಲ"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,186 @@
+[
+  {
+    "id": "fss",
+    "title": "Fatigue Severity Scale (FSS)",
+    "redcapForm": "fatigue_severity_scale",
+    "kind": "scale",
+    "items": 11,
+    "computed": 1
+  },
+  {
+    "id": "sipso",
+    "title": "Stroke Impact / SIPSO",
+    "redcapForm": "sipso_questionnaire",
+    "kind": "scale",
+    "items": 12,
+    "computed": 3
+  },
+  {
+    "id": "adverse_event",
+    "title": "Adverse Event",
+    "redcapForm": "adverse_event",
+    "kind": "scale",
+    "items": 10,
+    "computed": 0
+  },
+  {
+    "id": "arat",
+    "title": "Action Research Arm Test (ARAT)",
+    "redcapForm": "action_research_arm_test",
+    "kind": "scale",
+    "items": 41,
+    "computed": 10
+  },
+  {
+    "id": "bbt",
+    "title": "Box and Block Test",
+    "redcapForm": "box_and_block_test",
+    "kind": "scale",
+    "items": 3,
+    "computed": 0
+  },
+  {
+    "id": "cahai7",
+    "title": "Chedoke Arm and Hand Activity Inventory (CAHAI-7)",
+    "redcapForm": "cahai7_score_form",
+    "kind": "scale",
+    "items": 13,
+    "computed": 1
+  },
+  {
+    "id": "completed_assessment",
+    "title": "Completed Assessment",
+    "redcapForm": "completed_assessment",
+    "kind": "bookkeeping",
+    "items": 3,
+    "computed": 0
+  },
+  {
+    "id": "completed_screening",
+    "title": "Completed Screening",
+    "redcapForm": "completed_screening",
+    "kind": "bookkeeping",
+    "items": 2,
+    "computed": 0
+  },
+  {
+    "id": "consent_form",
+    "title": "Consent Form",
+    "redcapForm": "consent_form",
+    "kind": "bookkeeping",
+    "items": 2,
+    "computed": 0
+  },
+  {
+    "id": "csi",
+    "title": "Caregiver Strain Index (CSI)",
+    "redcapForm": "caregiver_strain_index",
+    "kind": "scale",
+    "items": 14,
+    "computed": 1
+  },
+  {
+    "id": "eq5d",
+    "title": "EQ-5D",
+    "redcapForm": "eq_5d_5l",
+    "kind": "scale",
+    "items": 7,
+    "computed": 0
+  },
+  {
+    "id": "exit_questionnaire_control",
+    "title": "Exit Questionnaire Control",
+    "redcapForm": "exit_questionnaire_control",
+    "kind": "scale",
+    "items": 3,
+    "computed": 0
+  },
+  {
+    "id": "exit_questionnaire_intervention",
+    "title": "Exit Questionnaire Intervention",
+    "redcapForm": "exit_questionnaire_intervention",
+    "kind": "scale",
+    "items": 3,
+    "computed": 0
+  },
+  {
+    "id": "fma",
+    "title": "Fugl-Meyer Assessment (Upper Extremity)",
+    "redcapForm": "fugl_meyer_assessment_ue",
+    "kind": "scale",
+    "items": 41,
+    "computed": 10
+  },
+  {
+    "id": "homer_screening_form",
+    "title": "Homer Screening Form",
+    "redcapForm": "homer_screening_form",
+    "kind": "scale",
+    "items": 22,
+    "computed": 0
+  },
+  {
+    "id": "mal",
+    "title": "Motor Activity Log (MAL)",
+    "redcapForm": "motor_activity_log",
+    "kind": "scale",
+    "items": 123,
+    "computed": 2
+  },
+  {
+    "id": "mas",
+    "title": "Modified Ashworth Scale (MAS)",
+    "redcapForm": "modified_ashworth_scale",
+    "kind": "scale",
+    "items": 12,
+    "computed": 0
+  },
+  {
+    "id": "moca",
+    "title": "Montreal Cognitive Assessment (MoCA)",
+    "redcapForm": "montreal_cognitive_assessment",
+    "kind": "scale",
+    "items": 30,
+    "computed": 1
+  },
+  {
+    "id": "mrs",
+    "title": "Modified Rankin Scale (mRS)",
+    "redcapForm": "modified_rankin_scale",
+    "kind": "scale",
+    "items": 3,
+    "computed": 0
+  },
+  {
+    "id": "nihss",
+    "title": "NIH Stroke Scale (NIHSS)",
+    "redcapForm": "nih_stroke_scale",
+    "kind": "scale",
+    "items": 22,
+    "computed": 0
+  },
+  {
+    "id": "nprs",
+    "title": "Numeric Pain Rating Scale (NPRS)",
+    "redcapForm": "numeric_pain_rating_scale",
+    "kind": "scale",
+    "items": 3,
+    "computed": 0
+  },
+  {
+    "id": "phq9",
+    "title": "Patient Health Questionnaire-9 (PHQ-9)",
+    "redcapForm": "patient_health_questionnaire_phq9",
+    "kind": "scale",
+    "items": 11,
+    "computed": 1
+  },
+  {
+    "id": "vafs",
+    "title": "Visual Analogue Fatigue Scale (VAFS)",
+    "redcapForm": "visual_analogue_fatigue_scale",
+    "kind": "scale",
+    "items": 3,
+    "computed": 0
+  }
+]

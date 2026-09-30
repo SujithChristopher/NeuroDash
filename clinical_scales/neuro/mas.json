@@ -1,0 +1,412 @@
+{
+  "id": "mas",
+  "version": 1,
+  "title": "Modified Ashworth Scale (MAS)",
+  "redcapForm": "modified_ashworth_scale",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        },
+        {
+          "id": "mas_date",
+          "redcapType": "text",
+          "type": "date",
+          "widget": "datepicker",
+          "defaultToday": true,
+          "label": "Date of Assessment"
+        },
+        {
+          "id": "mas_examiner",
+          "redcapType": "text",
+          "type": "examiner",
+          "widget": "staff_dropdown",
+          "source": "current_user",
+          "label": "Examiner Name"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "MODIFIED ASHWORTH SCALE (MAS)",
+      "items": [
+        {
+          "id": "mas_instructions",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "General Information:\n1. Place the patient in a supine position.\n2. To test a muscle that primarily flexes a joint, place the joint in a maximally flexed position and move to a position of maximal extension over one second (count \"one thousand one\").\n3. To test a muscle that primarily extends a joint, place the joint in a maximally extended position and move to a position of maximal flexion over one second (count \"one thousand one\").\nPatient Instructions: The patient should be instructed to relax.",
+          "labelHtml": "<b>General Information:</b><br>1. Place the patient in a supine position.<br>2. To test a muscle that primarily flexes a joint, place the joint in a maximally flexed position and move to a position of maximal extension over one second (count \"one thousand one\").<br>3. To test a muscle that primarily extends a joint, place the joint in a maximally extended position and move to a position of maximal flexion over one second (count \"one thousand one\").<br><br><b>Patient Instructions:</b> The patient should be instructed to relax."
+        },
+        {
+          "id": "mas_scoring_key",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Scoring:\n0: No increase in muscle tone\n1: Slight increase in muscle tone, manifested by a catch and release or by minimal resistance at the end of the range of motion when the affected part(s) is moved in flexion or extension\n1+: Slight increase in muscle tone, manifested by a catch, followed by minimal resistance throughout the remainder (less than half) of the ROM\n2: More marked increase in muscle tone through most of the ROM, but affected part(s) easily moved\n3: Considerable increase in muscle tone, passive movement difficult\n4: Affected part(s) rigid in flexion or extension",
+          "labelHtml": "<b>Scoring:</b><br>0: No increase in muscle tone<br>1: Slight increase in muscle tone, manifested by a catch and release or by minimal resistance at the end of the range of motion when the affected part(s) is moved in flexion or extension<br>1+: Slight increase in muscle tone, manifested by a catch, followed by minimal resistance throughout the remainder (less than half) of the ROM<br>2: More marked increase in muscle tone through most of the ROM, but affected part(s) easily moved<br>3: Considerable increase in muscle tone, passive movement difficult<br>4: Affected part(s) rigid in flexion or extension"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Shoulder",
+      "items": [
+        {
+          "id": "mas_shoulder_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Flexors"
+        },
+        {
+          "id": "mas_shoulder_ext",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Extensors"
+        },
+        {
+          "id": "mas_shoulder_abd",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Abductors"
+        },
+        {
+          "id": "mas_shoulder_add",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Adductors"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Elbow",
+      "items": [
+        {
+          "id": "mas_elbow_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Flexors"
+        },
+        {
+          "id": "mas_elbow_ext",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Extensors"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "Forearm",
+      "items": [
+        {
+          "id": "mas_forearm_pronato",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Pronators"
+        },
+        {
+          "id": "mas_forearm_supinat",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Supinators"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "Wrist",
+      "items": [
+        {
+          "id": "mas_wrist_flex",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Flexors"
+        },
+        {
+          "id": "mas_wrist_ext",
+          "redcapType": "radio",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 0,
+              "label": "0"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            },
+            {
+              "value": 2,
+              "label": "1+"
+            },
+            {
+              "value": 3,
+              "label": "2"
+            },
+            {
+              "value": 4,
+              "label": "3"
+            },
+            {
+              "value": 5,
+              "label": "4"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Extensors"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}

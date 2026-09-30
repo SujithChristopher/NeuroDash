@@ -1,0 +1,79 @@
+{
+  "id": "bbt",
+  "version": 1,
+  "title": "Box and Block Test",
+  "redcapForm": "box_and_block_test",
+  "sections": [
+    {
+      "id": "s1",
+      "title": "",
+      "items": [
+        {
+          "id": "record_id",
+          "redcapType": "text",
+          "type": "subject_ref",
+          "source": "patient",
+          "label": "Record ID"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "BOX AND BLOCK TEST (BBT)",
+      "items": [
+        {
+          "id": "bnb_header",
+          "redcapType": "descriptive",
+          "type": "info",
+          "label": "Instructions: The patient is asked to move as many blocks as possible, one by one, from one compartment to the other within 60 seconds."
+        },
+        {
+          "id": "bnb_affected_limb",
+          "redcapType": "dropdown",
+          "type": "single_choice",
+          "choices": [
+            {
+              "value": 1,
+              "label": "Right"
+            },
+            {
+              "value": 2,
+              "label": "Left"
+            }
+          ],
+          "widget": "buttons",
+          "label": "Affected limb"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "LEFT HAND",
+      "items": [
+        {
+          "id": "bnb_left_trial_1",
+          "redcapType": "text",
+          "type": "number",
+          "widget": "stepper",
+          "label": "Trial 1",
+          "note": "[Numerical score]"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "RIGHT HAND",
+      "items": [
+        {
+          "id": "bnb_right_trial_1",
+          "redcapType": "text",
+          "type": "number",
+          "widget": "stepper",
+          "label": "Trial 1",
+          "note": "[Numerical score]"
+        }
+      ]
+    }
+  ],
+  "kind": "scale"
+}
