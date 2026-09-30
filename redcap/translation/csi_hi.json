@@ -1,0 +1,262 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "hi",
+    "display": "Hindi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "csi_date",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "csi_examiner",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Examiner Name"
+            }
+        },
+        {
+            "id": "csi_header",
+            "form": "caregiver_strain_index",
+            "header": {
+                "translation": "CAREGIVER STRAIN INDEX (CSI) / देखभाल करने वाले पर दबाव सूचकांक"
+            },
+            "label": {
+                "translation": "I am going to read a list of things that other people have found to be difficult in helping out after a relative or friend comes home from the hospital. Could you tell me whether any of these apply to you? (Give examples) <br> मैं आपको उन बातों की सूची पढ़कर सुनाने जा रहा हूँ जिन्हें अन्य लोगों ने कठिन पाया है। कृपया बताइए कि इनमें से कोई बात आप पर लागू होती है या नहीं।"
+            }
+        },
+        {
+            "id": "csi_1_sleep",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "1. Sleep is disturbed (e.g., because ... is in and out of bed or wanders around at night) <br> 1. नींद बाधित होती है (उदाहरण: क्योंकि देखभाल करने वाला व्यक्ति बार-बार बिस्तर से उठता है या रात में इधर-उधर घूमता है)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_2_inconvenient",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "2. It is inconvenient (e.g., because helping takes so much time or it's a long journey to help) <br> 2. यह असुविधाजनक है (उदाहरण: क्योंकि मदद करने में बहुत समय लगता है या दूर जाकर मदद करनी पड़ती है)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_3_physical",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "3. It is a physical strain (e.g., because of lifting in and out of a chair; effort or concentration is required) <br> 3. यह शारीरिक दबाव है (उदाहरण: कुर्सी से उठाने-बिठाने में, प्रयास या ध्यान केंद्रित करने की आवश्यकता होती है)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_4_confining",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "4. It is confining (e.g., helping restricts free time or you cannot go visiting) <br> 4. यह सीमित करता है (उदाहरण: मदद करने से खाली समय नहीं मिलता या कहीं घूमने नहीं जा सकते)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_5_family",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "5. There have been family adjustments (e.g., because helping has disrupted routine; there has been no privacy) <br> 5. पारिवारिक समायोजन हुए हैं (उदाहरण: मदद करने से दिनचर्या बिगड़ गई है, निजता नहीं रही)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_6_plans",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "6. There have been changes in personal plans (e.g., had to turn down a job; could not go on vacation) <br> 6. व्यक्तिगत योजनाओं में बदलाव हुए हैं (उदाहरण: नौकरी छोड़नी पड़ी, छुट्टी पर नहीं जा सके)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_7_demands",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "7. There have been other demands on my time (e.g., from other family members)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_8_emotional",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "8. There have been emotional adjustments (e.g., because of severe arguments) <br> 8. भावनात्मक समायोजन हुए हैं (उदाहरण: गंभीर झगड़े हुए)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_9_upsetting",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "9. Some behaviour is upsetting (e.g., because of incontinence; ... has trouble remembering things; or ... accuses people of taking things) <br> 9. कुछ व्यवहार परेशान करते हैं (उदाहरण: असंयम, चीजें भूल जाना, दूसरों पर चोरी का आरोप लगाना)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_10_changed",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "10. It is upsetting to find that ... has changed so much from his/her former self (e.g., he/she is a different person now) <br> 10. यह परेशान करता है कि व्यक्ति पहले जैसा नहीं रहा (उदाहरण: वह अब पहले जैसा नहीं है)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_11_work",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "11. There have been work adjustments (e.g., because of having to take time off) <br> 11. काम में बदलाव हुए हैं (उदाहरण: छुट्टी लेनी पड़ी)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_12_financial",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "12. It is a financial strain <br> 12. यह आर्थिक दबाव है"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        },
+        {
+            "id": "csi_13_overwhelmed",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "13. Feeling completely overwhelmed (e.g., because of worry about ... ; or feeling that you cannot manage) <br> 13. पूरी तरह से अभिभूत महसूस करना (उदाहरण: चिंता के कारण, यह सोचकर कि कैसे संभालेंगे)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / हाँ"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / नहीं"
+                }
+            ]
+        }
+    ]
+}

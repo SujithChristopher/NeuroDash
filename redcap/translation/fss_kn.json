@@ -1,0 +1,367 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-04-27 12:26:05",
+    "key": "kn",
+    "display": "Kannada",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "fss_date",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "fss_header",
+            "form": "fatigue_severity_scale",
+            "header": {
+                "translation": "FATIGUE SEVERITY SCALE (FSS) <br> ಆಯಾಸದ ತೀವ್ರತೆಯ ಮಾಪನ (FSS)"
+            },
+            "label": {
+                "translation": "Please circle the number that best describes your fatigue over the past week. <br> ಕಳೆದ ಒಂದು ವಾರದಲ್ಲಿ ನಿಮ್ಮ ಆಯಾಸವನ್ನು ಉತ್ತಮವಾಗಿ ವಿವರಿಸುವ ಸಂಖ್ಯೆಯನ್ನು ವೃತ್ತಾಕಾರವಾಗಿ ಗುರುತಿಸಿ."
+            }
+        },
+        {
+            "id": "fss_1_motivation",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "1. My motivation is lower when I am fatigued <br> 1. ನನಗೆ ಆಯಾಸವಾದಾಗ ನನ್ನ ಪ್ರೇರಣೆ (Motivation) ಕಡಿಮೆಯಿರುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1 (Strongly disagree) <br> 1 (ಸಂಪೂರ್ಣವಾಗಿ ಒಪ್ಪುವುದಿಲ್ಲ)"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7 (Strongly agree) <br> 7 (ಸಂಪೂರ್ಣವಾಗಿ ಒಪ್ಪುತ್ತೇನೆ)"
+                }
+            ]
+        },
+        {
+            "id": "fss_2_exercise",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "2. Exercise brings on my fatigue <br> 2. ವ್ಯಾಯಾಮ ಮಾಡುವುದು ನನಗೆ ಆಯಾಸವನ್ನು ತರುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_3_easily",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "3. I am easily fatigued <br> 3. ನಾನು ಸುಲಭವಾಗಿ ಆಯಾಸಗೊಳ್ಳುತ್ತೇನೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_4_interferes",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "4. Fatigue interferes with my physical functioning <br> 4. ಆಯಾಸವು ನನ್ನ ದೈಹಿಕ ಕಾರ್ಯಚಟುವಟಿಕೆಗೆ ಅಡ್ಡಿಪಡಿಸುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_5_problems",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "5. Fatigue causes frequent problems for me <br> 5. ಆಯಾಸವು ನನಗೆ ಪದೇ ಪದೇ ತೊಂದರೆಗಳನ್ನು ಉಂಟುಮಾಡುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_6_sustained",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "6. My fatigue prevents sustained physical functioning <br> 6. ನನ್ನ ಆಯಾಸವು ನಿರಂತರ ದೈಹಿಕ ಕಾರ್ಯಚಟುವಟಿಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_7_duties",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "7. Fatigue interferes with carrying out certain duties and responsibilities <br> 7. ಆಯಾಸವು ಕೆಲವು ಕರ್ತವ್ಯಗಳು ಮತ್ತು ಜವಾಬ್ದಾರಿಗಳನ್ನು ನಿರ್ವಹಿಸಲು ಅಡ್ಡಿಪಡಿಸುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_8_disabling",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "8. Fatigue is among my three most disabling symptoms <br> 8. ಆಯಾಸವು ನನ್ನ ಮೂರು ಪ್ರಮುಖ ಅಸಮರ್ಥಗೊಳಿಸುವ ಲಕ್ಷಣಗಳಲ್ಲಿ ಒಂದಾಗಿದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        },
+        {
+            "id": "fss_9_work",
+            "form": "fatigue_severity_scale",
+            "label": {
+                "translation": "9. Fatigue interferes with my work, family, or social life <br> 9. ಆಯಾಸವು ನನ್ನ ಕೆಲಸ, ಕುಟುಂಬ ಅಥವಾ ಸಾಮಾಜಿಕ ಜೀವನಕ್ಕೆ ಅಡ್ಡಿಪಡಿಸುತ್ತದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "1"
+                },
+                {
+                    "id": "2",
+                    "translation": "2"
+                },
+                {
+                    "id": "3",
+                    "translation": "3"
+                },
+                {
+                    "id": "4",
+                    "translation": "4"
+                },
+                {
+                    "id": "5",
+                    "translation": "5"
+                },
+                {
+                    "id": "6",
+                    "translation": "6"
+                },
+                {
+                    "id": "7",
+                    "translation": "7"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,262 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "te",
+    "display": "Telugu",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "csi_date",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "csi_examiner",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "Examiner Name"
+            }
+        },
+        {
+            "id": "csi_header",
+            "form": "caregiver_strain_index",
+            "header": {
+                "translation": "CAREGIVER STRAIN INDEX (CSI) / నేను ఇతర వ్యక్తులకు కష్టంగా అనిపించిన విషయాల జాబితాను చదవబోతున్నాను. వీటిలో ఏదైనా మీకు వర్తిస్తుందా అని చెప్పగలరా? (ఉదాహరణలు ఇవ్వండి)"
+            },
+            "label": {
+                "translation": "I am going to read a list of things that other people have found to be difficult in helping out after a relative or friend comes home from the hospital. Could you tell me whether any of these apply to you? (Give examples) / నేను ఇతర వ్యక్తులకు కష్టంగా అనిపించిన విషయాల జాబితాను చదవబోతున్నాను. వీటిలో ఏదైనా మీకు వర్తిస్తుందా అని చెప్పగలరా? (ఉదాహరణలు ఇవ్వండి)"
+            }
+        },
+        {
+            "id": "csi_1_sleep",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "1. Sleep is disturbed (e.g., because ... is in and out of bed or wanders around at night) / నిద్ర భంగమవుతోంది (ఉదా., ఎందుకంటే ... రాత్రిపూట మంచం దిగి తిరుగుతుంటారు లేదా రాత్రంతా తిరుగుతుంటారు)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_2_inconvenient",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "2. It is inconvenient (e.g., because helping takes so much time or it’s a long journey to help) / అసౌకర్యంగా ఉంది (ఉదా., సహాయం చేయడానికి చాలా సమయం పడుతుంది లేదా వెళ్ళడానికి దూరంగా ఉంటుంది)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_3_physical",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "3. It is a physical strain (e.g., because of lifting in and out of a chair; effort or concentration is required) / శారీరక అలసట కలుగుతోంది (ఉదా., కుర్చీలో ఎక్కించడం/దించడం; శ్రమ లేదా ఏకాగ్రత అవసరం అవుతుంది)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_4_confining",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "4. It is confining (e.g., helping restricts free time or you cannot go visiting) / కట్టివేయబడినట్లు అనిపిస్తోంది (ఉదా., సహాయం చేయడం వల్ల స్వేచ్ఛా సమయం పరిమితమవుతుంది లేదా ఇతరులను సందర్శించడానికి వెళ్ళలేకపోతున్నారు)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_5_family",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "5. There have been family adjustments (e.g., because helping has disrupted routine; there has been no privacy) / కుటుంబ మార్పులు వచ్చాయి (ఉదా., సహాయం చేయడం వల్ల దైనందిన దినచర్య చెదిరిపోయింది; గోప్యత లేకుండా పోయింది)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_6_plans",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "6. There have been changes in personal plans (e.g., had to turn down a job; could not go on vacation) / వ్యక్తిగత ప్రణాళికలలో మార్పులు వచ్చాయి (ఉదా., ఉద్యోగం వదులుకోవలసి వచ్చింది; సెలవులకు వెళ్ళలేకపోయారు)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_7_demands",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "7. There have been other demands on my time (e.g., from other family members)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_8_emotional",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "8. There have been emotional adjustments (e.g., because of severe arguments) / భావోద్వేగ మార్పులు వచ్చాయి (ఉదా., తీవ్రమైన వాదనల కారణంగా)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_9_upsetting",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "9. Some behaviour is upsetting (e.g., because of incontinence; ... has trouble remembering things; or ... accuses people of taking things) / కొన్ని ప్రవర్తనలు కలవరపెడుతున్నాయి (ఉదా., మూత్రాశయ నియంత్రణ లేకపోవడం; ... విషయాలు గుర్తుపట్టడంలో ఇబ్బంది పడుతున్నారు; లేదా ... వస్తువులు తీసుకున్నారని అభియోగాలు వేస్తున్నారు)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_10_changed",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "10. It is upsetting to find that ... has changed so much from his/her former self (e.g., he/she is a different person now) / ... పూర్వపు వ్యక్తిత్వం నుండి చాలా మారిపోయారని చూడడం కలవరపెడుతోంది (ఉదా., అతను/ఆమె ముందెప్పుడూ ఉన్న వ్యక్తి కాదు)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_11_work",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "11. There have been work adjustments (e.g., because of having to take time off) / పని మార్పులు వచ్చాయి (ఉదా., సెలవు తీసుకోవలసి రావడం వల్ల)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_12_financial",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "12. It is a financial strain / ఆర్థిక ఇబ్బంది కలుగుతోంది"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        },
+        {
+            "id": "csi_13_overwhelmed",
+            "form": "caregiver_strain_index",
+            "label": {
+                "translation": "13. Feeling completely overwhelmed (e.g., because of worry about ... ; or feeling that you cannot manage) / పూర్తిగా ఒత్తిడికి లోనవడం (ఉదా., ఏదైనా గురించి బాధపడటం వల్ల; మీరు ఎలా మేనేజ్ చేసుకుంటారో అని అనిపించడం వల్ల)"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "Yes / అవును"
+                },
+                {
+                    "id": "0",
+                    "translation": "No / కాదు"
+                }
+            ]
+        }
+    ]
+}

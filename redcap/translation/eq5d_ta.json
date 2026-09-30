@@ -1,0 +1,221 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "ta",
+    "display": "Tamil",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "eq5d_date",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "eq5d_intro",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "Health Questionnaire <br> உடல்நலம் குறித்த கருத்தறியும் கேள்வித்தாள்"
+            },
+            "label": {
+                "translation": "Health Questionnaire<br>Tamil version for India<br><br>© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (Tamil) v1.3<br><br>Under each heading, please tick the ONE box that best describes your health TODAY. <br> கீழ்க்காணும் கேள்வி தொகுதிகள் ஒவ்வொன்றிற்கும், உங்களின் இன்றைய உடல்நல நிலையை மிகவும் நன்றாக விவரிக்கும் ஒரு கட்டத்தை, தயவு செய்து குறியிடவும்."
+            }
+        },
+        {
+            "id": "eq5d_mobility",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "MOBILITY <br> நடமாட்டம்"
+            },
+            "label": {
+                "translation": "I have ... difficulty in walking about <br> நடப்பதில் எனக்கு ..."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> நடப்பதில் எனக்கு எந்த பிரச்சினையும் இல்லை"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> நடப்பதில் எனக்கு மிக குறைந்த அளவு பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> நடப்பதில் எனக்கு மிதமான அளவு பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> நடப்பதில் எனக்கு கடுமையான பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to walk about <br> என்னால் நடக்கவே இயலவில்லை"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_self_care",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "SELF-CARE <br> சுய-கவனிப்பு"
+            },
+            "label": {
+                "translation": "I have ... difficulty washing or dressing myself <br> நானாகவே குளிப்பதிலோ அல்லது துணி உடுத்துவதிலோ எனக்கு ..."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> நானாகவே குளிப்பதிலோ அல்லது துணி உடுத்துவதிலோ எனக்கு எந்தப் பிரச்சினையும் இல்லை"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> நானாகவே குளித்துக்கொள்ளவோ அல்லது துணி உடுத்திக்கொள்ளவோ எனக்கு மிக குறைந்த அளவு பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> நானாகவே குளிப்பதிலோ அல்லது துணி உடுத்துவதிலோ எனக்கு மிதமான அளவு பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> நானாகவே குளித்துக்கொள்ளவோ அல்லது துணி உடுத்திக்கொள்ளவோ எனக்கு கடுமையான பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to wash or dress myself <br> குளிக்கவோ அல்லது துணி உடுத்தவோ என்னால் முடிவதில்லை"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_usual_activities",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "USUAL ACTIVITIES <br> வழக்கமான செயல்பாடுகள் (உதா: வேலை, படிப்பு, வீட்டு வேலை, குடும்பம் அல்லது ஓய்வு நேர செயல்பாடுகள்)"
+            },
+            "label": {
+                "translation": "Usual activities (e.g. work, study, housework, family or leisure activities) <br> எனது வழக்கமான நடவடிக்கைகளை செய்ய எனக்கு ..."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "I have no problems doing my usual activities <br> எனது வழக்கமான நடவடிக்கைகளை செய்ய எனக்கு எந்தப் பிரச்சினையும் இல்லை"
+                },
+                {
+                    "id": "2",
+                    "translation": "I have slight problems doing my usual activities <br> எனது வழக்கமான நடவடிக்கைகளை செய்ய எனக்கு மிக குறைந்த அளவு பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "3",
+                    "translation": "I have moderate problems doing my usual activities <br> எனது வழக்கமான நடவடிக்கைகளை செய்வதில் எனக்கு மிதமான அளவு பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "4",
+                    "translation": "I have severe problems doing my usual activities <br> எனது வழக்கமான நடவடிக்கைகளை செய்ய எனக்கு கடுமையான பிரச்சினைகள் இருக்கின்றன"
+                },
+                {
+                    "id": "5",
+                    "translation": "I am unable to do my usual activities <br> எனது வழக்கமான நடவடிக்கைகளை என்னால் செய்ய முடிவதில்லை"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_pain_discomfort",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "PAIN / DISCOMFORT <br> வலி / அசௌகரியம்"
+            },
+            "label": {
+                "translation": "Pain / Discomfort <br> வலி / அசௌகரியம்"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "I have no pain or discomfort <br> எனக்கு வலியோ அல்லது அசௌகரியமோ இல்லை"
+                },
+                {
+                    "id": "2",
+                    "translation": "I have slight pain or discomfort <br> எனக்கு மிக குறைந்த அளவு வலி அல்லது அசௌகரியம் இருக்கிறது"
+                },
+                {
+                    "id": "3",
+                    "translation": "I have moderate pain or discomfort <br> எனக்கு ஓரளவு வலி அல்லது அசௌகரியம் இருக்கிறது"
+                },
+                {
+                    "id": "4",
+                    "translation": "I have severe pain or discomfort <br> எனக்கு கடுமையான வலி அல்லது அசௌகரியம் இருக்கிறது"
+                },
+                {
+                    "id": "5",
+                    "translation": "I have extreme pain or discomfort <br> எனக்கு அதிகபட்ச வலி அல்லது அசௌகரியம் இருக்கிறது"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_anxiety_depression",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "ANXIETY / DEPRESSION <br> கவலை / மனச்சோர்வு"
+            },
+            "label": {
+                "translation": "Anxiety / Depression <br> கவலை / மனச்சோர்வு"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "I am not anxious or depressed <br> நான் கவலையோ அல்லது மனச்சோர்வோ கொள்ளவில்லை"
+                },
+                {
+                    "id": "2",
+                    "translation": "I am slightly anxious or depressed <br> நான் சிறிதளவு கவலை அல்லது மனச்சோர்வுடன் இருக்கிறேன்"
+                },
+                {
+                    "id": "3",
+                    "translation": "I am moderately anxious or depressed <br> நான் மிதமான அளவு கவலை அல்லது மனச்சோர்வுடன் இருக்கிறேன்"
+                },
+                {
+                    "id": "4",
+                    "translation": "I am severely anxious or depressed <br> நான் கடுமையான கவலை அல்லது மனச்சோர்வுடன் இருக்கிறேன்"
+                },
+                {
+                    "id": "5",
+                    "translation": "I am extremely anxious or depressed <br> நான் அதிகபட்ச கவலை அல்லது மனச்சோர்வுடன் இருக்கிறேன்"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_vas_header",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "EQ VAS <br> EQ VAS"
+            },
+            "label": {
+                "translation": "- We would like to know how good or bad your health is TODAY.<br>- This scale is numbered from 0 to 100.<br>- 100 means the best health you can imagine. 0 means the worst health you can imagine.<br>- Mark an X on the scale to indicate how your health is TODAY.<br>- Now, please write the number you marked on the scale in the box <br> - உங்களின் உடல்நலம் இன்று எவ்வளவு நன்றாக அல்லது எவ்வளவு மோசமாக இருக்கிறது என்பதை நாங்கள் அறிய விரும்புகிறோம்.<br>- இந்த அளவுகோல் 0 முதல் 100 வரை எண்ணிடப்பட்டுள்ளது.<br>- 100 என்றால் நீங்கள் எண்ணிப்பார்க்கக் கூடிய மிகச் சிறப்பான உடல்நலம் என்று பொருள். 0 என்றால் நீங்கள் எண்ணிப்பார்க்கக் கூடிய மிக மோசமான உடல்நலம் என்று பொருள்.<br>- இன்று உங்கள் உடல்நலம் எப்படியிருக்கிறது என்பதைக் குறிக்க அளவுகோலின் மீது ஒரு X குறியிடவும்.<br>- இப்பொழுது, அளவுகோலில் நீங்கள் குறியிட்ட எண்ணை தயவுசெய்து கீழேயுள்ள பெட்டியில் எழுதவும்."
+            }
+        },
+        {
+            "id": "eq5d_vas",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "YOUR HEALTH TODAY <br> இன்றைய உங்கள் உடல்நலம் (0 முதல் 100 வரையிலான அளவுகோலில், 100 மிகச் சிறந்த உடல்நலம்)"
+            }
+        },
+        {
+            "id": "eq5d_copyright",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "COPYRIGHT <br> பதிப்புரிமை"
+            },
+            "label": {
+                "translation": "© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (Tamil) v1.3 <br> © EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (Tamil) v1.3"
+            }
+        }
+    ]
+}

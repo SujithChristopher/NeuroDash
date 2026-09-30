@@ -1,0 +1,170 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,motor_activity_log,,text,Record ID,,,,,,,,,,,,,
+mal_date,motor_activity_log,,text,Date of Assessment,,,date_ymd,,,,,,,,,,
+mal_examiner,motor_activity_log,,text,Examiner Name,,,,,,,,,,,,,
+mal_scoring_as,motor_activity_log,MOTOR ACTIVITY LOG (MAL) - SCORING SCALES,descriptive,"<div style=""background-color: #fcfcfc; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 10px; font-family: sans-serif;"">
+  <span style=""font-size: 1.1em; color: #1e3d59; font-weight: bold; border-bottom: 2px solid #ffc13b; padding-bottom: 2px;"">Amount Scale (AS)</span>
+  <div style=""margin-top: 10px; line-height: 1.5;"">
+    <b>0</b> &mdash; Did not use my weaker arm (not used)<br>
+    <span style=""color: #888;""><b>0.5</b> &mdash; (Halfway score)</span><br>
+    <b>1</b> &mdash; Occasionally used my weaker arm, but only very rarely (very rarely)<br>
+    <span style=""color: #888;""><b>1.5</b> &mdash; (Halfway score)</span><br>
+    <b>2</b> &mdash; Sometimes used my weaker arm but did the activity most of the time with my stronger arm (rarely)<br>
+    <span style=""color: #888;""><b>2.5</b> &mdash; (Halfway score)</span><br>
+    <b>3</b> &mdash; Used my weaker arm about half as much as before the stroke (half pre-stroke)<br>
+    <span style=""color: #888;""><b>3.5</b> &mdash; (Halfway score)</span><br>
+    <b>4</b> &mdash; Used my weaker arm almost as much as before the stroke (3/4 pre-stroke)<br>
+    <span style=""color: #888;""><b>4.5</b> &mdash; (Halfway score)</span><br>
+    <b>5</b> &mdash; Used my weaker arm as often as before the stroke (same as pre-stroke)
+  </div>
+</div>",,,,,,,,,,,,,
+mal_scoring_hw,motor_activity_log,,descriptive,"<div style=""background-color: #fcfcfc; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 10px; font-family: sans-serif;"">
+  <span style=""font-size: 1.1em; color: #1e3d59; font-weight: bold; border-bottom: 2px solid #ffc13b; padding-bottom: 2px;"">How Well Scale (HW)</span>
+  <div style=""margin-top: 10px; line-height: 1.5;"">
+    <b>0</b> &mdash; The weaker arm was not used at all for that activity (never)<br>
+    <span style=""color: #888;""><b>0.5</b> &mdash; (Halfway score)</span><br>
+    <b>1</b> &mdash; The weaker arm was moved during that activity but was not helpful (very poor)<br>
+    <span style=""color: #888;""><b>1.5</b> &mdash; (Halfway score)</span><br>
+    <b>2</b> &mdash; The weaker arm was of some use during that activity but needed some help from the stronger arm or moved very slowly or with difficulty (poor)<br>
+    <span style=""color: #888;""><b>2.5</b> &mdash; (Halfway score)</span><br>
+    <b>3</b> &mdash; The weaker arm was used for the purpose indicated but movements were slow or were made with only some effort (fair)<br>
+    <span style=""color: #888;""><b>3.5</b> &mdash; (Halfway score)</span><br>
+    <b>4</b> &mdash; The movements made by the weaker arm were almost normal, but were not quite as fast or accurate as normal (almost normal)<br>
+    <span style=""color: #888;""><b>4.5</b> &mdash; (Halfway score)</span><br>
+    <b>5</b> &mdash; The ability to use the weaker arm for that activity was as good as before the stroke (normal)
+  </div>
+</div>",,,,,,,,,,,,,
+mal_why_codes,motor_activity_log,,descriptive,"<div style=""background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; padding: 12px; font-family: sans-serif;"">
+  <span style=""font-size: 1.1em; color: #b22222; font-weight: bold; border-bottom: 2px solid #f4a261; padding-bottom: 2px;"">Codes for recording &ldquo;no&rdquo; responses</span>
+  <div style=""margin-top: 10px; line-height: 1.5;"">
+    <b>1.</b> &ldquo;I used the unaffected arm entirely.&rdquo; (assign <b>0</b>)<br>
+    <b>2.</b> &ldquo;Someone else did it for me.&rdquo; (assign <b>0</b>)<br>
+    <b>3.</b> &ldquo;I never do that activity... impossible (e.g. bald)&rdquo; (assign <b>N/A</b> and drop from list)<br>
+    <b>4.</b> &ldquo;Opportunity not present since last time&rdquo; (carry-over last assigned number)<br>
+    <b>5.</b> Non-dominant hand hemiparesis (applicable to #24; assign <b>N/A</b>)
+  </div>
+</div>",,,,,,,,,,,,,
+mal_table,motor_activity_log,MOTOR ACTIVITY LOG TASKS,descriptive,"<table border='1' style='width:100%; border-collapse: collapse; table-layout: fixed;'><tr style='background-color: #f2f2f2;'><th style='width:31%; padding: 5px;'>Task</th><th style='width:12%; padding: 5px;'>AS (0-5)</th><th style='width:12%; padding: 5px;'>HW (0-5)</th><th style='width:12%; padding: 5px;'>Code (1-5)</th><th style='width:33%; padding: 5px;'>Comments</th></tr><tr><td style='padding: 5px;'>1. Turn on a light with a light switch</td><td style='padding: 5px;'>{mal_as_1}</td><td style='padding: 5px;'>{mal_hw_1}</td><td style='padding: 5px;'>{mal_why_1}</td><td style='padding: 5px;'>{mal_comm_1}</td></tr><tr><td style='padding: 5px;'>2. Open drawer</td><td style='padding: 5px;'>{mal_as_2}</td><td style='padding: 5px;'>{mal_hw_2}</td><td style='padding: 5px;'>{mal_why_2}</td><td style='padding: 5px;'>{mal_comm_2}</td></tr><tr><td style='padding: 5px;'>3. Remove an item of clothing from a drawer</td><td style='padding: 5px;'>{mal_as_3}</td><td style='padding: 5px;'>{mal_hw_3}</td><td style='padding: 5px;'>{mal_why_3}</td><td style='padding: 5px;'>{mal_comm_3}</td></tr><tr><td style='padding: 5px;'>4. Pick up phone</td><td style='padding: 5px;'>{mal_as_4}</td><td style='padding: 5px;'>{mal_hw_4}</td><td style='padding: 5px;'>{mal_why_4}</td><td style='padding: 5px;'>{mal_comm_4}</td></tr><tr><td style='padding: 5px;'>5. Wipe off a kitchen counter or other surface</td><td style='padding: 5px;'>{mal_as_5}</td><td style='padding: 5px;'>{mal_hw_5}</td><td style='padding: 5px;'>{mal_why_5}</td><td style='padding: 5px;'>{mal_comm_5}</td></tr><tr><td style='padding: 5px;'>6. Get out of a car (includes only the movement needed to get body from sitting to standing outside of the car, once the door is open).</td><td style='padding: 5px;'>{mal_as_6}</td><td style='padding: 5px;'>{mal_hw_6}</td><td style='padding: 5px;'>{mal_why_6}</td><td style='padding: 5px;'>{mal_comm_6}</td></tr><tr><td style='padding: 5px;'>7. Open refrigerator</td><td style='padding: 5px;'>{mal_as_7}</td><td style='padding: 5px;'>{mal_hw_7}</td><td style='padding: 5px;'>{mal_why_7}</td><td style='padding: 5px;'>{mal_comm_7}</td></tr><tr><td style='padding: 5px;'>8. Open a door by turning a door knob / handle</td><td style='padding: 5px;'>{mal_as_8}</td><td style='padding: 5px;'>{mal_hw_8}</td><td style='padding: 5px;'>{mal_why_8}</td><td style='padding: 5px;'>{mal_comm_8}</td></tr><tr><td style='padding: 5px;'>9. Use a TV remote control</td><td style='padding: 5px;'>{mal_as_9}</td><td style='padding: 5px;'>{mal_hw_9}</td><td style='padding: 5px;'>{mal_why_9}</td><td style='padding: 5px;'>{mal_comm_9}</td></tr><tr><td style='padding: 5px;'>10. Wash your hands (includes lathering and rinsing hands; does not include turning water on and off with a faucet handle).</td><td style='padding: 5px;'>{mal_as_10}</td><td style='padding: 5px;'>{mal_hw_10}</td><td style='padding: 5px;'>{mal_why_10}</td><td style='padding: 5px;'>{mal_comm_10}</td></tr><tr><td style='padding: 5px;'>11. Turning water on/off with knob/lever on faucet</td><td style='padding: 5px;'>{mal_as_11}</td><td style='padding: 5px;'>{mal_hw_11}</td><td style='padding: 5px;'>{mal_why_11}</td><td style='padding: 5px;'>{mal_comm_11}</td></tr><tr><td style='padding: 5px;'>12. Dry your hands</td><td style='padding: 5px;'>{mal_as_12}</td><td style='padding: 5px;'>{mal_hw_12}</td><td style='padding: 5px;'>{mal_why_12}</td><td style='padding: 5px;'>{mal_comm_12}</td></tr><tr><td style='padding: 5px;'>13. Put on your socks</td><td style='padding: 5px;'>{mal_as_13}</td><td style='padding: 5px;'>{mal_hw_13}</td><td style='padding: 5px;'>{mal_why_13}</td><td style='padding: 5px;'>{mal_comm_13}</td></tr><tr><td style='padding: 5px;'>14. Take off your socks</td><td style='padding: 5px;'>{mal_as_14}</td><td style='padding: 5px;'>{mal_hw_14}</td><td style='padding: 5px;'>{mal_why_14}</td><td style='padding: 5px;'>{mal_comm_14}</td></tr><tr><td style='padding: 5px;'>15. Put on your shoes (includes tying shoestrings and fastening straps)</td><td style='padding: 5px;'>{mal_as_15}</td><td style='padding: 5px;'>{mal_hw_15}</td><td style='padding: 5px;'>{mal_why_15}</td><td style='padding: 5px;'>{mal_comm_15}</td></tr><tr><td style='padding: 5px;'>16. Take off your shoes (includes untying shoestrings and unfastening straps)</td><td style='padding: 5px;'>{mal_as_16}</td><td style='padding: 5px;'>{mal_hw_16}</td><td style='padding: 5px;'>{mal_why_16}</td><td style='padding: 5px;'>{mal_comm_16}</td></tr><tr><td style='padding: 5px;'>17. Get up from a chair with armrests</td><td style='padding: 5px;'>{mal_as_17}</td><td style='padding: 5px;'>{mal_hw_17}</td><td style='padding: 5px;'>{mal_why_17}</td><td style='padding: 5px;'>{mal_comm_17}</td></tr><tr><td style='padding: 5px;'>18. Pull chair away from table before sitting down</td><td style='padding: 5px;'>{mal_as_18}</td><td style='padding: 5px;'>{mal_hw_18}</td><td style='padding: 5px;'>{mal_why_18}</td><td style='padding: 5px;'>{mal_comm_18}</td></tr><tr><td style='padding: 5px;'>19. Pull chair toward table after sitting down</td><td style='padding: 5px;'>{mal_as_19}</td><td style='padding: 5px;'>{mal_hw_19}</td><td style='padding: 5px;'>{mal_why_19}</td><td style='padding: 5px;'>{mal_comm_19}</td></tr><tr><td style='padding: 5px;'>20. Pick up a glass, bottle, drinking cup, or can (does not need to include drinking)</td><td style='padding: 5px;'>{mal_as_20}</td><td style='padding: 5px;'>{mal_hw_20}</td><td style='padding: 5px;'>{mal_why_20}</td><td style='padding: 5px;'>{mal_comm_20}</td></tr><tr><td style='padding: 5px;'>21. Brush your teeth (does not include preparation of toothbrush or brushing dentures unless the dentures are brushed while left in the mouth)</td><td style='padding: 5px;'>{mal_as_21}</td><td style='padding: 5px;'>{mal_hw_21}</td><td style='padding: 5px;'>{mal_why_21}</td><td style='padding: 5px;'>{mal_comm_21}</td></tr><tr><td style='padding: 5px;'>22. Put on makeup base, lotion, or shaving cream on face</td><td style='padding: 5px;'>{mal_as_22}</td><td style='padding: 5px;'>{mal_hw_22}</td><td style='padding: 5px;'>{mal_why_22}</td><td style='padding: 5px;'>{mal_comm_22}</td></tr><tr><td style='padding: 5px;'>23. Use a key to unlock a door</td><td style='padding: 5px;'>{mal_as_23}</td><td style='padding: 5px;'>{mal_hw_23}</td><td style='padding: 5px;'>{mal_why_23}</td><td style='padding: 5px;'>{mal_comm_23}</td></tr><tr><td style='padding: 5px;'>24. Write on paper (If hand used to write pre-stroke is more affected, score item; if non-writing hand pre-stroke is more affected, drop item and assign N/A)</td><td style='padding: 5px;'>{mal_as_24}</td><td style='padding: 5px;'>{mal_hw_24}</td><td style='padding: 5px;'>{mal_why_24}</td><td style='padding: 5px;'>{mal_comm_24}</td></tr><tr><td style='padding: 5px;'>25. Carry an object in your hand (draping an item over the arm is not acceptable)</td><td style='padding: 5px;'>{mal_as_25}</td><td style='padding: 5px;'>{mal_hw_25}</td><td style='padding: 5px;'>{mal_why_25}</td><td style='padding: 5px;'>{mal_comm_25}</td></tr><tr><td style='padding: 5px;'>26. Use a fork or spoon for eating (refers to the action of bringing food to the mouth with fork or spoon)</td><td style='padding: 5px;'>{mal_as_26}</td><td style='padding: 5px;'>{mal_hw_26}</td><td style='padding: 5px;'>{mal_why_26}</td><td style='padding: 5px;'>{mal_comm_26}</td></tr><tr><td style='padding: 5px;'>27. Comb your hair</td><td style='padding: 5px;'>{mal_as_27}</td><td style='padding: 5px;'>{mal_hw_27}</td><td style='padding: 5px;'>{mal_why_27}</td><td style='padding: 5px;'>{mal_comm_27}</td></tr><tr><td style='padding: 5px;'>28. Pick up a cup by a handle</td><td style='padding: 5px;'>{mal_as_28}</td><td style='padding: 5px;'>{mal_hw_28}</td><td style='padding: 5px;'>{mal_why_28}</td><td style='padding: 5px;'>{mal_comm_28}</td></tr><tr><td style='padding: 5px;'>29. Button a shirt</td><td style='padding: 5px;'>{mal_as_29}</td><td style='padding: 5px;'>{mal_hw_29}</td><td style='padding: 5px;'>{mal_why_29}</td><td style='padding: 5px;'>{mal_comm_29}</td></tr><tr><td style='padding: 5px;'>30. Eat half a sandwich or finger foods</td><td style='padding: 5px;'>{mal_as_30}</td><td style='padding: 5px;'>{mal_hw_30}</td><td style='padding: 5px;'>{mal_why_30}</td><td style='padding: 5px;'>{mal_comm_30}</td></tr></table>",,,,,,,,,,,,,
+mal_as_1,motor_activity_log,,dropdown,AS 1,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_1,motor_activity_log,,dropdown,HW 1,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_1,motor_activity_log,,dropdown,Why 1,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_1,motor_activity_log,,text,Comm 1,,,,,,,,,,,,,
+mal_as_2,motor_activity_log,,dropdown,AS 2,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_2,motor_activity_log,,dropdown,HW 2,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_2,motor_activity_log,,dropdown,Why 2,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_2,motor_activity_log,,text,Comm 2,,,,,,,,,,,,,
+mal_as_3,motor_activity_log,,dropdown,AS 3,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_3,motor_activity_log,,dropdown,HW 3,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_3,motor_activity_log,,dropdown,Why 3,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_3,motor_activity_log,,text,Comm 3,,,,,,,,,,,,,
+mal_as_4,motor_activity_log,,dropdown,AS 4,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_4,motor_activity_log,,dropdown,HW 4,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_4,motor_activity_log,,dropdown,Why 4,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_4,motor_activity_log,,text,Comm 4,,,,,,,,,,,,,
+mal_as_5,motor_activity_log,,dropdown,AS 5,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_5,motor_activity_log,,dropdown,HW 5,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_5,motor_activity_log,,dropdown,Why 5,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_5,motor_activity_log,,text,Comm 5,,,,,,,,,,,,,
+mal_as_6,motor_activity_log,,dropdown,AS 6,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_6,motor_activity_log,,dropdown,HW 6,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_6,motor_activity_log,,dropdown,Why 6,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_6,motor_activity_log,,text,Comm 6,,,,,,,,,,,,,
+mal_as_7,motor_activity_log,,dropdown,AS 7,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_7,motor_activity_log,,dropdown,HW 7,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_7,motor_activity_log,,dropdown,Why 7,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_7,motor_activity_log,,text,Comm 7,,,,,,,,,,,,,
+mal_as_8,motor_activity_log,,dropdown,AS 8,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_8,motor_activity_log,,dropdown,HW 8,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_8,motor_activity_log,,dropdown,Why 8,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_8,motor_activity_log,,text,Comm 8,,,,,,,,,,,,,
+mal_as_9,motor_activity_log,,dropdown,AS 9,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_9,motor_activity_log,,dropdown,HW 9,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_9,motor_activity_log,,dropdown,Why 9,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_9,motor_activity_log,,text,Comm 9,,,,,,,,,,,,,
+mal_as_10,motor_activity_log,,dropdown,AS 10,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_10,motor_activity_log,,dropdown,HW 10,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_10,motor_activity_log,,dropdown,Why 10,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_10,motor_activity_log,,text,Comm 10,,,,,,,,,,,,,
+mal_as_11,motor_activity_log,,dropdown,AS 11,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_11,motor_activity_log,,dropdown,HW 11,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_11,motor_activity_log,,dropdown,Why 11,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_11,motor_activity_log,,text,Comm 11,,,,,,,,,,,,,
+mal_as_12,motor_activity_log,,dropdown,AS 12,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_12,motor_activity_log,,dropdown,HW 12,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_12,motor_activity_log,,dropdown,Why 12,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_12,motor_activity_log,,text,Comm 12,,,,,,,,,,,,,
+mal_as_13,motor_activity_log,,dropdown,AS 13,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_13,motor_activity_log,,dropdown,HW 13,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_13,motor_activity_log,,dropdown,Why 13,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_13,motor_activity_log,,text,Comm 13,,,,,,,,,,,,,
+mal_as_14,motor_activity_log,,dropdown,AS 14,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_14,motor_activity_log,,dropdown,HW 14,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_14,motor_activity_log,,dropdown,Why 14,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_14,motor_activity_log,,text,Comm 14,,,,,,,,,,,,,
+mal_as_15,motor_activity_log,,dropdown,AS 15,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_15,motor_activity_log,,dropdown,HW 15,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_15,motor_activity_log,,dropdown,Why 15,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_15,motor_activity_log,,text,Comm 15,,,,,,,,,,,,,
+mal_as_16,motor_activity_log,,dropdown,AS 16,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_16,motor_activity_log,,dropdown,HW 16,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_16,motor_activity_log,,dropdown,Why 16,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_16,motor_activity_log,,text,Comm 16,,,,,,,,,,,,,
+mal_as_17,motor_activity_log,,dropdown,AS 17,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_17,motor_activity_log,,dropdown,HW 17,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_17,motor_activity_log,,dropdown,Why 17,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_17,motor_activity_log,,text,Comm 17,,,,,,,,,,,,,
+mal_as_18,motor_activity_log,,dropdown,AS 18,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_18,motor_activity_log,,dropdown,HW 18,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_18,motor_activity_log,,dropdown,Why 18,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_18,motor_activity_log,,text,Comm 18,,,,,,,,,,,,,
+mal_as_19,motor_activity_log,,dropdown,AS 19,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_19,motor_activity_log,,dropdown,HW 19,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_19,motor_activity_log,,dropdown,Why 19,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_19,motor_activity_log,,text,Comm 19,,,,,,,,,,,,,
+mal_as_20,motor_activity_log,,dropdown,AS 20,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_20,motor_activity_log,,dropdown,HW 20,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_20,motor_activity_log,,dropdown,Why 20,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_20,motor_activity_log,,text,Comm 20,,,,,,,,,,,,,
+mal_as_21,motor_activity_log,,dropdown,AS 21,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_21,motor_activity_log,,dropdown,HW 21,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_21,motor_activity_log,,dropdown,Why 21,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_21,motor_activity_log,,text,Comm 21,,,,,,,,,,,,,
+mal_as_22,motor_activity_log,,dropdown,AS 22,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_22,motor_activity_log,,dropdown,HW 22,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_22,motor_activity_log,,dropdown,Why 22,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_22,motor_activity_log,,text,Comm 22,,,,,,,,,,,,,
+mal_as_23,motor_activity_log,,dropdown,AS 23,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_23,motor_activity_log,,dropdown,HW 23,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_23,motor_activity_log,,dropdown,Why 23,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_23,motor_activity_log,,text,Comm 23,,,,,,,,,,,,,
+mal_as_24,motor_activity_log,,dropdown,AS 24,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_24,motor_activity_log,,dropdown,HW 24,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_24,motor_activity_log,,dropdown,Why 24,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_24,motor_activity_log,,text,Comm 24,,,,,,,,,,,,,
+mal_as_25,motor_activity_log,,dropdown,AS 25,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_25,motor_activity_log,,dropdown,HW 25,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_25,motor_activity_log,,dropdown,Why 25,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_25,motor_activity_log,,text,Comm 25,,,,,,,,,,,,,
+mal_as_26,motor_activity_log,,dropdown,AS 26,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_26,motor_activity_log,,dropdown,HW 26,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_26,motor_activity_log,,dropdown,Why 26,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_26,motor_activity_log,,text,Comm 26,,,,,,,,,,,,,
+mal_as_27,motor_activity_log,,dropdown,AS 27,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_27,motor_activity_log,,dropdown,HW 27,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_27,motor_activity_log,,dropdown,Why 27,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_27,motor_activity_log,,text,Comm 27,,,,,,,,,,,,,
+mal_as_28,motor_activity_log,,dropdown,AS 28,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_28,motor_activity_log,,dropdown,HW 28,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_28,motor_activity_log,,dropdown,Why 28,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_28,motor_activity_log,,text,Comm 28,,,,,,,,,,,,,
+mal_as_29,motor_activity_log,,dropdown,AS 29,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_29,motor_activity_log,,dropdown,HW 29,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_29,motor_activity_log,,dropdown,Why 29,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_29,motor_activity_log,,text,Comm 29,,,,,,,,,,,,,
+mal_as_30,motor_activity_log,,dropdown,AS 30,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_hw_30,motor_activity_log,,dropdown,HW 30,"0, 0 | 0.5, 0.5 | 1, 1 | 1.5, 1.5 | 2, 2 | 2.5, 2.5 | 3, 3 | 3.5, 3.5 | 4, 4 | 4.5, 4.5 | 5, 5",,,,,,,,,,,,
+mal_why_30,motor_activity_log,,dropdown,Why 30,"1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5",,,,,,,,,,,,
+mal_comm_30,motor_activity_log,,text,Comm 30,,,,,,,,,,,,,
+mal_mean_as,motor_activity_log,,calc,Mean Amount Score,([mal_as_1]+[mal_as_2]+[mal_as_3]+[mal_as_4]+[mal_as_5]+[mal_as_6]+[mal_as_7]+[mal_as_8]+[mal_as_9]+[mal_as_10]+[mal_as_11]+[mal_as_12]+[mal_as_13]+[mal_as_14]+[mal_as_15]+[mal_as_16]+[mal_as_17]+[mal_as_18]+[mal_as_19]+[mal_as_20]+[mal_as_21]+[mal_as_22]+[mal_as_23]+[mal_as_24]+[mal_as_25]+[mal_as_26]+[mal_as_27]+[mal_as_28]+[mal_as_29]+[mal_as_30]) / 30,,,,,,,,,,,,
+mal_mean_hw,motor_activity_log,,calc,Mean How Well Score,([mal_hw_1]+[mal_hw_2]+[mal_hw_3]+[mal_hw_4]+[mal_hw_5]+[mal_hw_6]+[mal_hw_7]+[mal_hw_8]+[mal_hw_9]+[mal_hw_10]+[mal_hw_11]+[mal_hw_12]+[mal_hw_13]+[mal_hw_14]+[mal_hw_15]+[mal_hw_16]+[mal_hw_17]+[mal_hw_18]+[mal_hw_19]+[mal_hw_20]+[mal_hw_21]+[mal_hw_22]+[mal_hw_23]+[mal_hw_24]+[mal_hw_25]+[mal_hw_26]+[mal_hw_27]+[mal_hw_28]+[mal_hw_29]+[mal_hw_30]) / 30,,,,,,,,,,,,
+mal_final_notes,motor_activity_log,,notes,Final Observer Notes,,,,,,,,,,,,,

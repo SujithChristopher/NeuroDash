@@ -1,0 +1,352 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-04-27 12:26:05",
+    "key": "kn",
+    "display": "Kannada",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "sipso_date",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "sipso_examiner",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Examiner Name"
+            }
+        },
+        {
+            "id": "sipso_header",
+            "form": "sipso_questionnaire",
+            "header": {
+                "translation": "Subjective Index of Physical and Social Outcome (SIPSO) <br> ದೈಹಿಕ ಮತ್ತು ಸಾಮಾಜಿಕ ಪರಿಣಾಮಗಳ ಮಾಪನ (SIPSO)"
+            },
+            "label": {
+                "translation": "Please answer all questions based on your experience since your stroke. <br> ಪಾರ್ಶ್ವವಾಯು (Stroke) ಆದ ನಂತರದ ನಿಮ್ಮ ಅನುಭವದ ಆಧಾರದ ಮೇಲೆ ದಯವಿಟ್ಟು ಎಲ್ಲಾ ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಿಸಿ."
+            }
+        },
+        {
+            "id": "sipso_1_dress",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "1. Since your stroke, how much difficulty do you have dressing yourself fully? <br> 1. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ, ಬಟ್ಟೆಯನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಧರಿಸುವುದರಲ್ಲಿ ನೀವು ಎಷ್ಟು ಕಷ್ಟ ಪಡಬೇಕಾಗುತ್ತದೆ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Not difficult at all <br> ಏನೂ ಕಷ್ಟವಿಲ್ಲ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slightly difficult <br> ಸ್ವಲ್ಪ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately difficult <br> ಸಾಧಾರಣ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Very difficult <br> ತುಂಬಾ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Unable to do it myself <br> ನಾನು ಸ್ವತಃ ಸಂಪೂರ್ಣವಾಗಿ ಮಾಡಲು ಆಗುವುದಿಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_2_move_home",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "2. Since your stroke, how much difficulty do you have moving around all areas of the home? <br> 2. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ, ಮನೆಯ ಒಳಗಿನ ಎಲ್ಲಾ ಭಾಗಗಳಿಗೆ ಓಡಾಡಲು ಎಷ್ಟು ಕಷ್ಟವಾಗುತ್ತದೆ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Not difficult at all <br> ಏನೂ ಕಷ್ಟವಿಲ್ಲ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slightly difficult <br> ಸ್ವಲ್ಪ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately difficult <br> ಸಾಧಾರಣ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Very difficult <br> ತುಂಬಾ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Unable to do it myself <br> ನಾನು ಸ್ವತಃ ಸಂಪೂರ್ಣವಾಗಿ ಮಾಡಲು ಆಗುವುದಿಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_3_satisfaction",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "3. Since your stroke, how satisfied are you with your overall ability to perform daily activities in and around the home? <br> 3. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ, ಮನೆಯಲ್ಲಿ ಮತ್ತು ಮನೆಯ ಸುತ್ತಮುತ್ತಲ ದೈನಂದಿನ ಕೆಲಸಗಳನ್ನು ಮಾಡುವ ಸಾಮರ್ಥ್ಯದಿಂದ ನೀವು ಎಷ್ಟು ತೃಪ್ತಿಯಾಗಿದ್ದೀರಿ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Completely satisfied <br> ಸಂಪೂರ್ಣವಾಗಿ ತೃಪ್ತಿಯನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Mostly satisfied <br> ಹೆಚ್ಚಾಗಿ ತೃಪ್ತಿಯನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately satisfied <br> ಸಾಧಾರಣವಾಗಿ ತೃಪ್ತಿಯನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Not very satisfied <br> ಹೆಚ್ಚು ತೃಪ್ತಿ ಹೊಂದಿಲ್ಲ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Completely dissatisfied <br> ಸಂಪೂರ್ಣವಾಗಿ ಅತೃಪ್ತಿಯಾಗಿದ್ದೇನೆ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_4_shop",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "4. Since your stroke, how much difficulty do you have shopping for and carrying a few items when at the shops? <br> 4. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ ಅಂಗಡಿಗೆ ಹೋಗಿ ಸಾಮಾನು ಖರೀದಿ ಮಾಡುವುದು ಮತ್ತು ಸ್ವಲ್ಪ ಸಾಮಾನನ್ನು ಹೊರಲು ಎಷ್ಟು ಕಷ್ಟಪಡುತ್ತೀರಿ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Not difficult at all <br> ಏನೂ ಕಷ್ಟವಿಲ್ಲ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slightly difficult <br> ಸ್ವಲ್ಪ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately difficult <br> ಸಾಧಾರಣ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Very difficult <br> ತುಂಬಾ ಕಷ್ಟವಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Unable to do it myself <br> ನಾನು ಸ್ವತಃ ಸಂಪೂರ್ಣವಾಗಿ ಮಾಡಲು ಆಗುವುದಿಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_5_indep_neigh",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "5. Since your stroke, how independent are you in your ability to move around your local neighbourhood? <br> 5. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ ರಸ್ತೆಗಳಲ್ಲಿ ಓಡಾಡುವ ಸಾಮರ್ಥ್ಯದಲ್ಲಿ ಎಷ್ಟರಮಟ್ಟಿಗೆ ಸ್ವತಂತ್ರನಾಗಿದ್ದೀರಿ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Completely independent <br> ನಾನು ಸಂಪೂರ್ಣವಾಗಿ ಸ್ವತಂತ್ರನಾಗಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Prefer to have someone with me <br> ನನ್ನ ಜೊತೆ ಯಾರಾದರೂ ಒಬ್ಬರು ಇರಲು ಬಯಸುತ್ತೇನೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Need some help <br> ನನಗೆ ಕೆಲವು ಸಮಯದಲ್ಲಿ ಬೇರೆಯವರ ಸಹಾಯ ಬೇಕಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Need help most of the time <br> ನನಗೆ ಹೆಚ್ಚಿನ ಸಮಯ ಬೇರೆಯವರ ಸಹಾಯ ಬೇಕಾಗುತ್ತದೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Completely dependent <br> ನಾನು ಸಂಪೂರ್ಣವಾಗಿ ಬೇರೆಯವರ ಮೇಲೆ ಅವಲಂಬಿತನಾಗಿದ್ದೇನೆ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_physical",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Physical Integration Subscore (Items 1-5)"
+            }
+        },
+        {
+            "id": "sipso_6_bored",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "6. Since your stroke, how often do you feel bored with your free time at home? <br> 6. ಪಾರ್ಶ್ವವಾಯು ಆದ ಮೇಲೆ ಮನೆಯಲ್ಲಿ ಬಿಡುವಿನ ಸಮಯದಲ್ಲಿ ಬೇಸರವೆನಿಸುವುದು ಎಷ್ಟರ ಮಟ್ಟಿಗೆ ಕಂಡುಬರುತ್ತದೆ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Not at all <br> ಬೇಸರವೆನಿಸುವುದೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slightly <br> ಸ್ವಲ್ಪ ಮಟ್ಟಿಗೆ ಬೇಸರವೆನಿಸುತ್ತದೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately <br> ಕೆಲವು ಮಟ್ಟಿಗೆ ಬೇಸರವೆನಿಸುತ್ತದೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Greatly <br> ಹೆಚ್ಚಿನ ಮಟ್ಟಿಗೆ ಬೇಸರವೆನಿಸುತ್ತದೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "All the time <br> ಎಲ್ಲಾ ಸಮಯದಲ್ಲೂ ಬೇಸರವೆನಿಸುತ್ತದೆ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_7_comm",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "7. Since your stroke, how would you describe the amount of communication between you and your friends/associates? <br> 7. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ ನಿಮಗೂ ಮತ್ತು ನಿಮ್ಮ ಗೆಳೆಯರು ಅಥವಾ ಜೊತೆಗಿರುವವರ ನಡುವಿನ ಮಾತುಕತೆಯ ಪ್ರಮಾಣವನ್ನು ಹೇಗೆ ವಿವರಿಸುತ್ತೀರಿ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "A great deal <br> ತುಂಬಾ ಹೆಚ್ಚು"
+                },
+                {
+                    "id": "3",
+                    "translation": "Quite a lot <br> ಸಾಕಷ್ಟು ಹೆಚ್ಚು"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately <br> ಸಾಧಾರಣವಾಗಿ"
+                },
+                {
+                    "id": "1",
+                    "translation": "A little bit <br> ಸ್ವಲ್ಪ ಮಟ್ಟಿಗೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "None <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_8_social_sat",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "8. Since your stroke, how satisfied are you with the level of interests and activities you share with your friends/associates? <br> 8. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ, ನಿಮ್ಮ ಗೆಳೆಯರು ಅಥವಾ ಜೊತೆಗಿರುವವರೊಂದಿಗೆ ನೀವು ಹಂಚಿಕೊಳ್ಳುವ ಆಸಕ್ತಿಗಳು ಮತ್ತು ಚಟುವಟಿಕೆಗಳ ಬಗ್ಗೆ ನೀವು ಎಷ್ಟು ತೃಪ್ತಿಯಾಗಿದ್ದೀರಿ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Completely satisfied <br> ಸಂಪೂರ್ಣವಾಗಿ ತೃಪ್ತಿಯನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Mostly satisfied <br> ಹೆಚ್ಚಾಗಿ ತೃಪ್ತಿಯನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Moderately satisfied <br> ಸಾಧಾರಣವಾಗಿ ತೃಪ್ತಿಯನ್ನು ಹೊಂದಿದ್ದೇನೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Not very satisfied <br> ಹೆಚ್ಚು ತೃಪ್ತಿ ಹೊಂದಿಲ್ಲ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Completely dissatisfied <br> ಸಂಪೂರ್ಣವಾಗಿ ಅತೃಪ್ತಿಯಾಗಿದ್ದೇನೆ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_9_visit",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "9. Since your stroke, how often do you visit friends/others? <br> 9. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ, ನೀವು ಎಷ್ಟು ಬಾರಿ ನಿಮ್ಮ ಗೆಳೆಯರನ್ನು ಅಥವಾ ಇತರರನ್ನು ಭೇಟಿ ಮಾಡುತ್ತೀರಿ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Most days <br> ಪ್ರತಿದಿನವೂ"
+                },
+                {
+                    "id": "3",
+                    "translation": "At least once a week <br> ವಾರಕ್ಕೊಮ್ಮೆಯಾದರೂ"
+                },
+                {
+                    "id": "2",
+                    "translation": "At least once a fortnight <br> ಹದಿನೈದು ದಿನಕ್ಕೊಮ್ಮೆಯಾದರೂ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Once a month or less <br> ತಿಂಗಳಿಗೊಮ್ಮೆ ಅಥವಾ ಅದಕ್ಕಿಂತ ಕಡಿಮೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Never <br> ಎಂದಿಗೂ ಇಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_10_appearance",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "10. Since your stroke, how do you feel about your appearance when out in public? <br> 10. ಪಾರ್ಶ್ವವಾಯು ಆದ ನಂತರ, ಸಾರ್ವಜನಿಕವಾಗಿ ಹೊರಗೆ ಹೋದಾಗ ನಿಮ್ಮ ರೂಪದ (Appearance) ಬಗ್ಗೆ ನಿಮಗೆ ಹೇಗೆ ಅನಿಸುತ್ತದೆ?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Perfectly happy <br> ಸಂಪೂರ್ಣವಾಗಿ ಸಂತೋಷವಾಗಿದೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slightly self-conscious <br> ಸ್ವಲ್ಪ ಮುಜುಗರವೆನಿಸುತ್ತದೆ"
+                },
+                {
+                    "id": "2",
+                    "translation": "Fairly self-conscious <br> ಸಾಧಾರಣವಾಗಿ ಮುಜುಗರವೆನಿಸುತ್ತದೆ"
+                },
+                {
+                    "id": "1",
+                    "translation": "Very self-conscious <br> ತುಂಬಾ ಮುಜುಗರವೆನಿಸುತ್ತದೆ"
+                },
+                {
+                    "id": "0",
+                    "translation": "I try to avoid going out in public <br> ನಾನು ಸಾರ್ವಜನಿಕವಾಗಿ ಹೊರಗೆ ಹೋಗುವುದನ್ನು ತಪ್ಪಿಸುತ್ತೇನೆ"
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_social",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Social Integration Subscore (Items 6-10)"
+            }
+        },
+        {
+            "id": "sipso_total_score",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Total SIPSO Score (Max 40)"
+            }
+        }
+    ]
+}

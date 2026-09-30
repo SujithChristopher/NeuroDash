@@ -1,0 +1,6 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,box_and_block_test,,text,Record ID,,,,,,,,,,,,,,,
+bnb_header,box_and_block_test,BOX AND BLOCK TEST (BBT),descriptive,"Instructions: The patient is asked to move as many blocks as possible, one by one, from one compartment to the other within 60 seconds.",,,,,,,,,,,,,
+bnb_affected_limb,box_and_block_test,,dropdown,Affected limb,"1, Right | 2, Left",,,,,,,,,,,,,
+bnb_left_trial_1,box_and_block_test,LEFT HAND,text,Trial 1,,[Numerical score],number,,,,,,,,,,,
+bnb_right_trial_1,box_and_block_test,RIGHT HAND,text,Trial 1,,[Numerical score],number,,,,,,,,,,,

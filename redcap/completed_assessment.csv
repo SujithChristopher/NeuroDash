@@ -1,0 +1,21 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation,,
+record_id,completed_assessment,,text,Record ID,,,,,,,,,,,,,,,
+completion_date,completed_assessment,Final Assessment Completion,text,Date of Completion,,,date_ymd,,,,,,,,,,,
+completion_examiner,completed_assessment,,text,Examiner Name,,,,,,,,,,,,,,,
+completion_status_summary,completed_assessment,Assessment Status Overview,descriptive,"<table border='1' style='width:100%; border-collapse: collapse;'>
+  <tr><th style='padding: 5px;'>Instrument</th><th style='padding: 5px;'>Status (0=Incomplete, 1=Unverified, 2=Complete)</th></tr>
+  <tr><td style='padding: 5px;'>Consent Form</td><td style='padding: 5px; text-align: center;'>[consent_form_complete]</td></tr>
+  <tr><td style='padding: 5px;'>FMA Upper Extremity</td><td style='padding: 5px; text-align: center;'>[fugl_meyer_assessment_ue_complete]</td></tr>
+  <tr><td style='padding: 5px;'>ARAT</td><td style='padding: 5px; text-align: center;'>[action_research_arm_test_complete]</td></tr>
+  <tr><td style='padding: 5px;'>MAL</td><td style='padding: 5px; text-align: center;'>[motor_activity_log_complete]</td></tr>
+  <tr><td style='padding: 5px;'>CSI</td><td style='padding: 5px; text-align: center;'>[caregiver_strain_index_complete]</td></tr>
+  <tr><td style='padding: 5px;'>PHQ-9</td><td style='padding: 5px; text-align: center;'>[patient_health_questionnaire_phq9_complete]</td></tr>
+  <tr><td style='padding: 5px;'>SIPSO</td><td style='padding: 5px; text-align: center;'>[sipso_questionnaire_complete]</td></tr>
+  <tr><td style='padding: 5px;'>mRS</td><td style='padding: 5px; text-align: center;'>[modified_rankin_scale_complete]</td></tr>
+  <tr><td style='padding: 5px;'>MAS</td><td style='padding: 5px; text-align: center;'>[modified_ashworth_scale_complete]</td></tr>
+  <tr><td style='padding: 5px;'>Box and Block</td><td style='padding: 5px; text-align: center;'>[box_and_block_test_complete]</td></tr>
+  <tr><td style='padding: 5px;'>CAHAI-7</td><td style='padding: 5px; text-align: center;'>[cahai7_score_form_complete]</td></tr>
+  <tr><td style='padding: 5px;'>EQ-5D-5L</td><td style='padding: 5px; text-align: center;'>[eq_5d_5l_complete]</td></tr>
+</table>
+<br>Once this form is marked <b>Complete</b>, all other assessments in this event will be locked.",,,,,,,,,,,,,
+completion_notes,completed_assessment,,notes,General Comments on Assessment Completion,,,,,,,,,,,,,,,

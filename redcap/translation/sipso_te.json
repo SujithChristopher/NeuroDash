@@ -1,0 +1,352 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "te",
+    "display": "Telugu",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "sipso_date",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "sipso_examiner",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Examiner Name"
+            }
+        },
+        {
+            "id": "sipso_header",
+            "form": "sipso_questionnaire",
+            "header": {
+                "translation": "Subjective Index of Physical and Social Outcome (SIPSO) / శారీరక మరియు సాంఘిక ఫలితాల ఆత్మాశ్రయ సూచిక (SIPSO)"
+            },
+            "label": {
+                "translation": "Please answer all questions based on your experience since your stroke. / దయచేసి అన్ని ప్రశ్నలకు సమాధానం ఇవ్వండి"
+            }
+        },
+        {
+            "id": "sipso_1_dress",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "1. Since your stroke, how much difficulty do you have dressing yourself fully? / 1. మీ స్ట్రోక్ తర్వాత, మీరు పూర్తిగా దుస్తులు ధరించుకోవడంలో మీకు ఎంత కష్టంగా ఉంది?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "No difficulty at all / అస్సలు కష్టం లేదు"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slight difficulty / స్వల్ప కష్టం"
+                },
+                {
+                    "id": "2",
+                    "translation": "Some difficulty / కొంత కష్టం"
+                },
+                {
+                    "id": "1",
+                    "translation": "A lot of difficulty / చాలా కష్టం"
+                },
+                {
+                    "id": "0",
+                    "translation": "I cannot dress myself fully / నేను పూర్తిగా దుస్తులు ధరించుకోలేను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_2_move_home",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "2. Since your stroke, how much difficulty do you have moving around all areas of the home? / 2. మీ స్ట్రోక్ తర్వాత, ఇంటిలోని అన్ని ప్రాంతాలలో తిరగడంలో మీకు ఎంత కష్టంగా ఉంది?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "No difficulty at all / అస్సలు కష్టం లేదు"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slight difficulty / స్వల్ప కష్టం"
+                },
+                {
+                    "id": "2",
+                    "translation": "Some difficulty / కొంత కష్టం"
+                },
+                {
+                    "id": "1",
+                    "translation": "A lot of difficulty / చాలా కష్టం"
+                },
+                {
+                    "id": "0",
+                    "translation": "I cannot move around all areas of the home / నేను ఇంటిలోని అన్ని ప్రాంతాలలో తిరగలేను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_3_satisfaction",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "3. Since your stroke, how satisfied are you with your overall ability to perform daily activities in and around the home? / 3. మీ స్ట్రోక్ తర్వాత, ఇంట్లో మరియు ఇంటి చుట్టూ దైనందిన కార్యకలాపాలు చేయగల మీ మొత్తం సామర్థ్యంతో మీరు ఎంత సంతృప్తిగా ఉన్నారు?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Completely satisfied / పూర్తిగా సంతృప్తిగా ఉన్నాను"
+                },
+                {
+                    "id": "3",
+                    "translation": "Mostly satisfied / చాలా వరకు సంతృప్తిగా ఉన్నాను"
+                },
+                {
+                    "id": "2",
+                    "translation": "Fairly satisfied / పర్వాలేదు అనిపించింది"
+                },
+                {
+                    "id": "1",
+                    "translation": "Not very satisfied / అంతగా సంతృప్తిగా లేను"
+                },
+                {
+                    "id": "0",
+                    "translation": "Completely dissatisfied / పూర్తిగా అసంతృప్తిగా ఉన్నాను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_4_shop",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "4. Since your stroke, how much difficulty do you have shopping for and carrying a few items (1 bag of shopping or less) when at the shops? / 4. మీ స్ట్రోక్ తర్వాత, దుకాణాలలో కొన్ని వస్తువులు (1 సంచి లేదా అంతకంటే తక్కువ) కొనుగోలు చేసి మోయడంలో మీకు ఎంత కష్టంగా ఉంది?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "No difficulty at all / అస్సలు కష్టం లేదు"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slight difficulty / స్వల్ప కష్టం"
+                },
+                {
+                    "id": "2",
+                    "translation": "Some difficulty / కొంత కష్టం"
+                },
+                {
+                    "id": "1",
+                    "translation": "A lot of difficulty / చాలా కష్టం"
+                },
+                {
+                    "id": "0",
+                    "translation": "I cannot shop for and carry a few items / నేను కొన్ని వస్తువులు కొనుగోలు చేసి మోయలేను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_5_indep_neigh",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "5. Since your stroke, how independent are you in your ability to move around your local neighbourhood? / 5. మీ స్ట్రోక్ తర్వాత, మీ స్థానిక పరిసరాలలో తిరగడంలో మీరు ఎంత స్వతంత్రంగా ఉన్నారు?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "I am completely independent / నేను పూర్తిగా స్వతంత్రంగా ఉన్నాను"
+                },
+                {
+                    "id": "3",
+                    "translation": "I prefer to have someone else with me / నాతో మరొకరు ఉండటాన్ని ఇష్టపడతాను"
+                },
+                {
+                    "id": "2",
+                    "translation": "I need occasional assistance from someone / నాకు అప్పుడప్పుడు ఎవరి సహాయమైనా అవసరం"
+                },
+                {
+                    "id": "1",
+                    "translation": "I need assistance much of the time / నాకు చాలా సమయం సహాయం అవసరం"
+                },
+                {
+                    "id": "0",
+                    "translation": "I am completely dependent on others / నేను పూర్తిగా ఇతరులపై ఆధారపడి ఉన్నాను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_physical",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Physical Outcome Sub-score / శారీరక ఫలితం సబ్-స్కోర్"
+            }
+        },
+        {
+            "id": "sipso_6_bored",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "6. Since your stroke, how often do you feel bored with your free time at home? / 6. మీ స్ట్రోక్ తర్వాత, ఇంట్లో మీ విశ్రాంతి సమయంలో మీకు ఎంత తరచుగా విసుగు కలుగుతుంది?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "I am never bored with my free time / నా విశ్రాంతి సమయంలో నాకు ఎప్పుడూ విసుగు కలగదు"
+                },
+                {
+                    "id": "3",
+                    "translation": "A little of my free time / నా విశ్రాంతి సమయంలో కొంచెం"
+                },
+                {
+                    "id": "2",
+                    "translation": "Some of my free time / నా విశ్రాంతి సమయంలో కొంతభాగం"
+                },
+                {
+                    "id": "1",
+                    "translation": "Most of my free time / నా విశ్రాంతి సమయంలో చాలావరకు"
+                },
+                {
+                    "id": "0",
+                    "translation": "All of my free time / నా విశ్రాంతి సమయం మొత్తం"
+                }
+            ]
+        },
+        {
+            "id": "sipso_7_comm",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "7. Since your stroke, how would you describe the amount of communication between you and your friends/associates? / 7. మీ స్ట్రోక్ తర్వాత, మీరు మరియు మీ స్నేహితులు/పరిచయస్తుల మధ్య సంభాషణ పరిమాణాన్ని మీరు ఎలా వర్ణిస్తారు?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "A great deal / చాలా ఎక్కువ"
+                },
+                {
+                    "id": "3",
+                    "translation": "Quite a lot / చాలా వరకు"
+                },
+                {
+                    "id": "2",
+                    "translation": "Some / కొంత"
+                },
+                {
+                    "id": "1",
+                    "translation": "A little bit / కొంచెం"
+                },
+                {
+                    "id": "0",
+                    "translation": "None / ఏమీ లేదు"
+                }
+            ]
+        },
+        {
+            "id": "sipso_8_social_sat",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "8. Since your stroke, how satisfied are you with the level of interests and activities you share with your friends/associates? / 8. మీ స్ట్రోక్ తర్వాత, మీరు మీ స్నేహితులు/పరిచయస్తులతో పంచుకునే ఆసక్తులు మరియు కార్యకలాపాల స్థాయితో మీరు ఎంత సంతృప్తిగా ఉన్నారు?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Completely satisfied / పూర్తిగా సంతృప్తిగా ఉన్నాను"
+                },
+                {
+                    "id": "3",
+                    "translation": "Mostly satisfied / చాలా వరకు సంతృప్తిగా ఉన్నాను"
+                },
+                {
+                    "id": "2",
+                    "translation": "Fairly satisfied / పర్వాలేదు అనిపించింది"
+                },
+                {
+                    "id": "1",
+                    "translation": "Not very satisfied / అంతగా సంతృప్తిగా లేను"
+                },
+                {
+                    "id": "0",
+                    "translation": "Completely dissatisfied / పూర్తిగా అసంతృప్తిగా ఉన్నాను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_9_visit",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "9. Since your stroke, how often do you visit friends/others? / 9. మీ స్ట్రోక్ తర్వాత, మీరు స్నేహితులను/ఇతరులను ఎంత తరచుగా సందర్శిస్తారు?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Most days / చాలా రోజులు"
+                },
+                {
+                    "id": "3",
+                    "translation": "At least once a week / వారానికి కనీసం ఒకసారి"
+                },
+                {
+                    "id": "2",
+                    "translation": "At least once a fortnight / పక్షానికి కనీసం ఒకసారి"
+                },
+                {
+                    "id": "1",
+                    "translation": "Once a month or less / నెలకు ఒకసారి లేదా అంతకంటే తక్కువ"
+                },
+                {
+                    "id": "0",
+                    "translation": "Never / ఎప్పుడూ లేదు"
+                }
+            ]
+        },
+        {
+            "id": "sipso_10_appearance",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "10. Since your stroke, how do you feel about your appearance when out in public? / 10. మీ స్ట్రోక్ తర్వాత, బహిరంగ స్థలాల్లో బయటకు వెళ్ళినప్పుడు మీ రూపం గురించి మీకు ఎలా అనిపిస్తుంది?"
+            },
+            "enum": [
+                {
+                    "id": "4",
+                    "translation": "Perfectly happy / పూర్తిగా సంతోషంగా ఉన్నాను"
+                },
+                {
+                    "id": "3",
+                    "translation": "Slightly self-conscious / కొంచెం సంకోచంగా అనిపిస్తుంది"
+                },
+                {
+                    "id": "2",
+                    "translation": "Fairly self-conscious / పర్వాలేదు అనిపించింది"
+                },
+                {
+                    "id": "1",
+                    "translation": "Very self-conscious / చాలా సంకోచంగా అనిపిస్తుంది"
+                },
+                {
+                    "id": "0",
+                    "translation": "I try to avoid going out in public / నేను బహిరంగంగా బయటకు వెళ్ళడం మానుకోవడానికి ప్రయత్నిస్తాను"
+                }
+            ]
+        },
+        {
+            "id": "sipso_sub_social",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "Social Outcome Sub-score / సాంఘిక ఫలితం సబ్-స్కోర్"
+            }
+        },
+        {
+            "id": "sipso_total_score",
+            "form": "sipso_questionnaire",
+            "label": {
+                "translation": "SIPSO Total Score / SIPSO మొత్తం స్కోరు"
+            }
+        }
+    ]
+}

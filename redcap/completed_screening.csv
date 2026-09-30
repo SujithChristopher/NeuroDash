@@ -1,0 +1,13 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,completed_screening,,text,Record ID,,,,,,,,,,,,,,,
+screening_completion_date,completed_screening,Final Screening Completion,text,Date of Completion,,,date_ymd,,,,,,,,,,,
+screening_completion_status_summary,completed_screening,Screening Status Overview,descriptive,"<table border='1' style='width:100%; border-collapse: collapse;'>
+  <tr><th style='padding: 5px;'>Instrument</th><th style='padding: 5px;'>Status (0=Incomplete, 1=Unverified, 2=Complete)</th></tr>
+  <tr><td style='padding: 5px;'>HOMER Screening Form</td><td style='padding: 5px; text-align: center;'>[homer_screening_form_complete]</td></tr>
+  <tr><td style='padding: 5px;'>Fugl Meyer Assessment Ue</td><td style='padding: 5px; text-align: center;'>[fugl_meyer_assessment_ue_complete]</td></tr>
+  <tr><td style='padding: 5px;'>Modified Ashworth Scale</td><td style='padding: 5px; text-align: center;'>[modified_ashworth_scale_complete]</td></tr>
+  <tr><td style='padding: 5px;'>Montreal Cognitive Assessment</td><td style='padding: 5px; text-align: center;'>[montreal_cognitive_assessment_complete]</td></tr>
+  <tr><td style='padding: 5px;'>Numeric Pain Rating Scale</td><td style='padding: 5px; text-align: center;'>[numeric_pain_rating_scale_complete]</td></tr>
+</table>
+<br>Once this form is marked <b>Complete</b>, all other assessments in this event will be locked.",,,,,,,,,,,,,,,
+screening_completion_notes,completed_screening,,notes,General Comments on Screening Completion,,,,,,,,,,,,,,,

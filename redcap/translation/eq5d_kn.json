@@ -1,0 +1,201 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-04-27 12:26:05",
+    "key": "kn",
+    "display": "Kannada",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "eq5d_date",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "eq5d_header",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "EQ-5D-5L <br> ಆರೋಗ್ಯ ಪ್ರಶ್ನಾವಳಿ"
+            },
+            "label": {
+                "translation": "Under each heading, please tick the ONE box that best describes your health TODAY. <br> ಪ್ರತಿಯೊಂದು ಶೀರ್ಷಿಕೆಯ ಅಡಿಯಲ್ಲಿ, ಇಂದಿನ ನಿಮ್ಮ ಆರೋಗ್ಯವನ್ನು ಉತ್ತಮವಾಗಿ ವಿವರಿಸುವ ಒಂದು ಬಾಕ್ಸ್ ಅನ್ನು ಗುರುತಿಸಿ."
+            }
+        },
+        {
+            "id": "eq5d_mobility",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "MOBILITY <br> ಓಡಾಟ"
+            },
+            "label": {
+                "translation": "I have ... difficulty in walking about <br> ನಡೆಯುವಲ್ಲಿ ನನಗೆ ... ತೊಂದರೆ ಇದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> ಯಾವುದೇ ತೊಂದರೆ ಇಲ್ಲ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> ಸ್ವಲ್ಪ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> ಸಾಧಾರಣ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> ತೀವ್ರ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to walk about <br> ನಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_self_care",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "SELF-CARE <br> ಸ್ವಯಂ ಆರೈಕೆ"
+            },
+            "label": {
+                "translation": "I have ... difficulty washing or dressing myself <br> ಸ್ನಾನ ಮಾಡುವಲ್ಲಿ ಅಥವಾ ಬಟ್ಟೆ ಧರಿಸುವಲ್ಲಿ ನನಗೆ ... ತೊಂದರೆ ಇದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> ಯಾವುದೇ ತೊಂದರೆ ಇಲ್ಲ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> ಸ್ವಲ್ಪ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> ಸಾಧಾರಣ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> ತೀವ್ರ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to wash or dress myself <br> ಸ್ನಾನ ಮಾಡಲು ಅಥವಾ ಬಟ್ಟೆ ಧರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_activities",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "USUAL ACTIVITIES <br> ದೈನಂದಿನ ಚಟುವಟಿಕೆಗಳು (ಉದಾಹರಣೆಗೆ: ಕೆಲಸ, ವಿದ್ಯಾಭ್ಯಾಸ, ಮನೆಕೆಲಸ, ಕುಟುಂಬ ಅಥವಾ ವಿರಾಮದ ಚಟುವಟಿಕೆಗಳು)"
+            },
+            "label": {
+                "translation": "I have ... difficulty performing my usual activities <br> ನನ್ನ ದೈನಂದಿನ ಚಟುವಟಿಕೆಗಳನ್ನು ಮಾಡುವಲ್ಲಿ ನನಗೆ ... ತೊಂದರೆ ಇದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> ಯಾವುದೇ ತೊಂದರೆ ಇಲ್ಲ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> ಸ್ವಲ್ಪ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> ಸಾಧಾರಣ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> ತೀವ್ರ ತೊಂದರೆ ಇದೆ"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to perform my usual activities <br> ನನ್ನ ದೈನಂದಿನ ಚಟುವಟಿಕೆಗಳನ್ನು ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_pain",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "PAIN / DISCOMFORT <br> ನೋವು / ಅಸ್ವಸ್ಥತೆ"
+            },
+            "label": {
+                "translation": "I have ... pain or discomfort <br> ನನಗೆ ... ನೋವು ಅಥವಾ ಅಸ್ವಸ್ಥತೆ ಇದೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no pain or discomfort <br> ಯಾವುದೇ ನೋವು ಅಥವಾ ಅಸ್ವಸ್ಥತೆ ಇಲ್ಲ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight pain or discomfort <br> ಸ್ವಲ್ಪ ನೋವು ಅಥವಾ ಅಸ್ವಸ್ಥತೆ ಇದೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate pain or discomfort <br> ಸಾಧಾರಣ ನೋವು ಅಥವಾ ಅಸ್ವಸ್ಥತೆ ಇದೆ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe pain or discomfort <br> ತೀವ್ರ ನೋವು ಅಥವಾ ಅಸ್ವಸ್ಥತೆ ಇದೆ"
+                },
+                {
+                    "id": "5",
+                    "translation": "extreme pain or discomfort <br> ವಿಪರೀತ ನೋವು ಅಥವಾ ಅಸ್ವಸ್ಥತೆ ಇದೆ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_anxiety",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "ANXIETY / DEPRESSION <br> ಆತಂಕ / ಖಿನ್ನತೆ"
+            },
+            "label": {
+                "translation": "I am ... anxious or depressed <br> ನಾನು ... ಆತಂಕ ಅಥವಾ ಖಿನ್ನತೆಯನ್ನು ಅನುಭವಿಸುತ್ತಿದ್ದೇನೆ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "not anxious or depressed <br> ಆತಂಕ ಅಥವಾ ಖಿನ್ನತೆ ಇಲ್ಲ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight anxious or depressed <br> ಸ್ವಲ್ಪ ಆತಂಕ ಅಥವಾ ಖಿನ್ನತೆ ಇದೆ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate anxious or depressed <br> ಸಾಧಾರಣ ಆತಂಕ ಅಥವಾ ಖಿನ್ನತೆ ಇದೆ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe anxious or depressed <br> ತೀವ್ರ ಆತಂಕ ಅಥವಾ ಖಿನ್ನತೆ ಇದೆ"
+                },
+                {
+                    "id": "5",
+                    "translation": "extreme anxious or depressed <br> ವಿಪರೀತ ಆತಂಕ ಅಥವಾ ಖಿನ್ನತೆ ಇದೆ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_vas",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "YOUR HEALTH TODAY <br> ಇಂದು ನಿಮ್ಮ ಆರೋಗ್ಯ ಹೇಗಿದೆ (0 ರಿಂದ 100 ರ ಮಾಪನದಲ್ಲಿ, 100 ಅತ್ಯುತ್ತಮ ಆರೋಗ್ಯ)"
+            }
+        }
+    ]
+}

@@ -1,0 +1,221 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "te",
+    "display": "Telugu",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "eq5d_date",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "eq5d_intro",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "Health Questionnaire <br> ఆరోగ్య ప్రశ్నావళి"
+            },
+            "label": {
+                "translation": "Health Questionnaire<br>Telugu version for India<br><br>© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (Telugu) v1.1<br><br>Under each heading, please tick the ONE box that best describes your health TODAY. <br> ప్రతి శీర్షిక కింద, ఈ రోజు మీ ఆరోగ్యమును అత్యుత్తమంగా వర్ణించే గదిలో దయచేసి టిక్ (✓) గుర్తు పెట్టండి."
+            }
+        },
+        {
+            "id": "eq5d_mobility",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "MOBILITY <br> కదలిక"
+            },
+            "label": {
+                "translation": "I have ... difficulty in walking about <br> నడకలో నాకు ..."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> నడకలో నాకెలాంటి సమస్యలు లేవు"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> నడకలో నాకు స్వల్పంగా సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> నడవడంలో నాకు ఓ మాదిరి సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> నడవడంలో నాకు తీవ్రమైన సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to walk about <br> నేను నడవలేను"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_self_care",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "SELF-CARE <br> స్వయం -సంరక్షణ"
+            },
+            "label": {
+                "translation": "I have ... difficulty washing or dressing myself <br> నా అంతట నేను స్నానం చేయడంలో లేదా బట్టలు తొడుక్కోవడంలో నాకు ..."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> నా అంతట నేను స్నానం చేయడంలో లేదా బట్టలు తొడుక్కోవడంలో నాకు సమస్యలు లేవు"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> నా అంతట నేను స్నానం చేయడంలో లేదా బట్టలు తొడుక్కోవడంలో నాకు స్వల్పంగా సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> నా అంతట నేను స్నానం చేయడంలో లేదా బట్టలు తొడుక్కోవడంలో నాకు ఓ మాదిరి సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> నా అంతట నేను స్నానం చేయడంలో లేదా బట్టలు తొడుక్కోవడంలో నాకు తీవ్రమైన సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to wash or dress myself <br> నా అంతట నేను స్నానం చేయడం లేదా బట్టలు తొడుక్కోవడం అస్సలు చేయలేను"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_usual_activities",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "USUAL ACTIVITIES <br> మామూలు కార్యకలాపాలు (ఉదా॥ పని చేయడం, చదువు, ఇంటిపని, కుటుంబం పనులు లేదా ఖాళీ సమయంలో చేసే పనులు)"
+            },
+            "label": {
+                "translation": "Usual activities (e.g. work, study, housework, family or leisure activities) <br> నా మామూలు కార్యకలాపాలను చేయడంలో నాకు ..."
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "I have no problems doing my usual activities <br> నా మామూలు కార్యకలాపాలను చేయడంలో నాకు ఎలాంటి సమస్యలు లేవు"
+                },
+                {
+                    "id": "2",
+                    "translation": "I have slight problems doing my usual activities <br> నా మామూలు కార్యకలాపాలను చేయడంలో నాకు స్వల్పంగా సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "3",
+                    "translation": "I have moderate problems doing my usual activities <br> నా మామూలు కార్యకలాపాలను చేయడంలో నాకు ఓ మాదిరి సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "4",
+                    "translation": "I have severe problems doing my usual activities <br> నా మామూలు కార్యకలాపాలను చేయడంలో నాకు తీవ్రమైన సమస్యలు ఉన్నాయి"
+                },
+                {
+                    "id": "5",
+                    "translation": "I am unable to do my usual activities <br> నా మామూలు కార్యకలాపాలను నేను చేయలేను"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_pain_discomfort",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "PAIN / DISCOMFORT <br> నొప్పి / అసౌకర్యం"
+            },
+            "label": {
+                "translation": "Pain / Discomfort <br> నొప్పి / అసౌకర్యం"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "I have no pain or discomfort <br> నాకు ఎలాంటి నొప్పి లేదా అసౌకర్యం లేదు"
+                },
+                {
+                    "id": "2",
+                    "translation": "I have slight pain or discomfort <br> నాకు స్వల్పంగా నొప్పి లేదా అసౌకర్యం ఉంది"
+                },
+                {
+                    "id": "3",
+                    "translation": "I have moderate pain or discomfort <br> నాకు ఓ మాదిరి నొప్పి లేదా అసౌకర్యం ఉంది"
+                },
+                {
+                    "id": "4",
+                    "translation": "I have severe pain or discomfort <br> నాకు తీవ్రమైన నొప్పి లేదా అసౌకర్యం ఉంది"
+                },
+                {
+                    "id": "5",
+                    "translation": "I have extreme pain or discomfort <br> నాకు విపరీతమైన నొప్పి లేదా అసౌకర్యం ఉంది"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_anxiety_depression",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "ANXIETY / DEPRESSION <br> ఆత్రుత / క్రుంగిపోవడం"
+            },
+            "label": {
+                "translation": "Anxiety / Depression <br> ఆత్రుత / క్రుంగిపోవడం"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "I am not anxious or depressed <br> నేను ఆత్రుతగా లేదా కృంగిపోలేదు"
+                },
+                {
+                    "id": "2",
+                    "translation": "I am slightly anxious or depressed <br> నేను స్వల్పంగా ఆత్రుతతో లేదా కృంగిపోయి ఉన్నాను"
+                },
+                {
+                    "id": "3",
+                    "translation": "I am moderately anxious or depressed <br> నేను ఓ మాదిరిగా ఆత్రుతతో లేదా కృంగిపోయి ఉన్నాను"
+                },
+                {
+                    "id": "4",
+                    "translation": "I am severely anxious or depressed <br> నేను తీవ్రమైన ఆత్రుతతో లేదా కృంగిపోయి ఉన్నాను"
+                },
+                {
+                    "id": "5",
+                    "translation": "I am extremely anxious or depressed <br> నేను విపరీతమైన ఆత్రుతతో లేదా కృంగిపోయి ఉన్నాను"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_vas_header",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "EQ VAS <br> EQ VAS"
+            },
+            "label": {
+                "translation": "- We would like to know how good or bad your health is TODAY.<br>- This scale is numbered from 0 to 100.<br>- 100 means the best health you can imagine. 0 means the worst health you can imagine.<br>- Mark an X on the scale to indicate how your health is TODAY.<br>- Now, please write the number you marked on the scale in the box <br> - ఈ రోజు మీ ఆరోగ్యం ఎంత చక్కగా లేదా ఎంత అధ్వానంగా ఉందో తెలుసుకోవాలని అనుకుంటున్నాము.<br>- ఈ స్కేలు మీద 0 నుండి 100 వరకు సంఖ్యలు ఉన్నాయి.<br>- 100 అంటే మీరు ఊహించగల అత్యుత్తమ ఆరోగ్యం. 0 అంటే మీరు ఊహించగల అధ్వానమైన ఆరోగ్యం.<br>- ఈ రోజున మీ ఆరోగ్యం ఎలా ఉందో సూచించడానికి స్కేలు మీద X గుర్తు పెట్టండి.<br>- ఇప్పుడు, మీరు స్కేలు మీద గుర్తించిన సంఖ్యను క్రింది బాక్సులో దయచేసి రాయండి."
+            }
+        },
+        {
+            "id": "eq5d_vas",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "YOUR HEALTH TODAY <br> ఈ రోజు మీ ఆరోగ్యం (0 నుండి 100 వరకూ గల స్కేలులో, 100 అత్యుత్తమ ఆరోగ్యం)"
+            }
+        },
+        {
+            "id": "eq5d_copyright",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "COPYRIGHT <br> కాపీరైట్"
+            },
+            "label": {
+                "translation": "© EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (Telugu) v1.1 <br> © EuroQol Research Foundation. EQ-5D™ is a trade mark of the EuroQol Research Foundation. India (Telugu) v1.1"
+            }
+        }
+    ]
+}

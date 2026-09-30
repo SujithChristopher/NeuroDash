@@ -1,0 +1,590 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "pa",
+    "display": "Punjabi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "moca_test",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "moca_date",
+            "form": "moca_test",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "moca_header",
+            "form": "moca_test",
+            "header": {
+                "translation": "MONTREAL COGNITIVE ASSESSMENT (MoCA) / MONTREAL COGNITIVE ASSESSMENT (MoCA) <br> ਮਾਂਟਰੀਅਲ ਕੋਗਨਿਟਿਵ ਅਸੈਸਮੈਂਟ (MoCA)"
+            },
+            "label": {
+                "translation": "MONTREAL COGNITIVE ASSESSMENT (MoCA)"
+            }
+        },
+        {
+            "id": "moca_trail",
+            "form": "moca_test",
+            "header": {
+                "translation": "VISUOSPATIAL / EXECUTIVE (ਦ੍ਰਿਸ਼ਟੀਗਤ ਸਥਾਨਿਕ / ਕਾਰਜਕਾਰੀ)"
+            },
+            "label": {
+                "translation": "Alternating Trail Making (1-A-2-B-3-C-4-D-5-E)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct sequence"
+                }
+            ]
+        },
+        {
+            "id": "moca_cube",
+            "form": "moca_test",
+            "label": {
+                "translation": "Copy Cube"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Accurate 3D reproduction"
+                }
+            ]
+        },
+        {
+            "id": "moca_clock_contour",
+            "form": "moca_test",
+            "label": {
+                "translation": "Clock Drawing - Contour"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct contour"
+                }
+            ]
+        },
+        {
+            "id": "moca_clock_numbers",
+            "form": "moca_test",
+            "label": {
+                "translation": "Clock Drawing - Numbers"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - All numbers correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_clock_hands",
+            "form": "moca_test",
+            "label": {
+                "translation": "Clock Drawing - Hands (Ten past eleven)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct time"
+                }
+            ]
+        },
+        {
+            "id": "moca_animal_lion",
+            "form": "moca_test",
+            "header": {
+                "translation": "NAMING (ਨਾਮਕਰਨ)"
+            },
+            "label": {
+                "translation": "Name Lion"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_animal_rhino",
+            "form": "moca_test",
+            "label": {
+                "translation": "Name Rhinoceros"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_animal_camel",
+            "form": "moca_test",
+            "label": {
+                "translation": "Name Camel"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_memory_info",
+            "form": "moca_test",
+            "header": {
+                "translation": "MEMORY (ਯਾਦਦਾਸ਼ਤ)"
+            },
+            "label": {
+                "translation": "Trial 1 & 2: Registering the words FACE, VELVET, CHURCH, DAISY, RED. No points are awarded here; they are for the 5-minute delayed recall task."
+            }
+        },
+        {
+            "id": "moca_digit_forward",
+            "form": "moca_test",
+            "header": {
+                "translation": "ATTENTION (ਧਿਆਨ)"
+            },
+            "label": {
+                "translation": "Digit Span Forward (2-1-8-5-4)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_digit_backward",
+            "form": "moca_test",
+            "label": {
+                "translation": "Digit Span Backward (7-4-2)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_vigilance",
+            "form": "moca_test",
+            "label": {
+                "translation": "Vigilance (Tapping at 'A')"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - >= 2 errors"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - < 2 errors"
+                }
+            ]
+        },
+        {
+            "id": "moca_serial_7",
+            "form": "moca_test",
+            "label": {
+                "translation": "Serial 7 Subtraction (Starting at 100)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - 0 correct"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - 1 correct"
+                },
+                {
+                    "id": "2",
+                    "translation": "2 - 2 or 3 correct"
+                },
+                {
+                    "id": "3",
+                    "translation": "3 - 4 or 5 correct subtractions"
+                }
+            ]
+        },
+        {
+            "id": "moca_sentence_1",
+            "form": "moca_test",
+            "header": {
+                "translation": "SENTENCE REPETITION (ਵਾਕ ਦੁਹਰਾਉਣਾ)"
+            },
+            "label": {
+                "translation": "Sentence Repetition 1: \"I only know that John is the one to help today.\""
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_sentence_2",
+            "form": "moca_test",
+            "label": {
+                "translation": "Sentence Repetition 2: \"The cat always hid under the couch when dogs were in the room.\""
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_verbal_fluency",
+            "form": "moca_test",
+            "label": {
+                "translation": "VERBAL FLUENCY (ਬੋਲਣ ਦੀ ਰਵਾਨਗੀ)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_abstract_train",
+            "form": "moca_test",
+            "header": {
+                "translation": "ABSTRACTION (ਅਮੂਰਤ ਚਿੰਤਨ)"
+            },
+            "label": {
+                "translation": "Similarities: Train - Bicycle"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_abstract_watch",
+            "form": "moca_test",
+            "label": {
+                "translation": "Similarities: Watch - Ruler"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_recall_face",
+            "form": "moca_test",
+            "header": {
+                "translation": "DELAYED RECALL (ਦੇਰੀ ਨਾਲ ਯਾਦ ਕਰਨਾ)"
+            },
+            "label": {
+                "translation": "Uncued Recall: FACE"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_recall_velvet",
+            "form": "moca_test",
+            "label": {
+                "translation": "Uncued Recall: VELVET"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_recall_church",
+            "form": "moca_test",
+            "label": {
+                "translation": "Uncued Recall: CHURCH"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_recall_daisy",
+            "form": "moca_test",
+            "label": {
+                "translation": "Uncued Recall: DAISY"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_recall_red",
+            "form": "moca_test",
+            "label": {
+                "translation": "Uncued Recall: RED"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_mis_info",
+            "form": "moca_test",
+            "label": {
+                "translation": "Memory Index Score (MIS): Calculated for clinical use but not part of the 30-point total (Uncued 3; Category Cue 2; Multiple Choice 1)."
+            }
+        },
+        {
+            "id": "moca_orient_calendar",
+            "form": "moca_test",
+            "header": {
+                "translation": "ORIENTATION (ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼)"
+            },
+            "label": {
+                "translation": "Date"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_orient_month",
+            "form": "moca_test",
+            "label": {
+                "translation": "Month"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_orient_year",
+            "form": "moca_test",
+            "label": {
+                "translation": "Year"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_orient_day",
+            "form": "moca_test",
+            "label": {
+                "translation": "Day"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_orient_place",
+            "form": "moca_test",
+            "label": {
+                "translation": "Place"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_orient_city",
+            "form": "moca_test",
+            "label": {
+                "translation": "City"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - Incorrect"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Correct"
+                }
+            ]
+        },
+        {
+            "id": "moca_edu_add",
+            "form": "moca_test",
+            "header": {
+                "translation": "Total Calculation (ਕੁੱਲ ਗਣਨਾ)"
+            },
+            "label": {
+                "translation": "Education Correction: Add +1 point? (if <= 12 years of education)"
+            },
+            "enum": [
+                {
+                    "id": "0",
+                    "translation": "0 - No"
+                },
+                {
+                    "id": "1",
+                    "translation": "1 - Yes"
+                }
+            ]
+        },
+        {
+            "id": "moca_total_score",
+            "form": "moca_test",
+            "label": {
+                "translation": "Total Score (Max 30) / ਕੁੱਲ ਸਕੋਰ (ਵੱਧ ਤੋਂ ਵੱਧ 30)"
+            }
+        },
+        {
+            "id": "moca_interpretation",
+            "form": "moca_test",
+            "label": {
+                "translation": "Interpretation: A final score of >= 26 is considered normal. / ਵਿਆਖਿਆ: >= 26 ਦਾ ਅੰਤਿਮ ਸਕੋਰ ਆਮ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ।"
+            }
+        }
+    ]
+}

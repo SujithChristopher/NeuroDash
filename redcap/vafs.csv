@@ -1,0 +1,6 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,Choices, Calculations, OR Slider Labels,Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+record_id,visual_analogue_fatigue_scale,,text,"Record ID",,,,,,,,,,,,,,,
+vafs_date,visual_analogue_fatigue_scale,,text,"Date of Assessment",,,date_ymd,,,,,,,,,,,
+vafs_examiner,visual_analogue_fatigue_scale,,text,"Examiner Name",,,,,,,,,,,,,,,
+vafs_header,visual_analogue_fatigue_scale,"VISUAL ANALOGUE FATIGUE SCALE (VAFS)",descriptive,"Please mark on the number line the point which describes your global fatigue, with 0 being worst and 10 being normal.<br><b>Notes: Higher numbers represent more fatigue.</b>",,,,,,,,,,,,,,
+vafs_score,visual_analogue_fatigue_scale,,radio,"Visual Analogue Fatigue Scale (VAFS) Score","0, 0 - Worst | 1, 1 | 2, 2 | 3, 3 | 4, 4 | 5, 5 | 6, 6 | 7, 7 | 8, 8 | 9, 9 | 10, 10 - Normal",,,,,,,,,,,,,,

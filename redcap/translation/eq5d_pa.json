@@ -1,0 +1,201 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "pa",
+    "display": "Punjabi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "eq5d_date",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "eq5d_header",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "EQ-5D-5L <br> ਸਿਹਤ ਪ੍ਰਸ਼ਨਾਲੀ"
+            },
+            "label": {
+                "translation": "Under each heading, please tick the ONE box that best describes your health TODAY. <br> ਹਰੇਕ ਸਿਰਲੇਖ ਦੇ ਹੇਠਾਂ, ਕਿਰਪਾ ਕਰਕੇ ਉਸ ਇੱਕ ਖਾਨੇ ਤੇ ਸਹੀ ਲਗਾਉ ਜੋ ਅੱਜ ਤੁਹਾਡੀ ਸਿਹਤ ਦਾ ਸਹੀ ਵਰਨਨ ਕਰਦਾ ਹੈ।"
+            }
+        },
+        {
+            "id": "eq5d_mobility",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "MOBILITY <br> ਚਲਣਸ਼ੀਲਤਾ"
+            },
+            "label": {
+                "translation": "I have ... difficulty in walking about <br> ਮੈਨੂੰ ਤੁਰਨ-ਫਿਰਨ ਵਿੱਚ ... ਪਰੇਸ਼ਾਨੀ ਹੈ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> ਕੋਈ ਪਰੇਸ਼ਾਨੀ ਨਹੀਂ ਹੈ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> ਥੋੜ੍ਹੀ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> ਮੱਧਮ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> ਬਹੁਤ ਜ਼ਿਆਦਾ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to walk about <br> ਤੁਰਨ-ਫਿਰਨ ਵਿੱਚ ਅਸਮਰੱਥ ਹਾਂ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_self_care",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "SELF-CARE <br> ਆਪਣੀ-ਦੇਖਭਾਲ"
+            },
+            "label": {
+                "translation": "I have ... difficulty washing or dressing myself <br> ਮੈਨੂੰ ਆਪਣੇ-ਆਪ ਨਹਾਉਣ-ਧੋਣ ਜਾਂ ਤਿਆਰ ਹੋਣ ਵਿੱਚ ... ਪਰੇਸ਼ਾਨੀ ਹੈ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> ਕੋਈ ਪਰੇਸ਼ਾਨੀ ਨਹੀਂ ਹੈ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> ਥੋੜ੍ਹੀ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> ਮੱਧਮ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> ਬਹੁਤ ਜ਼ਿਆਦਾ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to wash or dress myself <br> ਆਪਣੇ-ਆਪ ਨਹਾਉਣ-ਧੋਣ ਜਾਂ ਤਿਆਰ ਹੋਣ ਵਿੱਚ ਅਸਮਰੱਥ ਹਾਂ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_activities",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "USUAL ACTIVITIES <br> ਆਮ ਕਿਰਿਆਵਾਂ (ਜਿਵੇਂ ਕੰਮ-ਕਾਰ, ਪੜ੍ਹਨਾ, ਘਰੇਲੂ-ਕੰਮ, ਪਰਿਵਾਰਕ ਜਾਂ ਵਿਹਲ-ਸੰਬੰਧੀ ਕਿਰਿਆਵਾਂ)"
+            },
+            "label": {
+                "translation": "I have ... difficulty performing my usual activities <br> ਮੈਨੂੰ ਆਪਣੀਆਂ ਆਮ ਕਿਰਿਆਵਾਂ ਕਰਨ ਵਿੱਚ ... ਪਰੇਸ਼ਾਨੀ ਹੈ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> ਕੋਈ ਪਰੇਸ਼ਾਨੀ ਨਹੀਂ ਹੈ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> ਥੋੜ੍ਹੀ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> ਮੱਧਮ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> ਬਹੁਤ ਜ਼ਿਆਦਾ ਪਰੇਸ਼ਾਨੀ ਆਉਂਦੀ ਹੈ"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to perform my usual activities <br> ਆਪਣੀਆਂ ਆਮ ਕਿਰਿਆਵਾਂ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ ਹਾਂ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_pain",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "PAIN / DISCOMFORT <br> ਦਰਦ / ਬੇਆਰਾਮੀ"
+            },
+            "label": {
+                "translation": "I have ... pain or discomfort <br> ਮੈਨੂੰ ... ਦਰਦ ਜਾਂ ਬੇਆਰਾਮੀ ਹੈ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no pain or discomfort <br> ਕੋਈ ਦਰਦ ਜਾਂ ਬੇਆਰਾਮੀ ਨਹੀਂ ਹੈ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight pain or discomfort <br> ਥੋੜ੍ਹਾ ਦਰਦ ਜਾਂ ਬੇਆਰਾਮੀ ਹੈ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate pain or discomfort <br> ਮੱਧਮ ਦਰਦ ਜਾਂ ਬੇਆਰਾਮੀ ਹੈ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe pain or discomfort <br> ਬਹੁਤ ਜ਼ਿਆਦਾ ਦਰਦ ਜਾਂ ਬੇਆਰਾਮੀ ਹੈ"
+                },
+                {
+                    "id": "5",
+                    "translation": "extreme pain or discomfort <br> ਬੇਹੱਦ ਦਰਦ ਜਾਂ ਬੇਆਰਾਮੀ ਹੈ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_anxiety",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "ANXIETY / DEPRESSION <br> ਬੇਚੈਨੀ / ਡਿਪਰੈਸ਼ਨ"
+            },
+            "label": {
+                "translation": "I am ... anxious or depressed <br> ਮੈਨੂੰ ... ਬੇਚੈਨੀ ਜਾਂ ਡਿਪਰੈਸ਼ਨ ਹੈ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "not anxious or depressed <br> ਕੋਈ ਬੇਚੈਨੀ ਜਾਂ ਡਿਪਰੈਸ਼ਨ ਨਹੀਂ ਹੈ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight anxious or depressed <br> ਥੋੜ੍ਹੀ ਬੇਚੈਨੀ ਜਾਂ ਡਿਪਰੈਸ਼ਨ ਹੈ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate anxious or depressed <br> ਮੱਧਮ ਬੇਚੈਨੀ ਜਾਂ ਡਿਪਰੈਸ਼ਨ ਹੈ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe anxious or depressed <br> ਬਹੁਤ ਜ਼ਿਆਦਾ ਬੇਚੈਨੀ ਜਾਂ ਡਿਪਰੈਸ਼ਨ ਹੈ"
+                },
+                {
+                    "id": "5",
+                    "translation": "extreme anxious or depressed <br> ਬੇਹੱਦ ਬੇਚੈਨੀ ਜਾਂ ਡਿਪਰੈਸ਼ਨ ਹੈ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_vas",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "YOUR HEALTH TODAY <br> ਅੱਜ ਤੁਹਾਡੀ ਸਿਹਤ (0 ਤੋਂ 100 ਦੇ ਪੈਮਾਨੇ 'ਤੇ, ਜਿੱਥੇ 100 ਦਾ ਮਤਲਬ ਸਭ ਤੋਂ ਚੰਗੀ ਸਿਹਤ ਅਤੇ 0 ਦਾ ਮਤਲਬ ਸਭ ਤੋਂ ਮਾੜੀ ਸਿਹਤ ਹੈ)"
+            }
+        }
+    ]
+}

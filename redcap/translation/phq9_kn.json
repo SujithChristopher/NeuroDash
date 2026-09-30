@@ -1,0 +1,291 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-04-27 12:26:05",
+    "key": "kn",
+    "display": "Kannada",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "phq9_date",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "phq9_header",
+            "form": "patient_health_questionnaire_phq9",
+            "header": {
+                "translation": "PATIENT HEALTH QUESTIONNAIRE-9 (PHQ-9) <br> ರೋಗಿಯ ಆರೋಗ್ಯ ಪ್ರಶ್ನಾವಳಿ - 9"
+            },
+            "label": {
+                "translation": "Over the last 2 weeks, how often have you had any of the following problems? <br> ಕಳೆದ 2 ವಾರಗಳಲ್ಲಿ, ನೀವು ಪದೇ ಪದೇ ಈ ಕೆಳಗಿನ ಯಾವುದಾದರೂ ಸಮಸ್ಯೆಗಳಿಂದ ಎಷ್ಟು ಚಿಂತಿತರಾಗಿದ್ದೀರಿ?"
+            }
+        },
+        {
+            "id": "phq9_1_interest",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "1. Little interest or pleasure in doing things <br> 1. ಕೆಲಸಗಳನ್ನು ಮಾಡುವುದರಲ್ಲಿ ಕಡಿಮೆ ಆಸಕ್ತಿ ಅಥವಾ ಆನಂದ"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದิน"
+                }
+            ]
+        },
+        {
+            "id": "phq9_2_depressed",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "2. Feeling down, depressed, or hopeless <br> 2. ಬೇಸರ, ಖಿನ್ನತೆ ಅಥವಾ ಹತಾಶೆ"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದิน"
+                }
+            ]
+        },
+        {
+            "id": "phq9_3_sleep",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "3. Trouble falling or staying asleep, or sleeping too much <br> 3. ನಿದ್ರೆ ಬರುವುದು ಅಥವಾ ನಿದ್ರೆಯಲ್ಲಿರುವುದಕ್ಕೆ ತೊಂದರೆ, ಅಥವಾ ಅತಿಯಾಗಿ ನಿದ್ರೆ ಮಾಡುವುದು"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದิน"
+                }
+            ]
+        },
+        {
+            "id": "phq9_4_tired",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "4. Feeling tired or having little energy <br> 4. ಆಯಾಸಗೊಳ್ಳುವುದು ಅಥವಾ ಚೈತನ್ಯ ಇಲ್ಲದಿರುವುದು"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದิน"
+                }
+            ]
+        },
+        {
+            "id": "phq9_5_appetite",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "5. Poor appetite or overeating <br> 5. ಕಡಿಮೆ ಹಸಿವು ಅಥವಾ ಅತಿಯಾಗಿ ತಿನ್ನುವುದು"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದಿನ"
+                }
+            ]
+        },
+        {
+            "id": "phq9_6_failure",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "6. Feeling bad about yourself - or that you are a failure or have let yourself down or your family down <br> 6. ನಿಮ್ಮ ಬಗ್ಗೆ, ನಿಮಗೆ ಕೆಟ್ಟ ಭಾವನೆ - ಅಥವಾ ನೀವು ವಿಫಲರು ಅಥವಾ ನೀವು ನಿಮ್ಮ ಹಾಗೂ कुटुंबದವರ ನಿರೀಕ್ಷೆಗಿಂತ ಕೆಳಮಟ್ಟದಲ್ಲಿದ್ದೀರಿ ಎಂಬ ಭಾವನೆ"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದಿನ"
+                }
+            ]
+        },
+        {
+            "id": "phq9_7_concentrating",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "7. Trouble concentrating on things, such as reading the newspaper or watching television <br> 7. ಪತ್ರಿಕೆಯನ್ನು ಓದಲು ಅಥವಾ ಟೆಲಿವಿಜನ್ ನೋಡುವುದು ಇತ್ಯಾದಿ ವಿಷಯಗಳಲ್ಲಿ ಗಮನ ಕೇಂದ್ರಿಕರಿಸಲು ತೊಂದರೆ"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದಿನ"
+                }
+            ]
+        },
+        {
+            "id": "phq9_8_moving",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "8. Moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual <br> 8. ಇತರರ ಗಮನಕ್ಕೆ ಬರುವಷ್ಟು ನಿಧಾನವಾಗಿ ನಡೆದಾಡುವುದು ಅಥವಾ ಮಾತನಾಡುವುದು? ಅಥವಾ ತದ್ವಿರುದ್ಧವಾಗಿ - ಸಾಮಾನ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚು ಅತ್ಯಂತ ತಳಮಳದಿಂದ ಓಡಾಡುವಷ್ಟು ಚಡಪಡಿಕೆ ಅಥವಾ ಅಶಾಂತಿ"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದಿನ"
+                }
+            ]
+        },
+        {
+            "id": "phq9_9_thoughts",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "9. Thoughts that you would be better off dead or of hurting yourself in some way <br> 9. ನೀವು ಸತ್ತರೆ ಚೆನ್ನಾಗಿರುತ್ತದೆ ಎಂಬ ಅಥವಾ ಯಾವುದಾದರೂ ರೀತಿಯಲ್ಲಿ ನಿಮ್ಮನ್ನು ಹಾನಿಪಡಿಸಿಕೊಳ್ಳುವ ಯೋಚನೆಗಳು"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not at all <br> ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Several days <br> ಹಲವಾರು ದಿನಗಳು"
+                },
+                {
+                    "id": 2,
+                    "translation": "More than half the number of days <br> ಅರ್ಧಕ್ಕಿಂತ ಹೆಚ್ಚು ದಿನಗಳು"
+                },
+                {
+                    "id": 3,
+                    "translation": "Almost every day <br> ಹೆಚ್ಚಿನಂಶ ಪ್ರತಿದಿನ"
+                }
+            ]
+        },
+        {
+            "id": "phq9_10_difficulty",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "If you ticked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people? <br> ನೀವು ಯಾವುದಾದರೂ ಸಮಸ್ಯೆಗಳಿಗೆ ಚೆಕ್ ಮಾಡಿದ್ದರೆ, ಆ ಸಮಸ್ಯೆಗಳು ನಿಮಗೆ ನಿಮ್ಮ ಕೆಲಸವನ್ನು ಮಾಡಲು, ಮನೆಯಲ್ಲಿನ ವಿಷಯಗಳನ್ನು ನೋಡಿಕೊಳ್ಳಲು, ಅಥವಾ ಇತರರೊಂದಿಗೆ ಹೊಂದಿಕೊಂಡು ಹೋಗಲು ಎಷ್ಟು ಕಷ್ಟವನ್ನುಂಟುಮಾಡಿದವು?"
+            },
+            "enum": [
+                {
+                    "id": 0,
+                    "translation": "Not difficult at all <br> ಕಷ್ಟ ಇಲ್ಲವೇ ಇಲ್ಲ"
+                },
+                {
+                    "id": 1,
+                    "translation": "Somewhat difficult <br> ಸಾಧಾರಣ ಕಷ್ಟ"
+                },
+                {
+                    "id": 2,
+                    "translation": "Very difficult <br> ಬಹಳ ಕಷ್ಟ"
+                },
+                {
+                    "id": 3,
+                    "translation": "Extremely difficult <br> ಅತ್ಯಂತ ಕಷ್ಟ"
+                }
+            ]
+        },
+        {
+            "id": "phq9_total_score",
+            "form": "patient_health_questionnaire_phq9",
+            "label": {
+                "translation": "TOTAL SCORE"
+            }
+        }
+    ]
+}

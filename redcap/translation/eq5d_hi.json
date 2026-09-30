@@ -1,0 +1,201 @@
+{
+    "creator": "REDCap MLM",
+    "version": "v15.5.4",
+    "timestamp": "2026-06-10 12:00:00",
+    "key": "hi",
+    "display": "Hindi",
+    "rtl": false,
+    "fieldTranslations": [
+        {
+            "id": "screening_subject_id",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Screening Subject ID"
+            }
+        },
+        {
+            "id": "eq5d_date",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "Date of Assessment"
+            }
+        },
+        {
+            "id": "eq5d_header",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "EQ-5D-5L <br> स्वास्थ्य प्रश्नावली"
+            },
+            "label": {
+                "translation": "Under each heading, please tick the ONE box that best describes your health TODAY. <br> प्रत्येक शीर्षक के नीचे, कृपया उस एक बॉक्स पर निशान लगाएं जो आज आपके स्वास्थ्य का सबसे अच्छा वर्णन करता है।"
+            }
+        },
+        {
+            "id": "eq5d_mobility",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "MOBILITY <br> चलना-फिरना"
+            },
+            "label": {
+                "translation": "I have ... difficulty in walking about <br> मुझे चलने-फिरने में ... मुश्किल है"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> कोई मुश्किल नहीं है"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> हल्की मुश्किल है"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> मध्यम दर्जे की मुश्किल है"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> गंभीर मुश्किल है"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to walk about <br> चलने-फिरने में असमर्थ हूँ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_self_care",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "SELF-CARE <br> अपनी देखभाल"
+            },
+            "label": {
+                "translation": "I have ... difficulty washing or dressing myself <br> मुझे अपने आप नहाने-धोने या कपड़े पहनने में ... मुश्किल है"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> कोई मुश्किल नहीं है"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> हल्की मुश्किल है"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> मध्यम दर्जे की मुश्किल है"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> गंभीर मुश्किल है"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to wash or dress myself <br> अपने आप नहाने-धोने या कपड़े पहनने में असमर्थ हूँ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_activities",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "USUAL ACTIVITIES <br> सामान्य गतिविधियाँ"
+            },
+            "label": {
+                "translation": "I have ... difficulty performing my usual activities <br> अपनी सामान्य गतिविधियां करने में मुझे ... मुश्किल है"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no difficulty <br> कोई मुश्किल नहीं है"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight difficulty <br> हल्की मुश्किल है"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate difficulty <br> मध्यम दर्जे की मुश्किल है"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe difficulty <br> गंभीर मुश्किल है"
+                },
+                {
+                    "id": "5",
+                    "translation": "unable to perform my usual activities <br> अपनी सामान्य गतिविधियां करने में असमर्थ हूँ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_pain",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "PAIN / DISCOMFORT <br> दर्द / तकलीफ"
+            },
+            "label": {
+                "translation": "I have ... pain or discomfort <br> मुझे ... दर्द या तकलीफ है"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "no pain or discomfort <br> कोई दर्द या तकलीफ नहीं है"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight pain or discomfort <br> हल्का दर्द या तकलीफ है"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate pain or discomfort <br> मध्यम दर्जे का दर्द या तकलीफ है"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe pain or discomfort <br> गंभीर दर्द या तकलीफ है"
+                },
+                {
+                    "id": "5",
+                    "translation": "extreme pain or discomfort <br> बेहद दर्द या तकलीफ है"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_anxiety",
+            "form": "eq_5d_5l",
+            "header": {
+                "translation": "ANXIETY / DEPRESSION <br> घबराहट / उदासी"
+            },
+            "label": {
+                "translation": "I am ... anxious or depressed <br> मैं ... घबराया हुआ या उदास हूँ"
+            },
+            "enum": [
+                {
+                    "id": "1",
+                    "translation": "not anxious or depressed <br> घबराया हुआ या उदास नहीं हूँ"
+                },
+                {
+                    "id": "2",
+                    "translation": "slight anxious or depressed <br> हल्का घबराया हुआ या उदास हूँ"
+                },
+                {
+                    "id": "3",
+                    "translation": "moderate anxious or depressed <br> मध्यम रूप से घबराया हुआ या उदास हूँ"
+                },
+                {
+                    "id": "4",
+                    "translation": "severe anxious or depressed <br> गंभीर रूप से घबराया हुआ या उदास हूँ"
+                },
+                {
+                    "id": "5",
+                    "translation": "extreme anxious or depressed <br> बेहद घबराया हुआ या उदास हूँ"
+                }
+            ]
+        },
+        {
+            "id": "eq5d_vas",
+            "form": "eq_5d_5l",
+            "label": {
+                "translation": "YOUR HEALTH TODAY <br> आज आपका स्वास्थ्य (0 से 100 के पैमाने पर, जहाँ 100 का अर्थ है सबसे अच्छा स्वास्थ्य और 0 का अर्थ है सबसे खराब स्वास्थ्य)"
+            }
+        }
+    ]
+}
