@@ -368,3 +368,15 @@ svg {
 		transition: none;
 	}
 }
+
+/* Long pages (e.g. the single-page patient profile): keep the desktop sidebar pinned to the viewport.
+   app.css gives it height:100% of the grid row, which grows with the page and leaves nothing to stick to. */
+@media (min-width: 901px) {
+	.shell {
+		height: auto;
+	}
+	.sidebar {
+		height: 100vh;
+		align-self: start;
+	}
+}

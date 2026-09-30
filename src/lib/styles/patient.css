@@ -1,0 +1,531 @@
+/* Patient profile as one scrolling page. Loaded after responsive.css; every rule is scoped to
+   a pd-* class (or nested under .pd), so app.css stays as ported from the reference. */
+
+.pd {
+	--pd-topbar: 58px;
+	--pd-nav: 44px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+/* ── Header: identity row + one stat strip ─────────────────────────────── */
+.pd-head {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-m);
+	box-shadow: var(--shadow-sm);
+}
+.pd-id {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 14px 18px;
+}
+.pd-av {
+	width: 44px;
+	height: 44px;
+	border-radius: 12px;
+	background: var(--accent-soft);
+	color: var(--accent-soft-ink);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 17px;
+	flex-shrink: 0;
+}
+.pd-who {
+	min-width: 0;
+	flex: 1;
+}
+.pd-name {
+	font-size: 20px;
+	line-height: 1.2;
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+.pd-code {
+	font-family: var(--font-mono);
+	font-size: 12.5px;
+	font-weight: 400;
+	color: var(--ink-500);
+}
+.pd-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px 0;
+	margin-top: 3px;
+	font-size: 12.5px;
+	color: var(--ink-500);
+}
+.pd-meta > span + span::before {
+	content: '';
+	display: inline-block;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background: var(--ink-400);
+	margin: 0 10px;
+	vertical-align: middle;
+}
+.pd-meta b {
+	font-weight: 600;
+	color: var(--ink-700);
+}
+.pd-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+.pd-stats {
+	display: grid;
+	grid-template-columns: minmax(200px, 1.7fr) repeat(6, minmax(0, 1fr));
+	border-top: 1px solid var(--border);
+	background: var(--surface-2);
+	border-radius: 0 0 var(--radius-m) var(--radius-m);
+}
+.pd-stat {
+	padding: 10px 16px 11px;
+	min-width: 0;
+	border-left: 1px solid var(--border);
+}
+.pd-stat:first-child {
+	border-left: none;
+}
+.pd-stat dt {
+	font-size: 11.5px;
+	color: var(--ink-500);
+}
+.pd-stat dd {
+	margin: 1px 0 0;
+	font-family: var(--font-display);
+	font-size: 19px;
+	line-height: 1.25;
+	font-variant-numeric: tabular-nums;
+}
+.pd-stat dd small {
+	font-family: var(--font-body);
+	font-size: 12px;
+	color: var(--ink-500);
+	margin-left: 2px;
+}
+.pd-stat .pd-plan {
+	font-family: var(--font-body);
+	font-size: 13.5px;
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.pd-day {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 6px;
+	font-size: 11.5px;
+	color: var(--ink-500);
+	white-space: nowrap;
+}
+.pd-day .progress-track {
+	flex: 1;
+	height: 5px;
+}
+.pd-tone-good {
+	color: var(--good);
+}
+.pd-tone-warning {
+	color: var(--warning);
+}
+.pd-tone-critical {
+	color: var(--critical);
+}
+
+/* ── Sticky section nav ────────────────────────────────────────────────── */
+.pd-nav {
+	position: sticky;
+	top: var(--pd-topbar);
+	z-index: 20;
+	height: var(--pd-nav);
+	display: flex;
+	align-items: stretch;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-m);
+	box-shadow: var(--shadow-sm);
+	overflow: hidden;
+}
+.pd-nav-who {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0 4px 0 10px;
+	max-width: 0;
+	opacity: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	border: none;
+	background: none;
+	cursor: pointer;
+	font: inherit;
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--ink-900);
+	transition: max-width 0.2s ease, opacity 0.2s ease;
+}
+.pd-nav.is-stuck .pd-nav-who {
+	max-width: 220px;
+	opacity: 1;
+	border-right: 1px solid var(--border);
+	padding-right: 12px;
+	margin-right: 4px;
+}
+.pd-nav-who .pd-av {
+	width: 24px;
+	height: 24px;
+	border-radius: 7px;
+	font-size: 10.5px;
+}
+.pd-nav-list {
+	display: flex;
+	align-items: stretch;
+	gap: 2px;
+	padding: 0 6px;
+	overflow-x: auto;
+	scrollbar-width: none;
+	list-style: none;
+	margin: 0;
+	flex: 1;
+}
+.pd-nav-list::-webkit-scrollbar {
+	display: none;
+}
+.pd-nav-list li {
+	display: flex;
+}
+.pd-nav-list a {
+	display: inline-flex;
+	text-decoration: none;
+	align-items: center;
+	gap: 6px;
+	padding: 0 12px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--ink-500);
+	white-space: nowrap;
+	border-bottom: 2px solid transparent;
+	border-top: 2px solid transparent;
+}
+.pd-nav-list a:hover {
+	color: var(--ink-900);
+}
+.pd-nav-list a[aria-current='true'] {
+	color: var(--accent);
+	border-bottom-color: var(--accent);
+}
+.pd-nav-list a:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: -3px;
+	border-radius: var(--radius-s);
+}
+.pd-nav-n {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	font-weight: 600;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--surface-3);
+	color: var(--ink-700);
+}
+
+/* ── Sections ──────────────────────────────────────────────────────────── */
+.pd-sec {
+	scroll-margin-top: calc(var(--pd-topbar) + var(--pd-nav) + 14px);
+	margin-top: 8px;
+}
+.pd-sec-h {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 30px;
+	margin-bottom: 8px;
+}
+.pd-sec-h h2 {
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.pd-sec-a {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+.pd-cols {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 14px;
+	align-items: start;
+}
+.pd-cols > * {
+	grid-column: 1 / -1;
+	min-width: 0;
+}
+@media (min-width: 1100px) {
+	.pd-cols > .s4 {
+		grid-column: span 4;
+	}
+	.pd-cols > .s5 {
+		grid-column: span 5;
+	}
+	.pd-cols > .s6 {
+		grid-column: span 6;
+	}
+	.pd-cols > .s7 {
+		grid-column: span 7;
+	}
+	.pd-cols > .s8 {
+		grid-column: span 8;
+	}
+}
+
+/* Dense variants of the shared card/table patterns, only inside the profile */
+.pd .card-head {
+	padding: 12px 16px 0;
+}
+.pd .card-body {
+	padding: 10px 16px 14px;
+}
+.pd table.dt {
+	min-width: 0;
+}
+.pd table.dt thead th {
+	padding: 8px 12px;
+}
+.pd table.dt tbody td {
+	padding: 8px 12px;
+}
+.pd .empty-state {
+	padding: 22px 16px;
+}
+.pd .doc-row {
+	margin-bottom: 6px;
+	padding: 8px 12px;
+}
+.pd .kv-list {
+	gap: 8px;
+}
+
+.pd-more {
+	display: flex;
+	justify-content: center;
+	padding: 8px;
+	border-top: 1px solid var(--border);
+}
+.pd-delta {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 4px 10px;
+	padding: 6px 16px 0;
+	font-size: 12px;
+	color: var(--ink-500);
+}
+.pd-delta b {
+	font-family: var(--font-display);
+	font-size: 17px;
+	font-weight: 600;
+	color: var(--ink-900);
+	font-variant-numeric: tabular-nums;
+}
+.pd-chip {
+	display: inline-flex;
+	padding: 1px 8px;
+	border-radius: 999px;
+	font-size: 11.5px;
+	font-weight: 700;
+	background: var(--good-soft);
+	color: var(--good);
+}
+.pd-chip.down {
+	background: var(--critical-soft);
+	color: var(--critical);
+}
+
+.pd-facts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px 22px;
+}
+.pd-facts .kv-row {
+	flex-direction: column;
+	gap: 1px;
+}
+.pd-facts .kv-row .kv {
+	text-align: left;
+}
+.pd-facts .wide {
+	grid-column: 1 / -1;
+}
+
+.pd-fold {
+	margin-top: 14px;
+}
+.pd-fold > summary {
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--ink-700);
+	padding: 4px 0;
+	list-style: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+.pd-fold > summary::-webkit-details-marker {
+	display: none;
+}
+.pd-fold > summary::before {
+	content: '';
+	border: solid var(--ink-500);
+	border-width: 0 2px 2px 0;
+	padding: 2.5px;
+	transform: rotate(-45deg);
+	transition: transform 0.15s ease;
+}
+.pd-fold[open] > summary::before {
+	transform: rotate(45deg);
+}
+.pd-fold > .card {
+	margin-top: 8px;
+}
+
+.pd-usage {
+	display: grid;
+	gap: 8px;
+}
+.pd-usage-row {
+	display: grid;
+	grid-template-columns: auto repeat(3, minmax(0, 1fr));
+	gap: 4px 14px;
+	align-items: center;
+	padding: 9px 14px;
+	cursor: pointer;
+}
+.pd-usage-row:hover {
+	background: var(--surface-2);
+}
+.pd-usage-row .u {
+	font-size: 11.5px;
+	color: var(--ink-500);
+}
+.pd-usage-row .u b {
+	display: block;
+	font-size: 13px;
+	color: var(--ink-900);
+	font-variant-numeric: tabular-nums;
+}
+
+.pd-compose textarea {
+	min-height: 64px;
+	resize: vertical;
+}
+.pd-note {
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--border);
+}
+.pd-note:last-child {
+	border-bottom: none;
+}
+.pd-note-h {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	font-size: 12.5px;
+}
+.pd-note p {
+	margin-top: 3px;
+	font-size: 13px;
+	color: var(--ink-700);
+	white-space: pre-wrap;
+}
+
+.pd-drop {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px;
+	text-align: left;
+}
+.pd-drop svg {
+	flex-shrink: 0;
+}
+
+.pd .timeline .tl-item {
+	padding-bottom: 14px;
+}
+
+/* ── Narrow screens ────────────────────────────────────────────────────── */
+@media (max-width: 1099px) {
+	.pd-stats {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.pd-stat:first-child {
+		grid-column: 1 / -1;
+		border-bottom: 1px solid var(--border);
+	}
+	.pd-stat:nth-child(2) {
+		border-left: none;
+	}
+	.pd-stat:nth-child(n + 5) {
+		border-top: 1px solid var(--border);
+	}
+	.pd-stat:nth-child(5) {
+		border-left: none;
+	}
+}
+@media (max-width: 900px) {
+	.pd-id {
+		flex-wrap: wrap;
+	}
+	.pd-actions {
+		width: 100%;
+		justify-content: flex-start;
+	}
+}
+@media (max-width: 640px) {
+	.pd {
+		--pd-topbar: 54px;
+	}
+	.pd-id {
+		padding: 12px 14px;
+	}
+	.pd-facts {
+		grid-template-columns: 1fr;
+	}
+	.pd-usage-row {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.pd-usage-row > :first-child {
+		grid-column: 1 / -1;
+	}
+	.pd-nav-who {
+		display: none;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.pd-nav-who,
+	.pd-fold > summary::before {
+		transition: none;
+	}
+}

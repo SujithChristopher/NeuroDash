@@ -1,9 +1,11 @@
 <script lang="ts">
+	import Chart from '$lib/components/Chart.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Badge from '$lib/components/Badge.svelte';
-	import KpiCard from '$lib/components/KpiCard.svelte';
-	import { fmtDateShort, fmtHrsFromMin, adherenceTone } from '$lib/utils';
+	import Section from './Section.svelte';
+	import { fmtDateShort, fmtHrsFromMin } from '$lib/utils';
+	import { activitySeries } from './series';
 	import type { PageData } from '../$types';
 	import type { computePatientStats } from '$lib/patientStats';
 	import NewPlanModal from './NewPlanModal.svelte';
@@ -16,110 +18,114 @@
 	}: { data: PageData; stats: ReturnType<typeof computePatientStats>; form: unknown } = $props();
 
 	const plan = $derived(stats.plan ? data.plans.find((p) => p.id === stats.plan!.id)! : null);
+	const activity = $derived(stats.plan ? activitySeries(stats.plan.dayLog) : null);
 	let showNew = $state(false);
 	let showEdit = $state(false);
-	const tone = (n: number) => adherenceTone(n);
 	const todayIdx = $derived(stats.currentDay);
 </script>
 
-{#if !plan}
-	<div class="card">
-		<EmptyState icon="target" title="No therapy plan has been created." sub="Create a plan to begin structured, device-assisted therapy." />
-		{#if data.perms.isOwner}
-			<div style="text-align:center;padding-bottom:24px">
-				<button class="btn btn-primary" onclick={() => (showNew = true)}><Icon name="plus" size={14} /> Create Plan</button>
-			</div>
-		{/if}
-	</div>
-{:else}
-	<div class="page-actions" style="justify-content:flex-end;margin-bottom:16px">
-		{#if data.perms.canModifyPlan}
-			<button class="btn btn-secondary btn-sm" onclick={() => (showEdit = true)}><Icon name="edit" size={13} /> Modify Plan</button>
+<Section id="plan" title="Therapy plan">
+	{#snippet actions()}
+		{#if plan}<Badge text={plan.status} />{/if}
+		{#if plan && data.perms.canModifyPlan}
+			<button class="btn btn-secondary btn-sm" onclick={() => (showEdit = true)}><Icon name="edit" size={13} /> Modify plan</button>
 		{/if}
 		{#if data.perms.isOwner}
-			<button class="btn btn-secondary btn-sm" onclick={() => (showNew = true)}><Icon name="plus" size={13} /> New Plan</button>
+			<button class="btn {plan ? 'btn-secondary' : 'btn-primary'} btn-sm" onclick={() => (showNew = true)}>
+				<Icon name="plus" size={13} /> {plan ? 'New plan' : 'Create plan'}
+			</button>
 		{/if}
-	</div>
+	{/snippet}
 
-	{#if !data.perms.isOwner}
-		<div class="alert alert-info" style="margin-bottom:16px">
-			<Icon name="info" size={15} />
-			<span>Primary therapist: <b>{data.patient.therapist.name}</b>{data.perms.canModifyPlan ? ' — they are notified when you edit this plan.' : '.'}</span>
+	{#if !plan}
+		<div class="card">
+			<EmptyState icon="target" title="No therapy plan has been created." sub="Create a plan to begin structured, device-assisted therapy." />
 		</div>
-	{/if}
-
-	<div class="grid grid-4" style="margin-bottom:18px">
-		<KpiCard label="Current Day" value="{stats.currentDay} / {plan.durationDays}" icon="calendar" tone="accent" />
-		<KpiCard label="Adherence" value="{stats.adherence}%" icon="target" tone={tone(stats.adherence)} />
-		<KpiCard label="Total Time" value="{fmtHrsFromMin(stats.actualSum)} / {fmtHrsFromMin(stats.targetSum)}" icon="clock" tone="info" />
-		<KpiCard label="Completion" value="{stats.completionPct}%" icon="check" tone="good" />
-	</div>
-
-	<div class="card" style="margin-bottom:18px">
-		<div class="card-head"><h3>Plan details</h3><Badge text={plan.status} /></div>
-		<div class="card-body">
-			<div class="form-grid">
-				<div class="kv-row"><span class="kl">Plan name</span><span class="kv">{plan.name}</span></div>
-				<div class="kv-row"><span class="kl">Start date</span><span class="kv">{fmtDateShort(plan.startDate)}</span></div>
-				<div class="kv-row"><span class="kl">Duration</span><span class="kv">{plan.durationDays} days</span></div>
-				<div class="kv-row"><span class="kl">Daily target duration</span><span class="kv">{plan.dailyTargetMinutes} minutes</span></div>
-				<div class="kv-row"><span class="kl">Target sessions</span><span class="kv">{plan.targetSessions ?? '—'}</span></div>
-				<div class="kv-row"><span class="kl">Devices involved</span><span class="kv">{plan.devices.map((d) => d.name).join(', ')}</span></div>
-				<div class="kv-row" style="grid-column:1/-1"><span class="kl">Therapy goals</span><span class="kv">{plan.goals.join('; ') || '—'}</span></div>
-				<div class="kv-row" style="grid-column:1/-1"><span class="kl">Notes</span><span class="kv">{plan.notes ?? '—'}</span></div>
+	{:else}
+		{#if !data.perms.isOwner}
+			<div class="alert alert-info" style="margin-bottom:12px">
+				<Icon name="info" size={15} />
+				<span>Primary therapist: <b>{data.patient.therapist.name}</b>{data.perms.canModifyPlan ? ' — they are notified when you edit this plan.' : '.'}</span>
 			</div>
-		</div>
-	</div>
+		{/if}
 
-	<div class="card" style="margin-bottom:18px">
-		<div class="card-head"><h3>Daily timeline</h3><span class="hint">Day {stats.currentDay} of {plan.durationDays}</span></div>
-		<div class="card-body">
-			<div class="day-strip">
-				{#each plan.dayLog as d (d.dayNumber)}
-					<div class="day-chip" title="Day {d.dayNumber} — {d.status} — {d.actualMinutes}min / {d.targetMinutes}min">
-						<div class="dc-mark {d.status}" class:today={d.dayNumber === todayIdx && d.status !== 'upcoming'}>
-							{#if d.status === 'done'}<Icon name="check" size={13} />
-							{:else if d.status === 'partial'}<Icon name="minus" size={13} />
-							{:else if d.status === 'missed'}<Icon name="x" size={13} />{/if}
-						</div>
-						<div class="dc-num">{d.dayNumber}</div>
+		<div class="pd-cols">
+			<div class="card s5">
+				<div class="card-head"><h3>{plan.name}</h3></div>
+				<div class="card-body">
+					<div class="pd-facts">
+						<div class="kv-row"><span class="kl">Start date</span><span class="kv">{fmtDateShort(plan.startDate)}</span></div>
+						<div class="kv-row"><span class="kl">Duration</span><span class="kv">{plan.durationDays} days</span></div>
+						<div class="kv-row"><span class="kl">Daily target</span><span class="kv">{plan.dailyTargetMinutes} min</span></div>
+						<div class="kv-row"><span class="kl">Target sessions</span><span class="kv">{plan.targetSessions ?? '—'}</span></div>
+						<div class="kv-row"><span class="kl">Time logged</span><span class="kv">{fmtHrsFromMin(stats.actualSum)} of {fmtHrsFromMin(stats.targetSum)}</span></div>
+						<div class="kv-row"><span class="kl">Completion</span><span class="kv">{stats.completionPct}%</span></div>
+						<div class="kv-row wide"><span class="kl">Devices</span><span class="kv">{plan.devices.map((d) => d.name).join(', ') || '—'}</span></div>
+						<div class="kv-row wide"><span class="kl">Goals</span><span class="kv">{plan.goals.join('; ') || '—'}</span></div>
+						{#if plan.notes}<div class="kv-row wide"><span class="kl">Notes</span><span class="kv">{plan.notes}</span></div>{/if}
 					</div>
-				{/each}
+				</div>
 			</div>
-			<div class="legend-row" style="margin-top:6px">
-				<div class="legend-item"><span class="sw" style="background:var(--good)"></span>Completed</div>
-				<div class="legend-item"><span class="sw" style="background:var(--warning)"></span>Partial</div>
-				<div class="legend-item"><span class="sw" style="background:var(--critical)"></span>Missed</div>
-				<div class="legend-item"><span class="sw" style="background:var(--border-strong)"></span>Upcoming</div>
+
+			<div class="card s7">
+				<div class="card-head">
+					<h3>Daily minutes</h3>
+					<span class="hint">Day {stats.currentDay} of {plan.durationDays} · target {plan.dailyTargetMinutes} min</span>
+				</div>
+				<div class="card-body">
+					{#if activity && activity.labels.length}
+						<Chart kind="bar" labels={activity.labels} datasets={[{ label: 'Actual minutes', data: activity.actual, color: 'var(--accent)' }]} height={120} />
+					{/if}
+					<div class="day-strip" style="margin-top:6px">
+						{#each plan.dayLog as d (d.dayNumber)}
+							<div class="day-chip" title="Day {d.dayNumber} — {d.status} — {d.actualMinutes}min / {d.targetMinutes}min">
+								<div class="dc-mark {d.status}" class:today={d.dayNumber === todayIdx && d.status !== 'upcoming'}>
+									{#if d.status === 'done'}<Icon name="check" size={13} />
+									{:else if d.status === 'partial'}<Icon name="minus" size={13} />
+									{:else if d.status === 'missed'}<Icon name="x" size={13} />{/if}
+								</div>
+								<div class="dc-num">{d.dayNumber}</div>
+							</div>
+						{/each}
+					</div>
+					<div class="legend-row">
+						<div class="legend-item"><span class="sw" style="background:var(--good)"></span>Completed</div>
+						<div class="legend-item"><span class="sw" style="background:var(--warning)"></span>Partial</div>
+						<div class="legend-item"><span class="sw" style="background:var(--critical)"></span>Missed</div>
+						<div class="legend-item"><span class="sw" style="background:var(--border-strong)"></span>Upcoming</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="section-title-row"><h2>Plan history</h2></div>
-	<div class="card">
-		{#if plan.revisions.length}
-			<div class="table-wrap">
-				<table class="dt">
-					<thead><tr><th>Field</th><th>Previous</th><th>New</th><th>Modified By</th><th>Date</th><th>Reason</th></tr></thead>
-					<tbody>
-						{#each plan.revisions as r (r.id)}
-							<tr>
-								<td>{r.field}</td>
-								<td class="mono">{r.previous ?? '—'}</td>
-								<td class="mono">{r.next ?? '—'}</td>
-								<td>{r.by} <span class="pill">{r.role.toLowerCase()}</span></td>
-								<td class="mono">{fmtDateShort(r.at)}</td>
-								<td class="muted">{r.reason ?? '—'}</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
+		<details class="pd-fold">
+			<summary>Plan history · {plan.revisions.length} change{plan.revisions.length === 1 ? '' : 's'}</summary>
+			<div class="card">
+				{#if plan.revisions.length}
+					<div class="table-wrap">
+						<table class="dt">
+							<thead><tr><th>Field</th><th>Previous</th><th>New</th><th>Modified by</th><th>Date</th><th>Reason</th></tr></thead>
+							<tbody>
+								{#each plan.revisions as r (r.id)}
+									<tr>
+										<td>{r.field}</td>
+										<td class="mono">{r.previous ?? '—'}</td>
+										<td class="mono">{r.next ?? '—'}</td>
+										<td>{r.by} <span class="pill">{r.role.toLowerCase()}</span></td>
+										<td class="mono">{fmtDateShort(r.at)}</td>
+										<td class="muted">{r.reason ?? '—'}</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
+				{:else}
+					<EmptyState icon="history" title="No modifications recorded" sub="This plan has not been changed since it was created." />
+				{/if}
 			</div>
-		{:else}
-			<EmptyState icon="history" title="No modifications recorded" sub="This plan has not been changed since it was created." />
-		{/if}
-	</div>
-{/if}
+		</details>
+	{/if}
+</Section>
 
 {#if showNew}<NewPlanModal {data} {form} onclose={() => (showNew = false)} />{/if}
 {#if showEdit && plan}<EditPlanModal {plan} {form} onclose={() => (showEdit = false)} />{/if}
