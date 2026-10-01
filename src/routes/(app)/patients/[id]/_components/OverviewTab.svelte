@@ -33,7 +33,7 @@
 			</div>
 			<div class="card-body">
 				{#if asmt.labels.length >= 2}
-					<Chart kind="line" labels={asmt.labels} datasets={asmt.datasets} opts={{ legend: true, suggestedMax: 100 }} height={200} />
+					<Chart kind="area" labels={asmt.labels} datasets={asmt.datasets} opts={{ legend: true, suggestedMax: 100 }} height={200} />
 				{:else}
 					<EmptyState icon="clipboard" title="Not enough assessments to chart" sub="Record at least two assessments to see a trend." />
 				{/if}

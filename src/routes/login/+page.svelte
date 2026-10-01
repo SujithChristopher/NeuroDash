@@ -57,11 +57,16 @@
 			<div class="foot" style="margin-top:22px">
 				Secure clinical platform · Role-based access · Full audit trail
 			</div>
+			<div class="cmc">
+				<img src="/cmc-logo.png" alt="Christian Medical College, Vellore" width="64" height="64" />
+				<span>Christian Medical College, Vellore</span>
+			</div>
 		</div>
 	</div>
 
 	<div class="login-panel">
 		<div class="login-card">
+			<img class="cmc-mobile" src="/cmc-logo.png" alt="Christian Medical College, Vellore" width="56" height="56" />
 			{#if mustReset}
 				<div class="lc-head">
 					<div class="eyebrow">First Sign-In</div>
@@ -187,3 +192,27 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.cmc {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		margin-top: 22px;
+		font-size: 12.5px;
+		font-weight: 600;
+		color: var(--ink-700);
+	}
+	.cmc img {
+		flex-shrink: 0;
+	}
+	.cmc-mobile {
+		display: none;
+		margin-bottom: 14px;
+	}
+	@media (max-width: 860px) {
+		.cmc-mobile {
+			display: block;
+		}
+	}
+</style>

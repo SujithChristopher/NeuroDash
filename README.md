@@ -16,18 +16,14 @@ You need **Node.js 20.19+** and a running **PostgreSQL 14+**. Then:
 
 ```sh
 npm install
-psql -U postgres -c "CREATE DATABASE neurodash;"
-cp .env.example .env            # Windows PowerShell: Copy-Item .env.example .env
-#  → open .env and put your Postgres password into DATABASE_URL
-npm run db:migrate
-npm run db:seed
+npm run setup      # asks for your Postgres password once, creates the database, tables and demo data
 npm run dev
 ```
 
 Open **http://localhost:5173** and sign in as `priya.nair@neurodash.care` / `neurodash123`
 (all demo accounts are [listed below](#demo-accounts)).
 
-Something not working? See [Troubleshooting](#troubleshooting). Each step is explained next.
+Something not working? See [Troubleshooting](#troubleshooting). The details are explained next.
 
 ---
 
@@ -41,16 +37,38 @@ Something not working? See [Troubleshooting](#troubleshooting). Each step is exp
 | npm | comes with Node | `npm -v` |
 | PostgreSQL | 14 or newer, running locally or reachable | `psql --version` |
 
-### Step by step
+### Option A — one command (recommended)
+
+```sh
+npm install
+npm run setup
+```
+
+`npm run setup` does everything the manual steps below do, and is safe to run again:
+
+1. **`.env`:** if `DATABASE_URL` isn't set yet, it asks for host, port, user, password and database name
+   (press Enter to accept the defaults `localhost`, `5432`, `postgres`, `neurodash`) and saves it to `.env`.
+   It handles special characters in the password for you.
+2. **Database:** connects to PostgreSQL and creates the database if it doesn't exist. No `psql` needed.
+3. **Tables:** applies the schema and generates the Prisma client.
+4. **Demo data:** loads the demo users, patients, devices and sessions.
+
+It prints a clear message if PostgreSQL isn't running or the password is wrong. Options:
+
+```sh
+npm run setup -- --no-seed    # tables only, no demo data
+npm run setup -- --reset      # ERASES the database first, then rebuilds it
+```
+
+### Option B — step by step
 
 **1. Install dependencies** — `npm install`
 Downloads the packages listed in `package.json`, including Prisma (the database layer) and the SvelteKit toolchain.
 
 **2. Create an empty database** — `psql -U postgres -c "CREATE DATABASE neurodash;"`
-Any name works; `neurodash` is used in these instructions. You can also create it in pgAdmin. The app creates the
-tables itself in step 4, so the database must exist but be empty.
+Any name works. You can also create it in pgAdmin. The tables are created in step 4, so the database must exist but be empty.
 
-**3. Configure the environment** — copy `.env.example` to `.env`, then edit it:
+**3. Configure the environment** — copy `.env.example` to `.env` (Windows PowerShell: `Copy-Item .env.example .env`), then edit it:
 
 ```env
 DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/neurodash"
@@ -71,7 +89,12 @@ npm run db:seed        # adds demo users, patients, devices and sessions (safe t
 > Run **both**. If you only migrate, the tables exist but hold no users, and sign-in fails with
 > "Invalid email or password".
 
-**5. Start the app** — `npm run dev`
+### Start the app
+
+```sh
+npm run dev
+```
+
 Starts the dev server with hot reload at **http://localhost:5173**. Stop it with `Ctrl+C`.
 
 ### Demo accounts
@@ -98,12 +121,12 @@ npx prisma studio             # opens http://localhost:5555
 
 | Symptom | Fix |
 |---|---|
-| "Invalid email or password" for a demo account | The database has no users yet: run `npm run db:seed` |
+| "Invalid email or password" for a demo account | The database has no users yet: run `npm run db:seed` (or `npm run setup`) |
 | `P1001: Can't reach database server` | PostgreSQL isn't running, or host/port/password in `DATABASE_URL` is wrong |
 | `password authentication failed` | Wrong password in `DATABASE_URL` (URL-encode special characters) |
-| "relation ... does not exist" / missing columns after pulling changes | `npm run db:reset` (drops and rebuilds the dev database, then re-seeds) |
+| "relation ... does not exist" / missing columns after pulling changes | `npm run db:migrate` (or `npm run db:reset` if the migrations were rewritten; it erases the dev database) |
 | `Port 5173 is already in use` | `npm run dev -- --port 5180` |
-| Want a clean slate | `npm run db:reset` |
+| Want a clean slate | `npm run setup -- --reset` (or `npm run db:reset`) |
 
 `db:reset` **erases** the database it points at. Only use it on development data.
 
@@ -121,7 +144,8 @@ npx prisma studio             # opens http://localhost:5555
 | `npm run db:migrate` | Apply migrations to a dev database (creates new ones if the schema changed) |
 | `npm run db:deploy` | Apply existing migrations (production) |
 | `npm run db:seed` | Load / refresh the demo data |
-| `npm run db:reset` | Drop, recreate and re-seed the database |
+| `npm run setup` | One-command setup: `.env`, create database, tables, demo data (`-- --reset`, `-- --no-seed`) |
+| `npm run db:reset` | Drop and rebuild the database, then re-seed it (erases all data) |
 | `npm run db:generate` | Regenerate the Prisma client |
 
 ---

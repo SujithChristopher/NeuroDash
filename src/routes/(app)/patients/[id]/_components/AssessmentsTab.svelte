@@ -57,7 +57,7 @@
 		<div class="card-head"><h3>Score trend</h3><span class="hint">Comparison across all recorded assessments</span></div>
 		<div class="card-body">
 			{#if series.labels.length >= 2}
-				<Chart kind="line" labels={series.labels} datasets={series.datasets} opts={{ legend: true, suggestedMax: 100 }} height={230} />
+				<Chart kind="area" labels={series.labels} datasets={series.datasets} opts={{ legend: true, suggestedMax: 100 }} height={230} />
 			{:else}
 				<EmptyState icon="trend" title="Not enough data" sub="A trend needs at least two assessments." />
 			{/if}

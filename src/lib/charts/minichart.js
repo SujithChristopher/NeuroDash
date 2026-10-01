@@ -75,6 +75,8 @@ function roundRectRight(ctx,x,y,w,h,r){
   ctx.closePath();
 }
 
+function easeOutCubic(t){ return 1-Math.pow(1-t,3); }
+
 function MiniChart(ctx, config){
   this.ctx = ctx;
   this.canvas = ctx.canvas;
@@ -97,8 +99,61 @@ function MiniChart(ctx, config){
     this._winResize = function(){ self._resize(); };
     window.addEventListener('resize', this._winResize);
   }
+  this._prepareAnim();
   this._resize();
+  this._startAnim();
 }
+
+// ---- Animation: progress _t runs 0→1 linearly; each chart type applies its own easing.
+MiniChart.prototype._prepareAnim = function(){
+  var a = this.o.animation;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dur = (a===false || reduce) ? 0 : ((a && a.duration) || (this.type==='doughnut' ? 900 : this.type==='bar' ? 650 : 1000));
+  this._animDur = dur;
+  this._t = dur ? 0 : 1;
+};
+
+MiniChart.prototype._startAnim = function(){
+  if(!this._animDur) return;
+  var self = this, t0 = null;
+  function frame(ts){
+    if(self._destroyed) return;
+    if(t0===null) t0 = ts;
+    self._t = Math.min(1, (ts-t0)/self._animDur);
+    self._draw();
+    if(self._t<1) self._raf = requestAnimationFrame(frame);
+  }
+  this._raf = requestAnimationFrame(frame);
+};
+
+// Smooth path through points (monotone cubic: curves never overshoot the data), or straight segments.
+MiniChart.prototype._trace = function(pts, tension){
+  var ctx = this.ctx, n = pts.length, i;
+  ctx.moveTo(pts[0].x, pts[0].y);
+  if(!(tension>0) || n<3){ for(i=1;i<n;i++) ctx.lineTo(pts[i].x, pts[i].y); return; }
+  var d=[], m=[];
+  for(i=0;i<n-1;i++){ var dx0=pts[i+1].x-pts[i].x; d.push(dx0 ? (pts[i+1].y-pts[i].y)/dx0 : 0); }
+  m[0]=d[0]; m[n-1]=d[n-2];
+  for(i=1;i<n-1;i++) m[i] = (d[i-1]*d[i] <= 0) ? 0 : (d[i-1]+d[i])/2;
+  for(i=0;i<n-1;i++){
+    if(d[i]===0){ m[i]=0; m[i+1]=0; continue; }
+    var a=m[i]/d[i], b=m[i+1]/d[i], h=a*a+b*b;
+    if(h>9){ var k=3/Math.sqrt(h); m[i]=k*a*d[i]; m[i+1]=k*b*d[i]; }
+  }
+  for(i=0;i<n-1;i++){
+    var x0=pts[i].x, y0=pts[i].y, x1=pts[i+1].x, y1=pts[i+1].y, dx=(x1-x0)/3;
+    ctx.bezierCurveTo(x0+dx, y0+m[i]*dx, x1-dx, y1-m[i+1]*dx, x1, y1);
+  }
+};
+
+// Per-bar progress with a slight stagger so bars rise in sequence rather than all at once.
+MiniChart.prototype._barProg = function(i, n){
+  var t = this._t==null ? 1 : this._t;
+  if(t>=1) return 1;
+  var lag = 0.35*i/Math.max(1,n);
+  var q = (t-lag)/(1-0.35);
+  return q<=0 ? 0 : easeOutCubic(Math.min(1,q));
+};
 
 MiniChart.prototype._buildTooltip = function(){
   var tt = (this.o.plugins && this.o.plugins.tooltip) || {};
@@ -116,6 +171,8 @@ MiniChart.prototype._buildTooltip = function(){
 };
 
 MiniChart.prototype.destroy = function(){
+  this._destroyed = true;
+  if(this._raf) cancelAnimationFrame(this._raf);
   if(this._ro) this._ro.disconnect();
   if(this._winResize) window.removeEventListener('resize', this._winResize);
   this.canvas.removeEventListener('mousemove', this._onMove);
@@ -220,39 +277,55 @@ MiniChart.prototype._drawLine = function(){
 
   var step = this._xTickStep(n);
   ctx.textAlign='center'; ctx.textBaseline='top';
+  var self_w = this.w;
   labels.forEach(function(lb,i){
     if(i%step!==0 && i!==n-1) return;
     ctx.fillStyle = tickColor;
-    ctx.fillText(String(lb), xAt(i), p.y+p.h+7);
+    var text = String(lb), tx = xAt(i), half = ctx.measureText(text).width/2;
+    // Keep edge labels inside the canvas instead of letting them clip ("Day 34" → "Day 3").
+    if(tx+half > self_w-2){ ctx.textAlign='right'; tx = self_w-2; }
+    else if(tx-half < 2){ ctx.textAlign='left'; tx = 2; }
+    else ctx.textAlign='center';
+    ctx.fillText(text, tx, p.y+p.h+7);
   });
+  ctx.textAlign='center';
+
+  var self = this;
+  var reveal = easeOutCubic(this._t==null ? 1 : this._t);
+  ctx.save();
+  if(reveal<1){ ctx.beginPath(); ctx.rect(p.x-10, p.y-10, (p.w+24)*reveal, p.h+20); ctx.clip(); } // draw the line in left → right
 
   datasets.forEach(function(ds){
     if(!ds.fill) return;
-    var pts = (ds.data||[]).map(function(v,i){ return v==null? null : {x:xAt(i), y:yAt(v)}; });
-    var started=false;
+    var pts = (ds.data||[]).map(function(v,i){ return v==null? null : {x:xAt(i), y:yAt(v)}; }).filter(Boolean);
+    if(!pts.length) return;
     ctx.beginPath();
-    pts.forEach(function(pt){ if(!pt) return; if(!started){ ctx.moveTo(pt.x, pt.y); started=true; } else ctx.lineTo(pt.x, pt.y); });
-    if(started){
-      var filtered = pts.filter(Boolean);
-      var lastPt = filtered[filtered.length-1], firstPt = filtered[0];
-      ctx.lineTo(lastPt.x, p.y+p.h);
-      ctx.lineTo(firstPt.x, p.y+p.h);
-      ctx.closePath();
-      ctx.fillStyle = hexToRgba(ds.borderColor||'#2a78d6', 0.14);
-      ctx.fill();
-    }
+    self._trace(pts, ds.tension);
+    ctx.lineTo(pts[pts.length-1].x, p.y+p.h);
+    ctx.lineTo(pts[0].x, p.y+p.h);
+    ctx.closePath();
+    // Soft vertical gradient: strongest under the line, fading to transparent at the axis.
+    // The fill also fades in (smoothstep), starting a little after the line so the curve leads and the colour follows.
+    var lin = self._t==null ? 1 : self._t;
+    var f = Math.min(1, Math.max(0, (lin-0.2)/0.8));
+    var fade = f*f*(3-2*f);
+    var grad = ctx.createLinearGradient(0, p.y, 0, p.y+p.h);
+    grad.addColorStop(0, hexToRgba(ds.borderColor||'#2a78d6', 0.32*fade));
+    grad.addColorStop(1, hexToRgba(ds.borderColor||'#2a78d6', 0.02*fade));
+    ctx.fillStyle = grad;
+    ctx.fill();
   });
   datasets.forEach(function(ds){
     var pts = (ds.data||[]).map(function(v,i){ return v==null? null : {x:xAt(i), y:yAt(v)}; });
     ctx.beginPath();
     ctx.strokeStyle = ds.borderColor || '#2a78d6';
     ctx.lineWidth = ds.borderWidth || 2;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     if(ds.borderDash && ds.borderDash.length) ctx.setLineDash(ds.borderDash); else ctx.setLineDash([]);
-    var started=false;
-    pts.forEach(function(pt){
-      if(!pt){ started=false; return; }
-      if(!started){ ctx.moveTo(pt.x, pt.y); started=true; } else ctx.lineTo(pt.x, pt.y);
-    });
+    var run = [];
+    var flush = function(){ if(run.length) self._trace(run, ds.tension); run = []; };
+    pts.forEach(function(pt){ if(!pt) flush(); else run.push(pt); });
+    flush();
     ctx.stroke();
     ctx.setLineDash([]);
     if(n<=40){
@@ -265,6 +338,7 @@ MiniChart.prototype._drawLine = function(){
       });
     }
   });
+  ctx.restore();
 
   if(this._hoverIdx!=null && this._hoverIdx>=0 && this._hoverIdx<n){
     var hx = xAt(this._hoverIdx);
@@ -311,8 +385,9 @@ MiniChart.prototype._drawBar = function(){
         var bh = (v/(yAxis.max||1))*p.h;
         var bx = cx - groupW/2 + di*barW;
         var by = p.y+p.h-bh;
+        var abh = bh*self._barProg(i, n); // animated height; hover geometry below stays at full size
         ctx.fillStyle = (i===self._hoverIdx) ? shade(ds.backgroundColor,-10) : (ds.backgroundColor||'#2a78d6');
-        roundRectTop(ctx, bx, by, barW-2, bh, ds.borderRadius||4);
+        roundRectTop(ctx, bx, p.y+p.h-abh, barW-2, abh, ds.borderRadius||4);
         ctx.fill();
         self._barRects.push({x:bx,y:by,w:barW-2,h:Math.max(bh,1),i:i,v:v,ds:ds});
       });
@@ -331,7 +406,7 @@ MiniChart.prototype._drawBar = function(){
         var bw = (v/(yAxis.max||1))*p.w;
         var by = cy-barH/2;
         ctx.fillStyle = (i===self._hoverIdx) ? shade(ds.backgroundColor,-10) : (ds.backgroundColor||'#2a78d6');
-        roundRectRight(ctx, p.x, by, bw, barH, ds.borderRadius||4);
+        roundRectRight(ctx, p.x, by, bw*self._barProg(i, n), barH, ds.borderRadius||4);
         ctx.fill();
         self._barRects.push({x:p.x,y:by,w:Math.max(bw,1),h:barH,i:i,v:v,ds:ds});
       });
@@ -362,15 +437,19 @@ MiniChart.prototype._drawDoughnut = function(){
     return;
   }
   var self = this;
+  // Sweep clockwise from 12 o'clock: arcs are clipped to the angle reached so far.
+  var limit = start + Math.PI*2*easeOutCubic(this._t==null ? 1 : this._t);
   data.forEach(function(v,i){
     var frac = (v||0)/total;
     var end = start + frac*Math.PI*2;
     var hovered = self._hoverArc===i;
     var rr = hovered? r+3 : r;
+    var drawEnd = Math.min(end, limit);
+    if(drawEnd<=start+0.0001){ self._arcs.push({start:start,end:end,i:i,v:v}); start = end; return; }
     ctx.beginPath();
     ctx.moveTo(cx+Math.cos(start)*innerR, cy+Math.sin(start)*innerR);
-    ctx.arc(cx,cy,rr,start,end);
-    ctx.arc(cx,cy,innerR,end,start,true);
+    ctx.arc(cx,cy,rr,start,drawEnd);
+    ctx.arc(cx,cy,innerR,drawEnd,start,true);
     ctx.closePath();
     ctx.fillStyle = colors[i]||'#2a78d6';
     ctx.fill();

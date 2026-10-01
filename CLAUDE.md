@@ -17,8 +17,11 @@ npm run dev            # http://localhost:5173
 npm run check          # svelte-check (must be 0 errors)
 npm test               # unit tests (src/**/*.test.ts)
 TEST_DATABASE_URL="postgresql://…/neurodash_test" npm run test:api   # backend suite (~200 tests)
+npm run setup                      # create DB + tables + demo data (scripts/setup.mjs; --reset, --no-seed)
 npm run db:migrate | db:seed | db:reset | db:generate
 ```
+- Prisma 7 does **not** seed after `migrate reset` (`db:reset` runs the seed explicitly). Prisma also refuses `migrate reset` when run by an AI
+  agent; never work around that with `PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION` without the user's explicit, quoted consent.
 - Always run `npm run check` and `npm test` after changes; run `test:api` after touching anything server-side, auth, permissions or the schema.
 - `test:api` refuses any database whose name lacks `test`, builds the app and serves the **production build** (SvelteKit's CSRF check
   and cookie behaviour differ in `vite dev`). Don't test CSRF/cookie behaviour against the dev server.
@@ -78,3 +81,13 @@ npm run db:migrate | db:seed | db:reset | db:generate
 No email service (temp passwords are relayed by the admin); no device CSV ingestion pipeline; no real-time updates (the bell polls every 30 s);
 devices have no location; the AI assistant is rules-based, not an LLM; free-text scale items are skipped until clinicians supply preset lists.
 `SESSION_SECRET` is in `.env.example` but not read by the app (sessions are random tokens in the database).
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

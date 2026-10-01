@@ -1,0 +1,177 @@
+/* ============================================================
+   DESIGN REFRESH — layered over app.css (tokens live there).
+   Crisp white cards on a slate tint, deep-emerald primary actions,
+   bolder metrics, AA-contrast micro-labels, more breathing room.
+   ============================================================ */
+
+/* ---------- Cards: white, 1px crisp border, very soft shadow ---------- */
+.card {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Micro-labels: #475569 for contrast ---------- */
+.eyebrow,
+.kpi .k-label,
+.k-label,
+.ph-fact .fl,
+.qm .fl,
+.side-section-label,
+table.dt thead th,
+.tl-date,
+.search-group-label,
+.ai-stat .l,
+.login-visual .stat-row .l,
+.dt-sub,
+.notif-desc {
+	color: var(--ink-600);
+}
+
+/* ---------- Key metrics: semi-bold ---------- */
+.kpi .k-val,
+.k-val,
+.qm .fv,
+.ph-fact .fv,
+.ai-stat .v,
+.login-visual .stat-row .k {
+	font-weight: 600;
+}
+.qm .fv {
+	font-size: 21px;
+}
+.kv-row .kv {
+	font-weight: 600;
+	color: var(--ink-900);
+}
+
+/* ---------- Breathing room ---------- */
+.kpi {
+	padding: 20px 22px;
+	gap: 8px;
+}
+.card-pad {
+	padding: 22px 24px;
+}
+.card-head {
+	padding: 20px 24px 0;
+}
+.card-body {
+	padding: 16px 24px 24px;
+}
+.kv-list {
+	gap: 14px;
+}
+.kv-row {
+	gap: 16px;
+	line-height: 1.45;
+}
+hr.sep {
+	margin: 22px 0;
+}
+.patient-header {
+	padding: 26px 28px;
+}
+.quick-metrics {
+	margin-top: 22px;
+	padding-top: 20px;
+}
+.qm {
+	padding: 0 20px;
+}
+.grid {
+	gap: 20px;
+}
+.two-col {
+	gap: 20px;
+}
+
+/* ---------- Buttons: solid teal primary, soft slate secondary ---------- */
+.btn-primary {
+	background: var(--accent);
+	color: var(--accent-ink);
+	box-shadow: 0 1px 2px rgba(15, 118, 110, 0.25);
+}
+.btn-primary:hover {
+	background: var(--accent-600);
+}
+.btn-secondary,
+.btn-soft {
+	background: var(--surface-2);
+	color: var(--ink-700);
+	border-color: var(--border);
+}
+.btn-secondary:hover,
+.btn-soft:hover {
+	background: var(--surface-3);
+	color: var(--ink-900);
+}
+
+/* ---------- Patient header: grouped actions ---------- */
+.ph-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	padding: 6px;
+	background: var(--surface-2);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-m);
+}
+.ph-actions .filter-select {
+	background: var(--surface);
+	font-weight: 600;
+	color: var(--ink-900);
+}
+.ph-actions .ph-actions-sep {
+	width: 1px;
+	align-self: stretch;
+	background: var(--border-strong);
+}
+.ph-actions .btn-secondary {
+	background: var(--surface);
+}
+.ph-actions .btn-secondary:hover {
+	background: var(--surface-3);
+}
+
+/* ---------- Tabs and range toggle pick up the deeper accent ---------- */
+.tab-btn.active {
+	color: var(--accent);
+	border-bottom-color: var(--accent);
+}
+.range-toggle button.active {
+	color: var(--accent);
+	font-weight: 700;
+}
+
+@media (max-width: 640px) {
+	.kpi {
+		padding: 14px 14px;
+	}
+	.card-pad {
+		padding: 16px;
+	}
+	.card-head {
+		padding: 16px 16px 0;
+	}
+	.card-body {
+		padding: 12px 16px 18px;
+	}
+	.patient-header {
+		padding: 18px 16px;
+	}
+	.qm {
+		padding: 0;
+	}
+	.grid,
+	.two-col {
+		gap: 14px;
+	}
+	.ph-actions {
+		width: 100%;
+	}
+	.ph-actions .btn {
+		flex: 1 1 auto;
+	}
+}

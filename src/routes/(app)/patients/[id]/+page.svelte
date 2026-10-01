@@ -91,7 +91,7 @@
 				</div>
 			</div>
 		</div>
-		<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+		<div class="ph-actions" role="group" aria-label="Patient actions">
 			{#if data.perms.canManage}
 				<form method="POST" action="?/setStatus" use:enhance={() => async ({ update }) => update({ reset: false })}>
 					<select
@@ -108,6 +108,7 @@
 				<Badge text={p.status} />
 			{/if}
 			{#if data.perms.isOwner}
+				<span class="ph-actions-sep" aria-hidden="true"></span>
 				<button class="btn btn-secondary btn-sm" onclick={() => setTab('notes')}>
 					<Icon name="edit" size={13} /> Add Note
 				</button>
