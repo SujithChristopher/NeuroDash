@@ -4,8 +4,8 @@ Rehabilitation therapy monitoring platform. SvelteKit 2 (Svelte 5, runes) · Typ
 Setup and run instructions are in `README.md`; don't duplicate them here.
 
 ## Sources of truth
-- `ref/NEURODASH_SVELTEKIT_SPEC.md` — logic, schema, permissions, workflows. When unsure how something should behave, read it first.
-- `ref/neurodash_10.html` — the visual reference. `src/lib/styles/app.css` is ported verbatim from it; new UI reuses its classes
+- `reference/NEURODASH_SVELTEKIT_SPEC.md` — logic, schema, permissions, workflows. When unsure how something should behave, read it first.
+- `reference/neurodash_10.html` — the visual reference. `src/lib/styles/app.css` is ported verbatim from it; new UI reuses its classes
   (`.card`, `.kpi`, `.badge`, `.dt`, `.modal`, `.drawer`, `.tabs`…) rather than inventing styles. `responsive.css` layers on top.
 - `clinical_scales/neuro/*.json` — the assessment scales. They are **data**: never hard-code a scale's questions in a component.
   Regenerate from `clinical_scales/redcap_bak/*.csv` with `convert_to_json.py`; don't hand-edit the JSON.
@@ -17,7 +17,8 @@ npm run dev            # http://localhost:5173
 npm run check          # svelte-check (must be 0 errors)
 npm test               # unit tests (src/**/*.test.ts)
 TEST_DATABASE_URL="postgresql://…/neurodash_test" npm run test:api   # backend suite (~200 tests)
-npm run setup                      # create DB + tables + demo data (scripts/setup.mjs; --reset, --no-seed)
+npm run setup                      # create DB + migrate + demo data (scripts/setup.mjs; --no-seed, --demo, --reset). On a DB that already has patients it changes nothing.
+npm run demo:reset -- --yes        # WIPES the DB and loads the demo users/centres/devices and 7 demo patients (prisma/demo.ts)
 npm run db:migrate | db:seed | db:reset | db:generate
 ```
 - Prisma 7 does **not** seed after `migrate reset` (`db:reset` runs the seed explicitly). Prisma also refuses `migrate reset` when run by an AI

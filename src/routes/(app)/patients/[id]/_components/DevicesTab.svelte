@@ -44,7 +44,7 @@
 	{/if}
 </div>
 <div class="card" style="margin-bottom:18px">
-	{#if data.trainingDevices.length === 0}
+	{#if data.trainingDevices.length === 0 && data.formerDevices.length === 0}
 		<EmptyState icon="device" title="No training devices yet" sub="Devices are chosen in the therapy plan. Laptops only receive patients whose plan includes their device." />
 	{:else}
 		<div class="table-wrap">
@@ -59,6 +59,17 @@
 							<td class="mono">{a?.sessions ?? 0}</td>
 							<td class="mono">{a?.stars ?? 0}</td>
 							<td>{#if a?.last}{timeAgo(a.last)}{:else}<span class="muted">No data yet</span>{/if}</td>
+						</tr>
+					{/each}
+					<!-- Taken out of the plan, but everything it recorded is still counted everywhere -->
+					{#each data.formerDevices as d (d.deviceTypeId)}
+						{@const a = activity.get(d.deviceTypeId)}
+						<tr>
+							<td><div class="dt-name">{d.name} <Badge text="Removed from plan" tone="neutral" /></div><div class="dt-sub">{d.category}</div></td>
+							<td class="muted">—</td>
+							<td class="mono">{a?.sessions ?? 0}</td>
+							<td class="mono">{a?.stars ?? 0}</td>
+							<td>{#if a?.last}{timeAgo(a.last)}{:else}<span class="muted">No data</span>{/if}</td>
 						</tr>
 					{/each}
 				</tbody>

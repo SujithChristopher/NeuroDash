@@ -2,6 +2,7 @@
 // through prisma/seed.ts, then adds a handful of realistic patients across both centres and every status.
 //
 //   npm run demo:reset -- --yes
+//   (--no-wipe keeps existing rows and only adds the demo patients: used by `npm run setup` on a database with no patients yet)
 //
 // DESTRUCTIVE. It truncates every table of the database in DATABASE_URL, so it refuses to run without --yes and prints which
 // database it is about to wipe. Take a backup first (pg_dump) if there is anything worth keeping.
@@ -164,10 +165,13 @@ async function main() {
     process.exit(1);
   }
 
-  // 1. wipe everything except Prisma's own migration history
+  // 1. wipe everything except Prisma's own migration history (--no-wipe: keep what is there; only for a database with no patients)
+  if (process.argv.includes("--no-wipe")) console.log("Keeping existing rows (--no-wipe).");
+  else {
   const tables = await prisma.$queryRaw<{ tablename: string }[]>`SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
   await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${tables.map((t) => `"${t.tablename}"`).join(", ")} RESTART IDENTITY CASCADE`);
   console.log(`Wiped ${tables.length} tables.`);
+  }
 
   // 2. reference data: users, centres, device types, devices (the seed also adds its own sample patients, removed below)
   const seed = spawnSync("npx tsx prisma/seed.ts", { shell: true, stdio: "inherit" });

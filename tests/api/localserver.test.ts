@@ -180,6 +180,23 @@ describe('changing devices in the therapy plan', () => {
 		expect(registry().version).toBe(v + 1);
 	});
 
+	it('removing a device keeps its recorded sessions everywhere (progress, report, devices tab)', async () => {
+		const code = uniq('keep').slice(0, 20);
+		const pid = idOf(await register({ patientId: code, deviceTypeIds: ['MARS', 'PLUTO'] }));
+		const unit = async (t: string) => (await db().device.findFirstOrThrow({ where: { deviceTypeId: t } })).id;
+		for (const [t, n] of [['MARS', 1], ['PLUTO', 2]] as const) {
+			await db().therapySession.create({ data: { patientId: pid, deviceId: await unit(t), sourceDevice: t, sessionNumber: n, sessionDate: new Date(), startTime: new Date(), durationMinutes: 10, totalTargets: 5, totalHits: 4 } });
+		}
+		expect((await setDevices(pid, ['MARS'])).type).toBe('success'); // PLUTO removed from the plan
+		const page = await pageData(s.priya, `/patients/${pid}`);
+		expect(page.sessions.map((x: { device: { typeId: string } }) => x.device.typeId).sort()).toEqual(['MARS', 'PLUTO']);
+		expect(page.trainingDevices.map((x: { deviceTypeId: string }) => x.deviceTypeId)).toEqual(['MARS']);
+		expect(page.formerDevices.map((x: { deviceTypeId: string }) => x.deviceTypeId)).toEqual(['PLUTO']);
+		const report = (await pageData(s.priya, `/reports?view=patient&patient=${pid}`)).patientReport;
+		expect(report.devices.map((x: { typeId: string }) => x.typeId).sort()).toEqual(['MARS', 'PLUTO']);
+		expect(report.plan.devices).toEqual(['Mars']);
+	});
+
 	it('needs at least one real device', async () => {
 		expect((await change(s.priya, [])).type).toBe('failure');
 		expect((await change(s.priya, ['NOPE'])).type).toBe('failure');
@@ -196,6 +213,30 @@ describe('changing devices in the therapy plan', () => {
 	it('the primary therapist and a covering colleague may change devices; consultant, admin and other centres may not', async () => {
 		for (const who of ['vikram', 'arjun', 'admin'] as const) expect((await change(s[who], ['MARS'])).status, who).toBe(403);
 		expect((await change(s.rohan, ['MARS'])).status).toBe(404);
+	});
+
+	it('pausing, completing or reactivating the plan moves the patient and patients.json with it', async () => {
+		const pid = idOf(await register({ patientId: uniq('ps').slice(0, 20), deviceTypeIds: ['MARS'] }));
+		const c = (await db().patient.findUniqueOrThrow({ where: { id: pid } })).displayCode;
+		const status = async () => (await db().patient.findUniqueOrThrow({ where: { id: pid } })).status;
+		expect((await setDevices(pid, ['MARS'], { status: 'Paused' })).type).toBe('success');
+		expect([await status(), entry(c)?.status]).toEqual(['Paused', 'paused']);
+		expect((await setDevices(pid, ['MARS'], { status: 'Completed' })).type).toBe('success');
+		expect([await status(), entry(c)?.status]).toEqual(['Completed', 'discharged']);
+		expect((await setDevices(pid, ['MARS'], { status: 'Discontinued' })).type).toBe('success');
+		expect(await status()).toBe('Discontinued');
+		expect((await setDevices(pid, ['MARS'], { status: 'Active' })).type).toBe('success');
+		expect([await status(), entry(c)?.status]).toEqual(['Active', 'active']); // no session yet: Active, not Ongoing
+		expect(await db().auditLog.count({ where: { action: 'Patient Status Changed', entityId: pid } })).toBe(4);
+	});
+
+	it('reactivating a plan of a patient who has trained makes them Ongoing again', async () => {
+		const code = uniq('rs').slice(0, 20);
+		const pid = idOf(await register({ patientId: code, deviceTypeIds: ['MARS'] }));
+		await db().therapySession.create({ data: { patientId: pid, deviceId: (await db().device.findFirstOrThrow({ where: { deviceTypeId: 'MARS' } })).id, sessionDate: new Date(), startTime: new Date(), totalTargets: 1, totalHits: 1 } });
+		await setDevices(pid, ['MARS'], { status: 'Paused' });
+		await setDevices(pid, ['MARS'], { status: 'Active' });
+		expect((await db().patient.findUniqueOrThrow({ where: { id: pid } })).status).toBe('Ongoing');
 	});
 
 	it('status changes reach the laptops as active / paused / discharged', async () => {

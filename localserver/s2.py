@@ -18,6 +18,7 @@ PORT = 5000
 DATA_FOLDER = patients_store.DATA_FOLDER
 
 ALLOWED_DEVICES = {
+    "LAPTOP-1",
     "PLUTO",
     "MARS",
     "ATOBOT",

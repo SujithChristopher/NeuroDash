@@ -2,8 +2,13 @@
 // One-command setup:  npm run setup
 //   1. makes sure .env has a real DATABASE_URL (asks for it the first time)
 //   2. creates the PostgreSQL database if it doesn't exist (no psql needed)
-//   3. applies the schema (prisma migrate deploy), generates the client, loads the demo data
-// Safe to re-run. Flags:  --reset  wipe and rebuild the database   --no-seed  skip the demo data
+//   3. applies the schema (prisma migrate deploy) and generates the client
+//   4. loads the demo data: users, centres, devices and seven demo patients with sessions and assessments
+// Safe to re-run: on a database that already has patients it only refreshes the reference data (users, devices) and
+// leaves your patients alone.
+// Flags:  --reset    wipe and rebuild the whole database, demo included
+//         --demo     (re)load the demo patients even if the database already has patients (this WIPES it)
+//         --no-seed  tables only, no demo data
 
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -118,9 +123,24 @@ run('npx prisma generate', 'Generating the Prisma client');
 
 // ---------------------------------------------------------------- 4. demo data
 step(4, args.has('--no-seed') ? 'Skipping demo data (--no-seed)' : 'Loading demo data');
-if (!args.has('--no-seed')) run('npx prisma db seed', 'Seeding the database');
+if (!args.has('--no-seed')) {
+	const db = new pg.Client({ connectionString: url });
+	await db.connect();
+	const patients = Number((await db.query('SELECT count(*) FROM patients')).rows[0].count);
+	await db.end();
+	if (patients === 0 || args.has('--demo')) {
+		// No patients yet: seed users/centres/devices and add the demo patients without touching anything else.
+		// An explicit --demo wipes the database first.
+		run(`npx tsx prisma/demo.ts --yes${patients === 0 && !args.has('--demo') ? ' --no-wipe' : ''}`, 'Loading the demo data');
+	} else {
+		say(`The database already has ${patients} patient${patients === 1 ? '' : 's'}, so nothing was added or changed.`);
+		say('  New reference data after an update (device types, users):  npm run db:seed');
+		say('  Replace everything with the demo patients (WIPES the database):  npm run setup -- --demo');
+	}
+}
 
 say('\n✔ Setup complete.\n');
 say('  Start the app:   npm run dev      → http://localhost:5173');
-say('  Sign in:         priya.nair@neurodash.care   /   neurodash123');
+say('  Sign in:         priya.nair@neurodash.care   /   neurodash123   (every demo account uses this password)');
+say('  Demo patients:   AG10001 to AG10005 (Downtown) and AG20001, AG20002 (North Campus)');
 say('  Browse the data: npx prisma studio\n');

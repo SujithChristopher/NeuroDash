@@ -6,7 +6,7 @@ rehabilitation devices, sessions, analytics, reports and an audit trail, with fo
 
 **Stack:** SvelteKit 2 (Svelte 5) · TypeScript · Prisma 7 · PostgreSQL · Vite 8 · Vitest
 
-The logic, schema and permissions follow `ref/NEURODASH_SVELTEKIT_SPEC.md`; 
+The logic, schema and permissions follow `reference/NEURODASH_SVELTEKIT_SPEC.md`; the visual design follows `reference/neurodash_10.html`.
 
 ---
 
@@ -21,7 +21,10 @@ npm run dev
 ```
 
 Open **http://localhost:5173** and sign in as `priya.nair@neurodash.care` / `neurodash123`
-(all demo accounts are [listed below](#demo-accounts)).
+(all demo accounts and the [demo patients](#demo-patients) are listed below).
+
+`npm run setup` is the only command another developer needs to get a working copy with realistic data: it applies the migrations,
+loads the reference data (users, centres, device types, devices) and seven demo patients with weeks of sessions and assessments.
 
 Something not working? See [Troubleshooting](#troubleshooting). The details are explained next.
 
@@ -50,14 +53,16 @@ npm run setup
    (press Enter to accept the defaults `localhost`, `5432`, `postgres`, `neurodash`) and saves it to `.env`.
    It handles special characters in the password for you.
 2. **Database:** connects to PostgreSQL and creates the database if it doesn't exist. No `psql` needed.
-3. **Tables:** applies the schema and generates the Prisma client.
-4. **Demo data:** loads the demo users, patients, devices and sessions.
+3. **Tables:** applies the migrations (`prisma migrate deploy`) and generates the Prisma client.
+4. **Demo data:** if the database has no patients yet, it seeds the reference data (users, two centres, device types, devices)
+   and adds the [seven demo patients](#demo-patients). If the database already has patients, it changes nothing.
 
 It prints a clear message if PostgreSQL isn't running or the password is wrong. Options:
 
 ```sh
 npm run setup -- --no-seed    # tables only, no demo data
-npm run setup -- --reset      # ERASES the database first, then rebuilds it
+npm run setup -- --demo       # WIPES the database, then loads the demo users, centres, devices and patients
+npm run setup -- --reset      # ERASES the database and rebuilds the schema first, then loads the demo data
 ```
 
 ### Option B — step by step
@@ -83,11 +88,12 @@ If your password contains special characters (`@ : / # ?`), URL-encode them, e.g
 
 ```sh
 npm run db:migrate     # builds the schema from prisma/migrations
-npm run db:seed        # adds demo users, patients, devices and sessions (safe to re-run)
+npm run db:seed        # adds the demo users, centres, device types and devices (safe to re-run)
+npm run demo:reset -- --yes   # optional: WIPES the database and loads the demo patients too (see "Demo patients")
 ```
 
-> Run **both**. If you only migrate, the tables exist but hold no users, and sign-in fails with
-> "Invalid email or password".
+> Run **both** migrate and seed. If you only migrate, the tables exist but hold no users, and sign-in fails with
+> "Invalid email or password". `db:seed` alone also adds a few sample patients; `demo:reset` replaces them with the demo patients.
 
 ### Start the app
 
@@ -111,6 +117,25 @@ Every account uses the password **`neurodash123`**.
 
 New accounts created by an admin get a one-time temporary password and must choose a new one at first sign-in.
 
+### Demo patients
+
+Loaded by `npm run setup` (on an empty database) and by `npm run demo:reset -- --yes`. Patient IDs have the form `AG10001`;
+the ID is the only label a patient has (no names are collected).
+
+| ID | Centre | Status | What it shows |
+|---|---|---|---|
+| AG10001 | Downtown (Priya) | Ongoing | MARS and PLUTO, about 4 weeks of sessions, FMA and ARAT improving, two notes |
+| AG10002 | Downtown | Ongoing | PLUTO only, some missed days, FMA and MAS |
+| AG10003 | Downtown | Active | Brand new, no plan yet |
+| AG10004 | Downtown | Paused | Stopped after a few sessions, with a note |
+| AG10005 | Downtown | Completed | Full plan, FMA from baseline to discharge |
+| AG20001 | North Campus (Rohan) | Ongoing | MARS and PLUTO |
+| AG20002 | North Campus | Discontinued | A few sessions only |
+
+Reset the demo at any time with `npm run demo:reset -- --yes`. It **erases every table** of the database in `DATABASE_URL`
+(it prints which database first and refuses to run without `--yes`), so take a `pg_dump` first if anything matters.
+If `NEURODASH_DATA_DIR` is set it also writes the demo patients to `<data dir>/patients.json` and creates their folders; it never deletes files.
+
 ### Browsing the database
 
 ```sh
@@ -126,7 +151,7 @@ npx prisma studio             # opens http://localhost:5555
 | `password authentication failed` | Wrong password in `DATABASE_URL` (URL-encode special characters) |
 | "relation ... does not exist" / missing columns after pulling changes | `npm run db:migrate` (or `npm run db:reset` if the migrations were rewritten; it erases the dev database) |
 | `Port 5173 is already in use` | `npm run dev -- --port 5180` |
-| Want a clean slate | `npm run setup -- --reset` (or `npm run db:reset`) |
+| Want a clean slate | `npm run setup -- --reset` (or `npm run db:reset`), or just the demo data: `npm run demo:reset -- --yes` |
 | After pulling an update that changes the database | `npm run db:migrate`, then `npm run db:seed` (adds new reference data such as the device types (PLUTO, MARS, ATOBOT, HYPERCUBE, NOARK, DYNABO, MOBBO, WEARABLE)) |
 
 `db:reset` **erases** the database it points at. Only use it on development data.
@@ -136,28 +161,42 @@ npx prisma studio             # opens http://localhost:5555
 ## 2. Local server integration (training laptops → dashboard)
 
 NeuroDash works with the Python **local server** in `localserver/` (`s2.py` receives uploads on port 5000, `patients_store.py`
-keeps `patients.json`). Both use one data folder, set in `.env`:
+keeps `patients.json`). **It is a separate program: the web app does not start it.** Both use one data folder, set in `.env`:
 
 ```env
 NEURODASH_DATA_DIR="D:/NeuroDashData"     # the same folder as DATA_FOLDER in localserver/patients_store.py
 INGEST_INTERVAL_SECONDS=30                # how often the app looks for new uploads (0 = only on "Sync now")
+ACTIVE_WINDOW_SECONDS=300                 # a patient counts as "in session" this long after their last upload
+# REPORTS_DIR="D:/NeuroDashData/_reports" # where saved patient reports go (default: <data dir>/_reports)
 ```
 
-Leave `NEURODASH_DATA_DIR` empty to switch the integration off; the rest of the app is unaffected.
+Leave `NEURODASH_DATA_DIR` empty to switch the integration off; the rest of the app (including the demo data) works without it.
 
-**When you register a patient** (Patients → New Patient), the app:
+**Running it** (only needed when real training laptops are sending data):
 
-1. saves the patient in the database (table `patients`) and creates the folder `<data folder>/<Patient ID>/`, where that patient's
-   laptop uploads will land;
-2. stores the chosen **training devices** in the database (table `patient_devices`) and in the **one common `patients.json`** at the
-   root of the data folder: a single file listing every patient with their status, side and devices. The database is the source
-   of truth and `patients.json` is a mirror of it for the laptops. It never contains names, dates of birth or contact details.
-   A laptop only receives patients allocated to its device. The version number goes up on every real change, and a UDP
+```sh
+cd localserver
+python s2.py          # listens on TCP 5000; the laptops' sender.py talks to it
+```
+
+Open TCP 5000 and UDP 5001 in the firewall. Run `python -m unittest test_presence` in the same folder for its tests.
+
+**Patients and `patients.json`**
+
+1. **Registering a patient** (Patients → New Patient: Patient ID, date of birth, gender, affected side, optional stroke date)
+   saves the patient in the database and creates the folder `<data folder>/<Patient ID>/` where that patient's laptop uploads land.
+2. **Creating the therapy plan** (side to train and devices) adds the patient to the **one common `patients.json`** at the root of
+   the data folder: a single file with every patient's `user_id`, `status`, `side` and `devices`. Changing the plan later
+   (**Modify Plan**: devices, side, status) updates the plan, the `patient_devices` table and `patients.json` together. The database is
+   the source of truth; `patients.json` is a mirror for the laptops. It never contains names, dates of birth or contact details.
+   A laptop only receives patients whose plan includes its device. The version number goes up on every real change, and a UDP
    "patients changed" nudge is broadcast so laptops pick it up immediately.
 
-The **Patient ID** is the ID typed on the training devices (letters, digits, `-` and `_`). Leave it blank for an auto-generated
-`P-12345`. Names such as `PLUTO`, `mars01`, `patients` or `_incoming` are refused because they would clash with the server's own
-folders. Devices can be changed later on the patient's **Devices** tab, and a patient's therapy-plan devices are added automatically.
+The **Patient ID** is the ID typed on the training devices (letters, digits, `-` and `_`). Names such as `PLUTO`, `mars01`, `patients`
+or `_incoming` are refused because they would clash with the server's own folders.
+
+**Patient status:** *Active* (account created) becomes *Ongoing* automatically once devices are allocated and a session has been
+trained. *Paused*, *Completed* and *Discontinued* are set by the therapist, or by changing the plan's status (the patient follows the plan).
 
 **When a laptop uploads data**, the app reads it from the folder and stores it in the database:
 
@@ -174,21 +213,18 @@ folders. Devices can be changed later on the patient's **Devices** tab, and a pa
   rather than duplicating them.
 - The training device comes from the `:Device:` line in `sessions.csv` (so `PLUTO01` and `PLUTO` folders both mean PLUTO).
 - A file for a patient that is not registered yet is shown as **Unmatched** and imported automatically once the patient exists.
-- Once real data flows for a patient, plan days that pass with no training are marked **missed**, so adherence is real.
+- Once real data flows for a patient, plan days that pass with no training are marked **missed**, so adherence is real. A day with any training counts as done.
 - The **Data Sync** page (engineer: sync; admin: view) shows file status, totals and which laptops are online and up to date.
 
-The Python server is unchanged and keeps receiving the files. Let the web app be the only writer of `patients.json`; avoid editing it
-with `patients_store.py` at the same time. Details of the file formats: `localserver/DASHBOARD_DATA_GUIDE.md`.
+Let the web app be the only writer of `patients.json`; avoid editing it with `patients_store.py` at the same time.
+Details of the file formats: `localserver/DASHBOARD_DATA_GUIDE.md`.
 
----
-
-
-### Device-specific progress, stacked colours and demo data
+### Device-specific progress and stacked colours
 
 - The patient's **Progress** tab has a tab per training device (PLUTO, MARS, ...). KPIs, accuracy, stars, games and mechanisms are for that device only. The "Therapy time per day" chart is stacked, one colour per device (the same colour everywhere).
 - Therapy time is the `MoveTime` column (falling back to `GameDuration`, then start to stop time).
-- `npm run db:seed` creates patient `HOCMCV002` (PLUTO and MARS). `npm run demo:data` copies `localserver/testdata/*_sessions.csv` into the data folder; they are imported within about 30 seconds.
-- After pulling these changes run `npm run db:migrate` (adds trial kind and assist mode) and `npm run db:seed` (device colours).
+- To try the live CSV path without a laptop, `npm run demo:data` copies sample device CSVs from `localserver/testdata/` into the data folder (patient ID `HOCMCV002`, which you register first); they are imported within about 30 seconds.
+- After pulling an update run `npm run db:migrate`, then `npm run db:seed` (device types and colours).
 
 ### Patient in use (presence)
 
@@ -206,7 +242,9 @@ While a patient trains, the laptop uploads `sessions.csv` about every minute. Th
 | `npm run db:migrate` | Apply migrations to a dev database (creates new ones if the schema changed) |
 | `npm run db:deploy` | Apply existing migrations (production) |
 | `npm run db:seed` | Load / refresh the demo data |
-| `npm run setup` | One-command setup: `.env`, create database, tables, demo data (`-- --reset`, `-- --no-seed`) |
+| `npm run setup` | One-command setup: `.env`, create database, migrations, demo data (`-- --no-seed`, `-- --demo`, `-- --reset`) |
+| `npm run demo:reset -- --yes` | **Wipes the database** and loads the demo users, centres, devices and the seven demo patients |
+| `npm run demo:data` | Copies the sample device CSVs into the data folder for the live-upload demo |
 | `npm run db:reset` | Drop and rebuild the database, then re-seed it (erases all data) |
 | `npm run db:generate` | Regenerate the Prisma client |
 
@@ -217,10 +255,10 @@ While a patient trains, the laptop uploads `sessions.csv` about every minute. Th
 - **Patients:** location-scoped list, 9-tab detail page (overview, assessments, plan, sessions, devices, progress, documents, notes, timeline).
 - **Assessments:** every scale in `clinical_scales/neuro/*.json` (FMA, ARAT, PHQ-9, MoCA, NIHSS, MAL, EQ-5D and more) is rendered by one
   generic **click-only** form. Answers are validated and scores recomputed on the server. Scanned documents can be attached.
-- **Therapy plans:** multi-device plans, day log, and a full revision history with a required reason for every change.
-- **Devices:** request → clear → assign workflow, issue lifecycle with troubleshooting log, maintenance, usage and history.
+- **Therapy plans:** one plan per patient (side to train, devices, daily target), a day log (done / missed / upcoming), and a full revision history with a required reason for every change. Devices are added or removed in **Modify Plan**.
+- **Devices:** devices belong to a centre. A centre requests a device type, an engineer clears it and sets up a unit there. Issue lifecycle with troubleshooting log, maintenance, usage and history. Each centre has a responsible engineer (set by the admin on the Locations page).
 - **Sessions:** trial-level detail in a side drawer, with notes and optional photos.
-- **Insights:** role-adaptive overview and analytics, reports with CSV export, and a rules-based AI assistant (answers only from your data).
+- **Insights:** role-adaptive overview (patient inflow: new / old / overall) and analytics with a card per centre, **patient reports** (devices, movements and mechanisms, one graph and change statement per assessment scale, any date range, notes, print, saved snapshots), and a rules-based AI assistant (answers only from your data).
 - **Admin:** user accounts, locations, and the audit log.
 - **Responsive:** works on desktop, tablet and phone.
 
@@ -232,8 +270,10 @@ While a patient trains, the laptop uploads `sessions.csv` about every minute. Th
 | Create patients, assessments, plans | yes (primary therapist) | no | no | no |
 | Edit a plan | primary or covering therapist at the same location | no | no | no |
 | Add patient and session notes | yes | yes | no | patient notes only |
-| Request devices | yes | no | no | no |
-| Clear, assign, resolve, maintain devices | no | no | yes | no |
+| Request devices for their centre | yes | no | no | no |
+| Clear requests, set devices up at centres, resolve issues, maintain devices | no | no | yes | no |
+| Raise device issues (own centre's devices) | yes | no | yes | no |
+| Add notes to and save patient reports | yes | yes | no | no (can open saved reports) |
 | Manage users and locations | no | no | no | yes |
 | Audit log | no | no | no | yes |
 
@@ -248,7 +288,7 @@ npm run check        # type-check
 npm test             # unit tests: scale engine, scoring, upload checks, stats, AI intents, CSV
 ```
 
-Backend API tests (about 200) run against a **throwaway** database and a real HTTP server:
+Backend API tests (about 280) run against a **throwaway** database and a real HTTP server:
 
 ```sh
 psql -U postgres -c "CREATE DATABASE neurodash_test;"
@@ -299,15 +339,19 @@ clinical_scales/neuro/       assessment definitions (JSON): the source of truth 
 src/lib/scales/              scale engine: visibility, scoring, validation (pure TS, shared by browser and server)
 src/lib/components/scale/    the generic click-only scale form
 src/lib/server/              server-only code: db, sessions, audit, notifications, scoping, files, analytics, AI,
-                             patientFiles (folders, patient.json, patients.json), ingest (CSV → database), laptops, poller
-src/lib/ingest/              pure CSV parsing and the patient.json / patients.json builders
+                             patientFiles (folders, patients.json), ingest (CSV → database), laptops, presence, poller,
+                             patientReport + reportStore (saved reports)
+src/lib/ingest/              pure CSV parsing, presence and the patients.json entry builder
+src/lib/patientReport.ts     the patient report: pure and unit-tested
 localserver/                 the Python local server the laptops talk to
 src/lib/styles/              app.css (design system) and responsive.css
 src/routes/login/            sign-in, forced password reset, forgot password
 src/routes/(app)/            the authenticated app; +layout.server.ts is the auth guard
 src/routes/api/              JSON/file endpoints (search, notifications, sessions, documents, AI)
 tests/api/                   backend test suite
-ref/                         the spec and the HTML reference design
+reference/                   the spec and the HTML reference design
+scripts/                     setup.mjs (one-command setup), load-demo-data.mjs
+prisma/demo.ts               the demo reset (`npm run demo:reset`)
 ```
 
 To change a scale, edit its CSV in `clinical_scales/redcap_bak` and run `python clinical_scales/redcap_bak/convert_to_json.py`.
@@ -315,8 +359,9 @@ Free-text items in a scale are intentionally not rendered; attach a scanned docu
 
 ### Patient reports
 
-**Reports > Patient Report** shows the devices a patient used (time, and the movements or mechanisms trained on each) and one graph per assessment scale with a plain statement of how it changed. Type notes on the report, **Print** it, or **Save report**: the snapshot (data plus your notes) is written to `<NEURODASH_DATA_DIR>/_reports/<Patient ID>/` (or `REPORTS_DIR`) and listed under *Saved reports*, where it reopens exactly as saved. The storage sits behind one small interface so it can move to S3 later without changing the pages.
-
-### Demo reset
-
-`npm run demo:reset -- --yes` wipes the database in `DATABASE_URL` and rebuilds a clean demo: the seeded users, two centres with their devices, and seven patients (Active, Ongoing, Paused, Completed, Discontinued) with weeks of sessions and assessments. It also writes them to `<NEURODASH_DATA_DIR>/patients.json`. It is destructive, so it refuses to run without `--yes`; take a `pg_dump` first. Demo logins use the password `neurodash123` (see the seeded emails printed at the end).
+**Reports > Patient Report** shows, for a patient and a chosen period (quick buttons or any From / To dates), the devices used (time, and the
+movements or mechanisms trained on each) and one graph per assessment scale with a plain statement of how it changed. Type notes on the
+report, **Print** it, or **Save report**. Printing saves a copy first (when your role can save), so whatever was printed can always be found
+again. The snapshot (data, period and your notes) is written to `<NEURODASH_DATA_DIR>/_reports/<Patient ID>/` (or `REPORTS_DIR`) and listed
+under *Saved reports*, where it reopens exactly as saved. The storage sits behind one small interface so it can move to S3 later without
+changing the pages.

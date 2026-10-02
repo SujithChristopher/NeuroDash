@@ -8,9 +8,6 @@ node_modules
 /.svelte-kit
 /build
 
-# Local server test data
-/localserver/testdata
-
 
 # OS
 .DS_Store

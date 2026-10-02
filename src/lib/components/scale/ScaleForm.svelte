@@ -7,7 +7,6 @@
 	import Icon from '../Icon.svelte';
 	import {
 		DEFAULT_NUMBER_MAX,
-		answerableItems,
 		computeScores,
 		isRenderable,
 		isVisible,
@@ -38,15 +37,12 @@
 		missing?: string | null;
 	} = $props();
 
-	const PAGED_AFTER = 30; // answerable items; longer scales (MAL has 90) show one section at a time
+	// Every section and question is on one page, in order: scroll, answer, save. (No Next / Previous steps, however long the scale.)
 	const sections = $derived(
 		def.sections
 			.map((s) => ({ ...s, items: s.items.filter((i) => isRenderable(i) && i.type !== 'date') }))
 			.filter((s) => s.items.length)
 	);
-	const paged = $derived(answerableItems(def).length > PAGED_AFTER && sections.length > 1);
-	let page = $state(0);
-	const shown = $derived(paged ? [sections[Math.min(page, sections.length - 1)]] : sections);
 
 	const scores = $derived(computeScores(def, answers));
 	const prog = $derived(progress(def, answers));
@@ -93,8 +89,6 @@
 
 	$effect(() => {
 		if (!missing) return;
-		const at = sections.findIndex((s) => s.items.some((i) => i.id === missing));
-		if (paged && at >= 0) page = at;
 		queueMicrotask(() => document.getElementById(`item-${missing}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
 	});
 
@@ -117,7 +111,7 @@
 	{/if}
 </div>
 
-{#each shown as section (section.id)}
+{#each sections as section (section.id)}
 	<section class="scale-section">
 		{#if section.title}<h3 class="sec-title">{section.title}</h3>{/if}
 		{#each section.items as item (item.id)}
@@ -152,7 +146,7 @@
 						/>
 					{:else if item.type === 'multi_choice'}
 						<div class="label">{item.label ?? item.id}</div>
-						<div class="chips" role="group" aria-label={item.label ?? item.id}>
+						<div class="chips list" role="group" aria-label={item.label ?? item.id}>
 							{#each item.choices ?? [] as c (String(c.value))}
 								{@const on = Array.isArray(answers[item.id]) && (answers[item.id] as ScalarValue[]).some((x) => String(x) === String(c.value))}
 								<button type="button" class="chip" class:on aria-pressed={on} onclick={() => toggleMulti(item, c.value)}>
@@ -193,18 +187,6 @@
 		{/each}
 	</section>
 {/each}
-
-{#if paged}
-	<div class="pager-row">
-		<button type="button" class="btn btn-secondary" disabled={page === 0} onclick={() => (page = Math.max(0, page - 1))}>
-			<Icon name="chevron" size={14} /> Previous
-		</button>
-		<span class="muted" style="font-size:12.5px">Section {Math.min(page, sections.length - 1) + 1} of {sections.length}</span>
-		<button type="button" class="btn btn-secondary" disabled={page >= sections.length - 1} onclick={() => (page = Math.min(sections.length - 1, page + 1))}>
-			Next <Icon name="chevron" size={14} />
-		</button>
-	</div>
-{/if}
 
 <style>
 	.sticky-progress {
@@ -302,6 +284,16 @@
 		flex-wrap: wrap;
 		gap: 8px;
 	}
+	.chips.list {
+		flex-direction: column;
+		gap: 6px;
+	}
+	.chips.list .chip {
+		width: 100%;
+		justify-content: flex-start;
+		border-radius: var(--radius-s);
+		text-align: left;
+	}
 	.chip {
 		display: inline-flex;
 		align-items: center;
@@ -325,17 +317,5 @@
 	.clear {
 		margin-top: 6px;
 		font-size: 12px;
-	}
-	.pager-row {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin: 6px 0 18px;
-	}
-	.pager-row :global(svg:first-child) {
-		transform: rotate(180deg);
-	}
-	.pager-row button:last-child :global(svg) {
-		transform: none;
 	}
 </style>

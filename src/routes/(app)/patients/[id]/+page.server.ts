@@ -111,6 +111,14 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			allocatedAt: d.allocatedAt.toISOString(),
 			by: d.allocatedBy?.name ?? '—'
 		})),
+		// Devices taken out of the plan keep their recorded sessions: they stay visible here, marked as no longer in the plan.
+		formerDevices: [
+			...new Map(
+				p.therapySessions
+					.filter((x) => !p.trainingDevices.some((t) => t.deviceTypeId === x.device.deviceType.id))
+					.map((x) => [x.device.deviceType.id, { deviceTypeId: x.device.deviceType.id, name: x.device.deviceType.name, category: x.device.deviceType.category }])
+			).values()
+		],
 		deviceConfigs: p.deviceConfigs.map((c) => ({
 			id: c.id,
 			device: c.device,
@@ -414,7 +422,19 @@ export const actions: Actions = {
 		diff('Notes', plan.notes, next.notes);
 		if (!changes.length) return fail(400, { editError: 'Nothing was changed.' });
 
+		// The plan is the patient's only plan, so its status is the patient's status: pausing, completing or discontinuing
+		// the plan does the same to the patient (and so to patients.json); reactivating resumes them.
+		let patientStatus: string | null = null;
+
 		await prisma.$transaction(async (tx) => {
+			if (next.status !== plan.status) {
+				const trained = await tx.therapySession.count({ where: { patientId: p.id } });
+				const wanted = next.status === 'Active' ? (trained > 0 ? 'Ongoing' : 'Active') : next.status;
+				if (wanted !== p.status) {
+					await tx.patient.update({ where: { id: p.id }, data: { status: wanted } });
+					patientStatus = wanted;
+				}
+			}
 			await tx.therapyPlan.update({ where: { id: plan.id }, data: next });
 			await tx.planDevice.deleteMany({ where: { planId: plan.id, deviceTypeId: { notIn: deviceTypeIds } } });
 			await tx.planDevice.createMany({ data: deviceTypeIds.map((deviceTypeId) => ({ planId: plan.id, deviceTypeId })), skipDuplicates: true });
@@ -448,6 +468,9 @@ export const actions: Actions = {
 			notes: v.reason
 		});
 
+		if (patientStatus) {
+			await auditAs(user)({ action: 'Patient Status Changed', entityType: 'Patient', entityId: p.id, previousValue: p.status, newValue: patientStatus, notes: `Followed the plan status (${plan.status} to ${next.status}).` });
+		}
 		await syncPatientToLocalServer(p.id); // patients.json: devices, side and status for the laptops
 
 		if (!isOwnerTherapist(user, p.therapist.id)) {

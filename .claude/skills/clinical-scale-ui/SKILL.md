@@ -29,7 +29,7 @@ REDCap. Every value we store should come from a closed set the definition contro
 | `info` | instructions/headers only (render `label`, use `labelHtml` only after sanitizing) |
 
 - Touch targets at least 44px; keyboard reachable (arrow keys move within a radio group); visible selected state that does not rely on colour alone.
-- Show one section at a time or a sticky progress indicator for long scales (MAL has 120+ items). Save answers as they are chosen so a page reload loses nothing.
+- Show every section and question on one page (no Next / Previous steps) with a sticky progress indicator, even for long scales (MAL has 120+ items). Save answers as they are chosen so a page reload loses nothing.
 - Honour `showIf` (hide and clear answers for hidden items) and `required` (block submit, scroll to the first missing item).
 - Show computed scores live and mark them auto-calculated; do not let users edit them.
 - Labels come from the definition/i18n files keyed by item `id`; never hard-code strings. Scale text can be Hindi, Kannada, Punjabi, Tamil or Telugu, so allow long labels and do not truncate.
