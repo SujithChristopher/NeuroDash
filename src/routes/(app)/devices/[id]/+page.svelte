@@ -13,14 +13,13 @@
 	import { crumbDetail } from '$lib/stores/page';
 	import { toastEnhance } from '$lib/enhance';
 	import { EVENT_ICON, EVENT_TONE } from '$lib/deviceEvents';
-	import { fmtDate, fmtDateShort, fmtDateTime, fmtMin, timeAgo } from '$lib/utils';
+	import { fmtDate, fmtDateShort, fmtDateTime, fmtHrsFromMin, fmtMin, timeAgo } from '$lib/utils';
 
 	let { data, form } = $props();
 
 	const TABS = [
 		['overview', 'Overview', 'home'],
 		['usage', 'Usage', 'bar'],
-		['assignments', 'Assignments', 'link'],
 		['issues', 'Issues', 'alert'],
 		['maintenance', 'Maintenance', 'wrench'],
 		['history', 'History', 'history']
@@ -32,11 +31,11 @@
 		return TABS.some((x) => x[0] === t) ? t : 'overview';
 	});
 	const openIssues = $derived(data.issues.filter((i) => !['Resolved', 'Cleared'].includes(i.status)));
-	const seriesIdx = $derived(['PLUTO', 'MARS', 'ORION', 'VEGA', 'COSMOS', 'ATLAS'].indexOf(d.type.id) + 1 || 1);
+	const seriesIdx = $derived(Number(/^series-(\d+)$/.exec(d.type.colorSeries ?? '')?.[1]) || 1);
 
 	let reporting = $state(false);
 	let logging = $state(false);
-	let assigning = $state(false);
+	let moving = $state(false);
 	const today = new Date().toISOString().slice(0, 10);
 
 	$effect(() => {
@@ -62,22 +61,13 @@
 			{/if}
 			{#if data.perms.isEngineer}
 				<button class="btn btn-secondary btn-sm" onclick={() => (logging = true)}><Icon name="wrench" size={13} /> Log maintenance</button>
-				{#if d.status === 'Available'}
-					<button class="btn btn-primary btn-sm" onclick={() => (assigning = true)}><Icon name="link" size={13} /> Assign</button>
-				{:else if d.status === 'In Use'}
-					<form method="POST" action="?/returnDevice" use:enhance={toastEnhance()}>
-						<button class="btn btn-secondary btn-sm">Return to inventory</button>
-					</form>
-				{/if}
+				<button class="btn btn-primary btn-sm" onclick={() => (moving = true)}><Icon name="link" size={13} /> {d.centre ? 'Move / return to stock' : 'Set up at a centre'}</button>
 			{/if}
 		</div>
 	</div>
 	<div class="ph-facts">
-		<div class="ph-fact"><div class="fl">Location</div><div class="fv">{d.location ?? '—'}</div></div>
-		<div class="ph-fact">
-			<div class="fl">Current Patient</div>
-			<div class="fv">{#if d.currentPatient && !data.perms.isEngineer}<a href="/patients/{d.currentPatient.id}">{d.currentPatient.label}</a>{:else}{d.currentPatient?.label ?? '—'}{/if}</div>
-		</div>
+		<div class="ph-fact"><div class="fl">Centre</div><div class="fv">{d.centre?.name ?? 'In stock'}</div></div>
+		<div class="ph-fact"><div class="fl">Room / bay</div><div class="fv">{d.location ?? '—'}</div></div>
 		<div class="ph-fact"><div class="fl">Last Sync</div><div class="fv">{d.lastSyncAt ? timeAgo(d.lastSyncAt) : '—'}</div></div>
 		<div class="ph-fact"><div class="fl">Open Issues</div><div class="fv">{openIssues.length}</div></div>
 		<div class="ph-fact"><div class="fl">Registered</div><div class="fv">{fmtDateShort(d.registeredOn)}</div></div>
@@ -94,10 +84,10 @@
 
 {#if tab === 'overview'}
 	<div class="grid grid-4" style="margin-bottom:18px">
-		<KpiCard label="Total Sessions" value={data.stats.sessions} icon="activity" tone="accent" />
-		<KpiCard label="Total Trials" value={data.stats.totalTrials} icon="target" tone="info" />
-		<KpiCard label="Avg Hit Rate" value="{data.stats.avgAccuracy}%" icon="gauge" tone="good" />
-		<KpiCard label="Stars Earned" value={data.stats.totalStars} icon="star" tone="warning" />
+		<KpiCard label="Hours Used" value={fmtHrsFromMin(data.stats.totalMin)} icon="clock" tone="accent" sub="{data.stats.sessions} sessions" />
+		<KpiCard label="Patients" value={data.stats.patients} icon="users" tone="info" sub="have trained on it" />
+		<KpiCard label="Usage Frequency" value="{data.stats.sessionsPerWeek}/wk" icon="activity" tone="good" sub="{data.stats.activeDays30} of the last 30 days in use" />
+		<KpiCard label="Last Used" value={data.stats.lastDay ? timeAgo(data.stats.lastDay) : 'Never'} icon="calendar" tone="neutral" sub={data.stats.firstDay ? `in service since ${fmtDateShort(data.stats.firstDay)}` : 'no sessions yet'} />
 	</div>
 	<div class="two-col">
 		<div class="card">
@@ -118,7 +108,7 @@
 					{#each d.type.games as g (g)}<span class="pill" style="margin:2px 4px 2px 0">{g}</span>{:else}<span class="muted" style="font-size:12px">No games for this device type.</span>{/each}
 				</div>
 				<hr class="sep" />
-				<div class="kv-row"><span class="kl">Patients using this device</span><span class="kv">{data.stats.patientsUsing.length}</span></div>
+				<div class="kv-row"><span class="kl">Patients using this device</span><span class="kv">{data.stats.patients}</span></div>
 			</div>
 		</div>
 	</div>
@@ -155,12 +145,11 @@
 		<div class="card">
 			<div class="table-wrap">
 				<table class="dt">
-					<thead><tr><th>Patient</th><th>Date</th><th>Duration</th><th>Accuracy</th><th>Stars</th></tr></thead>
+					<thead><tr><th>Patient</th><th>Date</th><th>Duration</th></tr></thead>
 					<tbody>
 						{#each data.recentSessions as s (s.id)}
 							<tr>
 								<td>{s.patient}</td><td class="mono">{fmtDateTime(s.startTime)}</td><td>{fmtMin(s.durationMinutes ?? 0)}</td>
-								<td class="mono">{s.totalTargets ? Math.round((s.totalHits / s.totalTargets) * 100) : 0}%</td><td class="mono">{s.totalStars}</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -168,26 +157,6 @@
 			</div>
 		</div>
 	{/if}
-{:else if tab === 'assignments'}
-	<div class="card">
-		{#if data.assignments.length === 0}
-			<EmptyState icon="link" title="No assignments yet" />
-		{:else}
-			<div class="table-wrap">
-				<table class="dt">
-					<thead><tr><th>Patient</th><th>Assigned</th><th>Returned</th><th>Status</th></tr></thead>
-					<tbody>
-						{#each data.assignments as a (a.id)}
-							<tr>
-								<td>{a.patient}</td><td class="mono">{fmtDateShort(a.assignedDate)}</td>
-								<td class="mono">{a.returnedDate ? fmtDateShort(a.returnedDate) : '—'}</td><td><Badge text={a.status} /></td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		{/if}
-	</div>
 {:else if tab === 'issues'}
 	{#each data.issues as i (i.id)}
 		<IssueCard issue={i} role={data.user.role} showDevice={false} />
@@ -252,22 +221,22 @@
 	</Modal>
 {/if}
 
-{#if assigning}
-	<Modal title="Assign {d.displayCode} to a patient" onclose={() => (assigning = false)}>
-		<form id="assign-dev" method="POST" action="?/assign" use:enhance={toastEnhance({ onSuccess: () => (assigning = false), reset: true })}>
+{#if moving}
+	<Modal title="{d.displayCode} — centre" onclose={() => (moving = false)}>
+		<form id="move-dev" method="POST" action="?/setCentre" use:enhance={toastEnhance({ onSuccess: () => (moving = false), reset: true })}>
 			<div class="field">
-				<label for="as-patient">Patient</label>
-				<select id="as-patient" name="patientId" required>
-					<option value="">Select a patient…</option>
-					{#each data.patients as p (p.id)}<option value={p.id}>{p.displayCode}</option>{/each}
+				<label for="mv-centre">Centre</label>
+				<select id="mv-centre" name="locationId" value={d.centre?.id ?? ''}>
+					<option value="">In stock (not set up anywhere)</option>
+					{#each data.centres as c (c.id)}<option value={c.id}>{c.name}</option>{/each}
 				</select>
-				<div class="field-hint">For a therapist-initiated request, use the Device Requests workflow instead.</div>
+				<div class="field-hint">Therapists at the chosen centre can see this device, raise issues for it and follow its history. The move is recorded in the device history.</div>
 			</div>
 			{#if form?.error}<div class="alert alert-critical"><Icon name="alert" size={15} /><span>{form.error}</span></div>{/if}
 		</form>
 		{#snippet footer()}
-			<button class="btn btn-secondary" onclick={() => (assigning = false)}>Cancel</button>
-			<button class="btn btn-primary" form="assign-dev">Assign device</button>
+			<button class="btn btn-secondary" onclick={() => (moving = false)}>Cancel</button>
+			<button class="btn btn-primary" form="move-dev">Save</button>
 		{/snippet}
 	</Modal>
 {/if}

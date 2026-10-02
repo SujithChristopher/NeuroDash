@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { Actions, PageServerLoad } from './$types';
 import { prisma } from '$lib/server/db';
 import { requireRole } from '$lib/server/guard';
+import { deviceScopeFor } from '$lib/server/scope';
 import { auditAs } from '$lib/server/audit';
 import { notifyRole, notifyUser } from '$lib/server/notify';
 import { logDeviceEvent } from '$lib/server/devices';
@@ -24,13 +25,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 			where: { status: REQUEST_PENDING },
 			orderBy: { requestedAt: 'asc' },
 			include: {
-				patient: { select: { displayCode: true } },
+				location: { select: { name: true } },
 				therapist: { select: { name: true } },
 				deviceType: { select: { id: true, name: true } }
 			}
 		}),
 		prisma.device.findMany({
-			where: { status: 'Available' },
+			where: { status: 'Available', locationId: null },
 			select: { id: true, displayCode: true, deviceTypeId: true }
 		}),
 		prisma.device.findMany({ select: { id: true, displayCode: true }, orderBy: { displayCode: 'asc' } })
@@ -59,7 +60,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			id: r.id,
 			status: r.status,
 			therapist: r.therapist.name,
-			patientCode: r.patient.displayCode,
+			centre: r.location.name,
 			deviceType: r.deviceType,
 			requestedAt: r.requestedAt.toISOString()
 		})),
@@ -90,7 +91,7 @@ export const actions: Actions = {
 
 		const description = [v.issueType, v.description].filter(Boolean).join(' — ');
 		if (!description) return fail(400, { error: 'Describe the issue.' });
-		const device = await prisma.device.findUnique({ where: { id: v.deviceId } });
+		const device = await prisma.device.findFirst({ where: { AND: [{ id: v.deviceId }, deviceScopeFor(user)] } }); // therapists: their own centre's devices only
 		if (!device) return fail(404, { error: 'Device not found.' });
 
 		const issue = await prisma.deviceIssue.create({
@@ -189,9 +190,9 @@ export const actions: Actions = {
 		});
 		await prisma.device.update({
 			where: { id: issue.deviceId },
-			data: { status: issue.device.currentPatientId ? 'In Use' : 'Available' }
+			data: { status: 'Available' }
 		});
-		await logDeviceEvent(issue.deviceId, 'cleared', `Device cleared for patient use by ${user.name}.`);
+		await logDeviceEvent(issue.deviceId, 'cleared', `Device cleared for use by ${user.name}.`);
 		await notifyUser(issue.openedById, {
 			notifType: 'issue',
 			tone: 'good',

@@ -1,14 +1,23 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { createPatient, db, signInAll, uniq, type Sessions } from './helpers';
+import { createPatient, db, downtownId, northId, pageData, signInAll, uniq, type Sessions } from './helpers';
 
 let s: Sessions;
 beforeAll(async () => {
 	s = await signInAll();
 });
 
-/** Registers a fresh ATLAS unit as the engineer so every test has a device it fully controls. */
-async function newDevice(type = 'ATLAS') {
-	const r = await s.arjun.action('/devices?/register', { deviceTypeId: type, serialNumber: uniq('SN-'), firmwareVersion: '1.0.0', location: 'Test Bay' });
+/**
+ * Registers a fresh DYNABO unit as the engineer so every test has a device it fully controls. By default it is set up at
+ * Downtown Clinic (Priya's centre); pass `stock` for a unit that is not set up anywhere yet.
+ */
+async function newDevice(type = 'DYNABO', stock = false) {
+	const r = await s.arjun.action('/devices?/register', {
+		deviceTypeId: type,
+		serialNumber: uniq('SN-'),
+		firmwareVersion: '1.0.0',
+		location: 'Test Bay',
+		...(stock ? {} : { locationId: await downtownId() })
+	});
 	expect(r.type).toBe('success');
 	// `updatedAt` is stamped on create, so the newest row of that type is the one just registered.
 	return (await db().device.findMany({ where: { deviceTypeId: type }, orderBy: { updatedAt: 'desc' }, take: 1 }))[0];
@@ -17,7 +26,7 @@ async function newDevice(type = 'ATLAS') {
 describe('registering devices', () => {
 	it('generates a unique {TYPE}-### code, starts Available, and logs an event and an audit entry', async () => {
 		const d = await newDevice();
-		expect(d.displayCode).toMatch(/^ATLAS-\d{3}$/);
+		expect(d.displayCode).toMatch(/^DYNABO-\d{3}$/);
 		expect(d.status).toBe('Available');
 		expect(d.firmwareVersion).toBe('1.0.0');
 		const ev = await db().deviceEvent.findFirstOrThrow({ where: { deviceId: d.id } });
@@ -27,52 +36,48 @@ describe('registering devices', () => {
 
 	it('validates the type and serial number', async () => {
 		expect((await s.arjun.action('/devices?/register', { deviceTypeId: 'NOPE', serialNumber: 'X' })).type).toBe('failure');
-		expect((await s.arjun.action('/devices?/register', { deviceTypeId: 'ATLAS', serialNumber: '   ' })).type).toBe('failure');
+		expect((await s.arjun.action('/devices?/register', { deviceTypeId: 'DYNABO', serialNumber: '   ' })).type).toBe('failure');
 		expect((await s.arjun.action('/devices?/register', { deviceTypeId: '', serialNumber: 'X' })).type).toBe('failure');
 	});
 
 	it('is engineer-only', async () => {
 		for (const who of ['priya', 'vikram', 'admin'] as const) {
-			expect((await s[who].action('/devices?/register', { deviceTypeId: 'ATLAS', serialNumber: 'X' })).status, who).toBe(403);
+			expect((await s[who].action('/devices?/register', { deviceTypeId: 'DYNABO', serialNumber: 'X' })).status, who).toBe(403);
 		}
 	});
 });
 
-describe('device request workflow: request → clear → assign', () => {
-	let patientId: string;
-	let patientName: string;
-	beforeAll(async () => {
-		patientName = uniq('ReqPat');
-		patientId = await createPatient(s.priya, patientName);
+describe('a centre requests a device: request → clear → set up', () => {
+	let notes: string;
+	beforeAll(() => {
+		notes = uniq('Needs-');
 	});
 
-	const request = (client = s.priya, pid = patientId, deviceTypeId = 'ATLAS') =>
-		client.action('/device-requests?/request', { patientId: pid, deviceTypeId, notes: 'Needs shoulder work' });
-	const latest = () => db().deviceRequest.findFirstOrThrow({ where: { patientId }, orderBy: { requestedAt: 'desc' } });
+	const request = (client = s.priya, deviceTypeId = 'DYNABO') => client.action('/device-requests?/request', { deviceTypeId, notes });
+	const latest = async () => db().deviceRequest.findFirstOrThrow({ where: { notes }, orderBy: { requestedAt: 'desc' }, include: { location: true } });
 
-	it('a therapist requests a device type → Pending Engineer Review, engineers notified', async () => {
+	it('a therapist requests a device type for their centre → Pending Engineer Review, engineers notified', async () => {
 		const r = await request();
 		expect(r.type).toBe('success');
 		const req = await latest();
 		expect(req.status).toBe('Pending Engineer Review');
-		expect(req.notes).toBe('Needs shoulder work');
-		const note = await db().notification.findFirstOrThrow({ where: { targetRole: 'ENGINEER', notifType: 'request', description: { contains: patientName } } });
+		expect(req.location.name).toBe('Downtown Clinic'); // for the centre, not a patient
+		const note = await db().notification.findFirstOrThrow({ where: { targetRole: 'ENGINEER', notifType: 'request', description: { contains: 'Downtown Clinic' } } });
 		expect(note.title).toBe('New device request');
 		expect((note.link as { page: string }).page).toBe('device-requests');
 	});
 
-	it('validates the request and scopes it to the therapist’s patients', async () => {
-		expect((await request(s.priya, '', 'ATLAS')).type).toBe('failure');
-		expect((await request(s.priya, patientId, 'NOPE')).type).toBe('failure');
-		expect((await request(s.rohan)).status).toBe(404); // other location's patient
+	it('no longer takes a patient, and validates the device type and who may ask', async () => {
+		expect((await request(s.priya, 'NOPE')).type).toBe('failure');
+		expect((await request(s.priya, '')).type).toBe('failure');
 		expect((await request(s.vikram)).status).toBe(403);
 		expect((await request(s.admin)).status).toBe(403);
 		expect((await request(s.arjun)).status).toBe(403);
 	});
 
-	it('only engineers clear, decline or assign — never the requesting therapist', async () => {
+	it('only engineers clear, decline or set up — never the requesting therapist', async () => {
 		const req = await latest();
-		const dev = await newDevice();
+		const dev = await newDevice('DYNABO', true);
 		for (const who of ['priya', 'rohan', 'vikram', 'admin'] as const) {
 			expect((await s[who].action('/device-requests?/clear', { id: req.id })).status, `${who} clear`).toBe(403);
 			expect((await s[who].action('/device-requests?/decline', { id: req.id })).status, `${who} decline`).toBe(403);
@@ -81,13 +86,11 @@ describe('device request workflow: request → clear → assign', () => {
 		expect((await db().deviceRequest.findUniqueOrThrow({ where: { id: req.id } })).status).toBe('Pending Engineer Review');
 	});
 
-	it('a request cannot be assigned before it is cleared', async () => {
+	it('a request cannot be set up before it is cleared', async () => {
 		const req = await latest();
-		const dev = await newDevice();
-		const r = await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: dev.id });
-		expect(r.status).toBe(409);
-		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).status).toBe('Available');
-		expect(await db().deviceAssignment.count({ where: { deviceId: dev.id } })).toBe(0);
+		const dev = await newDevice('DYNABO', true);
+		expect((await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: dev.id })).status).toBe(409);
+		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).locationId).toBeNull();
 	});
 
 	it('clearing notifies the requesting therapist and can only happen once', async () => {
@@ -97,103 +100,119 @@ describe('device request workflow: request → clear → assign', () => {
 		expect(after.status).toBe('Cleared — Ready to Assign');
 		expect(after.engineer?.email).toBe('arjun.rao@neurodash.care');
 		expect(after.clearedAt).toBeTruthy();
-		const note = await db().notification.findFirstOrThrow({
-			where: { targetUser: { email: 'priya.nair@neurodash.care' }, title: 'Device cleared for use', description: { contains: patientName } }
-		});
+		const note = await db().notification.findFirstOrThrow({ where: { targetUser: { email: 'priya.nair@neurodash.care' }, title: 'Device cleared for use', description: { contains: 'Downtown Clinic' } } });
 		expect(note.tone).toBe('good');
 		expect((await s.arjun.action('/device-requests?/clear', { id: req.id })).status).toBe(409);
 	});
 
-	it('assigning needs an available unit of the requested type', async () => {
+	it('setting up needs an unplaced unit of the requested type', async () => {
 		const req = await latest();
-		const wrongType = await db().device.findFirstOrThrow({ where: { displayCode: 'PLUTO-002' } });
+		const wrongType = await newDevice('PLUTO', true);
 		expect((await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: wrongType.id })).type).toBe('failure');
 		expect((await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: 'nope' })).type).toBe('failure');
 		expect((await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: '' })).type).toBe('failure');
+		const placed = await newDevice('DYNABO'); // already set up at a centre
+		expect((await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: placed.id })).status).toBe(409);
 		expect((await db().deviceRequest.findUniqueOrThrow({ where: { id: req.id } })).status).toBe('Cleared — Ready to Assign');
 	});
 
-	it('assigning creates the assignment, marks the device In Use, logs it, and tells the therapist', async () => {
+	it('setting up places the unit at the centre, logs it, and tells the therapist', async () => {
 		const req = await latest();
-		const dev = await newDevice();
+		const dev = await newDevice('DYNABO', true);
 		const r = await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: dev.id });
 		expect(r.type).toBe('success');
 
 		const d = await db().device.findUniqueOrThrow({ where: { id: dev.id } });
-		expect([d.status, d.currentPatientId]).toEqual(['In Use', patientId]);
-		const a = await db().deviceAssignment.findFirstOrThrow({ where: { deviceId: dev.id }, include: { assignedBy: true } });
-		expect([a.patientId, a.status, a.returnedDate, a.assignedBy?.email]).toEqual([patientId, 'In Use', null, 'arjun.rao@neurodash.care']);
+		expect(d.locationId).toBe(req.locationId);
 		expect((await db().deviceRequest.findUniqueOrThrow({ where: { id: req.id } })).status).toBe('Assigned');
 		expect(await db().deviceEvent.findFirst({ where: { deviceId: dev.id, eventType: 'assigned' } })).toBeTruthy();
-		const note = await db().notification.findFirstOrThrow({ where: { targetUser: { email: 'priya.nair@neurodash.care' }, title: 'Device assigned', description: { contains: dev.displayCode } } });
-		expect((note.link as { page: string }).page).toBe(`patients/${patientId}?tab=devices`);
+		const note = await db().notification.findFirstOrThrow({ where: { targetUser: { email: 'priya.nair@neurodash.care' }, title: 'Device set up', description: { contains: dev.displayCode } } });
+		expect((note.link as { page: string }).page).toBe('devices');
+		expect(await db().auditLog.findFirst({ where: { action: 'Device Set Up', entityId: dev.id } })).toBeTruthy();
 
-		// An assigned unit cannot be handed out twice.
+		// A unit that is already set up cannot be handed out twice.
 		await request();
 		const req2 = await latest();
 		await s.arjun.action('/device-requests?/clear', { id: req2.id });
 		expect((await s.arjun.action('/device-requests?/assign', { id: req2.id, deviceId: dev.id })).status).toBe(409);
 	});
 
-	it('declining closes the request, notifies the therapist, and blocks later assignment', async () => {
+	it('declining closes the request, notifies the therapist, and blocks later set-up', async () => {
 		await request();
 		const req = await latest();
 		expect((await s.arjun.action('/device-requests?/decline', { id: req.id })).type).toBe('success');
 		expect((await db().deviceRequest.findUniqueOrThrow({ where: { id: req.id } })).status).toBe('Declined');
-		expect(await db().notification.findFirst({ where: { title: 'Device request declined', description: { contains: patientName } } })).toBeTruthy();
-		const dev = await newDevice();
+		expect(await db().notification.findFirst({ where: { title: 'Device request declined', description: { contains: 'Downtown Clinic' } } })).toBeTruthy();
+		const dev = await newDevice('DYNABO', true);
 		expect((await s.arjun.action('/device-requests?/assign', { id: req.id, deviceId: dev.id })).status).toBe(409);
 		expect((await s.arjun.action('/device-requests?/decline', { id: req.id })).status).toBe(409);
 	});
 
-	it('the requests page shows a therapist only their own requests, and an engineer everything', async () => {
-		const mine = await (await s.priya.get('/device-requests')).text();
-		expect(mine).toContain(patientName);
-		const others = await (await s.rohan.get('/device-requests')).text();
-		expect(others).not.toContain(patientName);
+	it('a centre sees its own requests; engineers see every centre’s', async () => {
+		expect(await (await s.priya.get('/device-requests')).text()).toContain(notes);
+		expect(await (await s.rohan.get('/device-requests')).text()).not.toContain(notes); // North Campus
 		const eng = await (await s.arjun.get('/device-requests')).text();
-		// Engineers get the patient's code, never the name.
-		expect(eng).not.toContain(patientName);
-		expect(eng).toContain((await db().patient.findUniqueOrThrow({ where: { id: patientId } })).displayCode);
+		expect(eng).toContain(notes);
+		expect(eng).toContain('Downtown Clinic');
+	});
+
+	it('another centre (North Campus) requests for itself', async () => {
+		const n = uniq('North-');
+		expect((await s.rohan.action('/device-requests?/request', { deviceTypeId: 'DYNABO', notes: n })).type).toBe('success');
+		expect((await db().deviceRequest.findFirstOrThrow({ where: { notes: n }, include: { location: true } })).location.name).toBe('North Campus');
 	});
 });
 
-describe('direct assignment and return', () => {
-	it('an engineer assigns an Available device, then returns it to inventory', async () => {
-		const dev = await newDevice();
-		const p = await createPatient(s.priya);
-		expect((await s.arjun.action(`/devices/${dev.id}?/assign`, { patientId: p })).type).toBe('success');
-		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).status).toBe('In Use');
-		// Not available any more.
-		expect((await s.arjun.action(`/devices/${dev.id}?/assign`, { patientId: p })).status).toBe(409);
-
-		expect((await s.arjun.action(`/devices/${dev.id}?/returnDevice`)).type).toBe('success');
-		const back = await db().device.findUniqueOrThrow({ where: { id: dev.id } });
-		expect([back.status, back.currentPatientId]).toEqual(['Available', null]);
-		const a = await db().deviceAssignment.findFirstOrThrow({ where: { deviceId: dev.id } });
-		expect([a.status, a.returnedDate !== null]).toEqual(['Returned', true]);
-		expect((await s.arjun.action(`/devices/${dev.id}?/returnDevice`)).status).toBe(409);
+describe('devices belong to a centre', () => {
+	it('an engineer sets a unit up at a centre, moves it, and returns it to stock — each logged', async () => {
+		const dev = await newDevice('DYNABO', true);
+		const north = await northId();
+		expect((await s.arjun.action(`/devices/${dev.id}?/setCentre`, { locationId: north })).type).toBe('success');
+		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).locationId).toBe(north);
+		expect((await s.arjun.action(`/devices/${dev.id}?/setCentre`, { locationId: north })).type).toBe('failure'); // nothing changed
+		expect((await s.arjun.action(`/devices/${dev.id}?/setCentre`, { locationId: await downtownId() })).type).toBe('success');
+		expect((await s.arjun.action(`/devices/${dev.id}?/setCentre`, { locationId: '' })).type).toBe('success');
+		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).locationId).toBeNull();
+		expect(await db().deviceEvent.count({ where: { deviceId: dev.id, eventType: 'assigned' } })).toBe(3);
+		expect((await s.arjun.action(`/devices/${dev.id}?/setCentre`, { locationId: 'nope' })).type).toBe('failure');
 	});
 
-	it('rejects an unknown patient and non-engineers', async () => {
+	it('only engineers set centres', async () => {
 		const dev = await newDevice();
-		const p = await createPatient(s.priya);
-		expect((await s.arjun.action(`/devices/${dev.id}?/assign`, { patientId: 'nope' })).type).toBe('failure');
 		for (const who of ['priya', 'vikram', 'admin'] as const) {
-			expect((await s[who].action(`/devices/${dev.id}?/assign`, { patientId: p })).status, who).toBe(403);
-			expect((await s[who].action(`/devices/${dev.id}?/returnDevice`)).status, who).toBe(403);
+			expect((await s[who].action(`/devices/${dev.id}?/setCentre`, { locationId: await northId() })).status, who).toBe(403);
 		}
-		expect((await s.arjun.action('/devices/00000000-0000-0000-0000-000000000000?/assign', { patientId: p })).status).toBe(404);
+		expect((await s.arjun.action('/devices/00000000-0000-0000-0000-000000000000?/setCentre', { locationId: '' })).status).toBe(404);
 	});
 
-	it('hides the patient’s name from the engineer on the device page', async () => {
+	it('therapists and consultants see only their own centre’s devices; engineers and admin see all', async () => {
+		const dev = await newDevice(); // Downtown
+		const stock = await newDevice('DYNABO', true);
+		for (const who of ['priya', 'vikram'] as const) {
+			expect((await s[who].get(`/devices/${dev.id}`)).status, who).toBe(200);
+			expect((await s[who].get(`/devices/${stock.id}`)).status, who).toBe(404);
+		}
+		expect((await s.rohan.get(`/devices/${dev.id}`)).status).toBe(404); // another centre: 404, not 403
+		expect(await (await s.rohan.get('/devices')).text()).not.toContain(dev.displayCode);
+		expect(await (await s.priya.get('/devices')).text()).toContain(dev.displayCode);
+		for (const who of ['arjun', 'admin'] as const) {
+			expect((await s[who].get(`/devices/${stock.id}`)).status, who).toBe(200);
+			expect(await (await s[who].get('/devices')).text()).toContain(dev.displayCode);
+		}
+	});
+
+	it('a centre can raise issues only for its own devices', async () => {
 		const dev = await newDevice();
-		const name = uniq('Hidden');
-		const pid = await createPatient(s.priya, name);
-		await s.arjun.action(`/devices/${dev.id}?/assign`, { patientId: pid });
-		expect(await (await s.arjun.get(`/devices/${dev.id}`)).text()).not.toContain(name);
-		expect(await (await s.priya.get(`/devices/${dev.id}`)).text()).toContain(name);
-		expect(await (await s.arjun.get('/devices')).text()).not.toContain(name);
+		const fields = { deviceId: dev.id, severity: 'Low', issueType: 'Cable', description: 'Loose' };
+		expect((await s.rohan.action('/device-issues?/report', fields)).status).toBe(404);
+		expect((await s.priya.action('/device-issues?/report', fields)).type).toBe('success');
+		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).status).toBe('Issue Detected');
+	});
+
+	it('there is no per-patient assignment or request any more', async () => {
+		const dev = await newDevice();
+		expect((await s.arjun.action(`/devices/${dev.id}?/assign`, { patientId: 'x' })).status).toBe(404);
+		expect((await s.priya.action('/patients/x?/requestDevice', { deviceTypeId: 'DYNABO' })).status).toBe(404);
 	});
 });
 
@@ -281,17 +300,14 @@ describe('device issue workflow: report → investigate → resolve → clear', 
 		expect(audits).toEqual(['Issue Reported', 'Issue Investigation Started', 'Issue Resolved', 'Device Cleared']);
 	});
 
-	it('a device that was in use goes back to In Use, not Available, once cleared', async () => {
+	it('a device goes back to Available once its issue is cleared', async () => {
 		const dev = await newDevice();
-		const pid = await createPatient(s.priya);
-		await s.arjun.action(`/devices/${dev.id}?/assign`, { patientId: pid });
 		await report(s.priya, dev.id);
 		const issue = await latestIssue(dev.id);
 		await s.arjun.action('/device-issues?/investigate', { id: issue.id });
 		await s.arjun.action('/device-issues?/resolve', { id: issue.id, resolution: 'Fixed' });
 		await s.arjun.action('/device-issues?/clear', { id: issue.id });
-		const d = await db().device.findUniqueOrThrow({ where: { id: dev.id } });
-		expect([d.status, d.currentPatientId]).toEqual(['In Use', pid]);
+		expect((await db().device.findUniqueOrThrow({ where: { id: dev.id } })).status).toBe('Available');
 	});
 
 	it('only engineers work the issue — the consultant, therapists and admin cannot clear or resolve', async () => {
@@ -354,5 +370,28 @@ describe('device pages', () => {
 		const html = await (await s.arjun.get('/device-usage')).text();
 		expect(html).toContain('PLUTO-001');
 		expect(html).toContain('MARS-001');
+	});
+});
+
+describe('what an engineer sees about a device', () => {
+	it('is about usage (hours, patients, frequency, last used), not patient scores', async () => {
+		const dev = await newDevice();
+		const day = (n: number) => new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() - n));
+		let sn = 0;
+		for (const [patient, daysAgo, minutes] of [[await createPatient(s.priya), 1, 30], [await createPatient(s.priya), 3, 45], [undefined, 3, 15]] as const) {
+			const pid = patient ?? (await db().therapySession.findFirstOrThrow({ where: { deviceId: dev.id } })).patientId;
+			await db().therapySession.create({
+				data: { patientId: pid, deviceId: dev.id, sessionDate: day(daysAgo), startTime: day(daysAgo), durationMinutes: minutes, sessionNumber: ++sn, totalTargets: 10, totalHits: 7, totalMisses: 3, totalStars: 2 }
+			});
+		}
+		const d = await pageData(s.arjun, `/devices/${dev.id}`);
+		expect(d.stats).toMatchObject({ sessions: 3, totalMin: 90, patients: 2, activeDays30: 2 });
+		expect(d.stats.sessionsPerWeek).toBeGreaterThan(0);
+		expect(d.stats.lastDay.slice(0, 10)).toBe(day(1).toISOString().slice(0, 10));
+		for (const gone of ['avgAccuracy', 'totalStars', 'totalTrials']) expect(d.stats, gone).not.toHaveProperty(gone);
+		expect(d.recentSessions[0]).not.toHaveProperty('totalStars');
+
+		const rows = (await pageData(s.arjun, '/device-usage')).rows as { id: string; patients: number; totalMin: number }[];
+		expect(rows.find((r) => r.id === dev.id)).toMatchObject({ patients: 2, totalMin: 90 });
 	});
 });

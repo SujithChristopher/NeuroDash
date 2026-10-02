@@ -143,7 +143,7 @@ describe('AI assistant', () => {
 	it('low-adherence lists only in-scope patients', async () => {
 		const name = uniq('Lapsed');
 		const id = await createPatient(s.priya, name);
-		await s.priya.action(`/patients/${id}?/createPlan`, { name: 'Plan', startDate: '2026-09-01', durationDays: '10', dailyTargetMinutes: '60', deviceTypeIds: 'PLUTO' });
+		await s.priya.action(`/patients/${id}?/createPlan`, { trainingSide: 'Left', name: 'Plan', startDate: '2026-09-01', durationDays: '10', dailyTargetMinutes: '60', deviceTypeIds: 'PLUTO' });
 		const plan = await db().therapyPlan.findFirstOrThrow({ where: { patientId: id } });
 		await db().planDayLog.updateMany({ where: { planId: plan.id, dayNumber: { lte: 4 } }, data: { status: 'missed', actualMinutes: 0 } });
 
@@ -164,8 +164,7 @@ describe('AI assistant', () => {
 	});
 
 	it('does not refer to an ambiguous first name', async () => {
-		await createPatient(s.priya, 'Twin A.');
-		await createPatient(s.priya, 'Twin B.');
+		for (const n of ['Twin A.', 'Twin B.']) await db().patient.update({ where: { id: await createPatient(s.priya) }, data: { name: n } });
 		const r = await ask(s.priya, 'How is Twin doing now?');
 		expect(r.body.text).not.toMatch(/Twin [AB]\./);
 	});
@@ -188,7 +187,9 @@ describe('analytics are scoped and bucketed server-side', () => {
 		const d = await pageData(s.arjun, '/analytics');
 		expect(d.program).toBeNull();
 		expect(d.fleet.total).toBe(await db().device.count());
-		expect(d.fleet.inUse).toBe(await db().device.count({ where: { status: 'In Use' } }));
+		// "In use" = trained on in the last 7 days
+		const weekAgo = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() - 7));
+		expect(d.fleet.inUse).toBe((await db().therapySession.findMany({ where: { sessionDate: { gte: weekAgo } }, distinct: ['deviceId'], select: { deviceId: true } })).length);
 		expect(d.audit).toBeNull();
 	});
 
@@ -226,7 +227,7 @@ describe('analytics are scoped and bucketed server-side', () => {
 			where: { sessionDate: { gte: startOfDay, lt: new Date(startOfDay.getTime() + 86400_000) }, patient: { therapist: { location: { name: 'Downtown Clinic' } } } }
 		});
 		expect(d.today).toHaveLength(expected);
-		expect(d.todos.some((t: { title: string }) => /baseline assessment/.test(t.title))).toBe(true);
+		expect(d.todos.some((t: { title: string }) => /Create a therapy plan/.test(t.title))).toBe(true);
 	});
 });
 
@@ -235,9 +236,11 @@ describe('reports', () => {
 		const p = await db().patient.findFirstOrThrow({ where: { displayCode: 'P-10124' } });
 		const mine = await pageData(s.priya, `/reports?view=patient&patient=${p.id}`);
 		expect(mine.patientReport.patient.displayCode).toBe('P-10124');
-		expect(mine.patientReport.sessionsCount).toBeGreaterThan(0);
-		expect(mine.patientReport.assessment.latest).toBeGreaterThanOrEqual(mine.patientReport.assessment.baseline);
-		expect(mine.patientReport.sessions[0]).toHaveProperty('accuracyPct');
+		expect(mine.patientReport.totals.sessions).toBeGreaterThan(0);
+		expect(mine.patientReport.devices.length).toBeGreaterThan(0);
+		const change = mine.patientReport.scales.find((x: { change: unknown }) => x.change)?.change;
+		expect(change.toPct).toBeGreaterThanOrEqual(change.fromPct);
+		expect(mine.sessions[0]).toHaveProperty('minutes');
 		const theirs = await pageData(s.rohan, `/reports?view=patient&patient=${p.id}`);
 		expect(theirs.patientReport).toBeNull();
 		expect((await pageData(s.rohan, '/reports')).patients.map((x: { id: string }) => x.id)).not.toContain(p.id);

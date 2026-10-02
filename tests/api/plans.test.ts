@@ -7,6 +7,7 @@ beforeAll(async () => {
 });
 
 const planFields = (over: Record<string, string | string[]> = {}) => ({
+	trainingSide: 'Left',
 	name: 'Test plan',
 	startDate: '2026-10-01',
 	durationDays: '10',
@@ -35,7 +36,7 @@ describe('creating a therapy plan', () => {
 		expect(plan.dayLog[0].logDate.toISOString().slice(0, 10)).toBe('2026-10-01');
 		expect(plan.dayLog[9].logDate.toISOString().slice(0, 10)).toBe('2026-10-10');
 		expect(plan.devices.map((d) => d.deviceTypeId).sort()).toEqual(['MARS', 'PLUTO']);
-		expect(plan.goals).toEqual(['Goal A', 'Goal B']);
+		expect(plan.trainingSide).toBe('Left');
 		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
 	});
 
@@ -48,7 +49,7 @@ describe('creating a therapy plan', () => {
 
 	it('validates duration and targets', async () => {
 		const id = await createPatient(s.priya);
-		const cases: Record<string, string>[] = [{ durationDays: '0' }, { durationDays: '400' }, { durationDays: 'abc' }, { dailyTargetMinutes: '0' }, { name: '' }, { startDate: 'nope' }];
+		const cases: Record<string, string>[] = [{ durationDays: '0' }, { durationDays: '400' }, { durationDays: 'abc' }, { dailyTargetMinutes: '0' }, { trainingSide: '' }, { startDate: 'nope' }];
 		for (const bad of cases) {
 			expect((await s.priya.action(`/patients/${id}?/createPlan`, planFields(bad))).type, JSON.stringify(bad)).toBe('failure');
 		}
@@ -76,7 +77,7 @@ describe('editing a therapy plan', () => {
 	});
 
 	const edit = (client: typeof s.priya, over: Record<string, string> = {}) =>
-		client.action(`/patients/${id}?/editPlan`, { planId, status: 'Active', dailyTargetMinutes: '60', targetSessions: '8', notes: 'Initial', reason: 'Because', ...over });
+		client.action(`/patients/${id}?/editPlan`, { planId, status: 'Active', trainingSide: 'Left', deviceTypeIds: ['PLUTO', 'MARS'], dailyTargetMinutes: '60', targetSessions: '8', notes: 'Initial', reason: 'Because', ...over });
 
 	it('requires a reason for every change', async () => {
 		expect((await edit(s.priya, { dailyTargetMinutes: '70', reason: '   ' })).type).toBe('failure');
@@ -155,7 +156,7 @@ describe('editing a therapy plan', () => {
 
 	it('cannot edit a plan that belongs to another patient', async () => {
 		const other = await createPatient(s.priya);
-		const r = await s.priya.action(`/patients/${other}?/editPlan`, { planId, status: 'Active', dailyTargetMinutes: '61', targetSessions: '8', reason: 'x' });
+		const r = await s.priya.action(`/patients/${other}?/editPlan`, { planId, status: 'Active', trainingSide: 'Left', deviceTypeIds: ['PLUTO', 'MARS'], dailyTargetMinutes: '61', targetSessions: '8', reason: 'x' });
 		expect(r.status).toBe(404);
 	});
 });

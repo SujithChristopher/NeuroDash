@@ -36,14 +36,14 @@ const DEVICE_TYPES = [
     mechanisms: ["Wrist Flexion/Extension", "Forearm Pronation/Supination", "Grip Cylindrical"], games: [{ id: "HAT", label: "HAT — Hand Trainer Arcade" }, { id: "FruitBasket", label: "Fruit Basket" }] },
   { id: "MARS", name: "Mars", category: "Arm Reaching Robot", colorSeries: "series-2",
     mechanisms: ["Shoulder Flexion", "Elbow Extension", "Reach & Grasp"], games: [{ id: "PongGame", label: "PongGame" }, { id: "TukTuk", label: "TukTuk Drive" }] },
-  { id: "ORION", name: "Orion", category: "Grip & Pinch Trainer", colorSeries: "series-3",
-    mechanisms: ["Grip Cylindrical", "Grip Pinch", "Finger Extension"], games: [{ id: "RNR", label: "RNR — Reach & Retrieve" }, { id: "HatRick", label: "HatRick Precision" }] },
-  { id: "VEGA", name: "Vega", category: "Balance & Lower Limb Trainer", colorSeries: "series-4",
-    mechanisms: ["Weight Shift", "Ankle Dorsiflexion", "Sit-to-Stand"], games: [] },
-  { id: "COSMOS", name: "Cosmos", category: "Fine Motor Game Station", colorSeries: "series-5",
-    mechanisms: ["Precision Reach", "Bimanual Coordination"], games: [] },
-  { id: "ATLAS", name: "Atlas", category: "Shoulder & Scapular Robot", colorSeries: "series-6",
-    mechanisms: ["Shoulder Abduction", "Scapular Stabilization"], games: [] },
+  // Training devices the local server (localserver/s2.py) accepts uploads from. Categories are generic until the
+  // clinical team supplies the proper descriptions.
+  { id: "ATOBOT", name: "Atobot", category: "Rehabilitation training device", colorSeries: "series-10", mechanisms: [], games: [] },
+  { id: "HYPERCUBE", name: "Hypercube", category: "Rehabilitation training device", colorSeries: "series-9", mechanisms: [], games: [] },
+  { id: "NOARK", name: "Noark", category: "Rehabilitation training device", colorSeries: "series-7", mechanisms: [], games: [] },
+  { id: "DYNABO", name: "Dynabo", category: "Rehabilitation training device", colorSeries: "series-3", mechanisms: [], games: [] },
+  { id: "MOBBO", name: "Mobbo", category: "Rehabilitation training device", colorSeries: "series-8", mechanisms: [], games: [] },
+  { id: "WEARABLE", name: "Wearable devices", category: "Wearable sensors", colorSeries: "series-4", mechanisms: [], games: [] },
 ];
 
 
@@ -68,7 +68,7 @@ async function main() {
   for (const dt of DEVICE_TYPES) {
     await prisma.deviceType.upsert({
       where: { id: dt.id },
-      update: {},
+      update: { colorSeries: dt.colorSeries }, // re-seeding corrects the colour; reference data is otherwise left alone
       create: {
         id: dt.id,
         name: dt.name,
@@ -90,10 +90,13 @@ async function main() {
   }
 
   const priya = await prisma.user.findUniqueOrThrow({ where: { email: "priya.nair@neurodash.care" } });
+  const downtownId = locationIdByKey.get("downtown")!;
+  const demoEngineer = await prisma.user.findUniqueOrThrow({ where: { email: "arjun.rao@neurodash.care" } });
+  await prisma.location.updateMany({ where: { engineerId: null }, data: { engineerId: demoEngineer.id } });
 
   const patient = await prisma.patient.upsert({
     where: { displayCode: "P-10124" },
-    update: { status: "Active" },
+    update: { status: "Ongoing" },
     create: {
       displayCode: "P-10124",
       name: "Ananya R.",
@@ -107,7 +110,7 @@ async function main() {
       mobilityStatus: "Ambulatory with cane",
       therapyGoals: ["Improve functional grasp for self-feeding", "Restore independent reach above shoulder height"],
       initialObservations: "Reduced grip strength on left hand; moderate spasticity.",
-      status: "Active",
+      status: "Ongoing",
     },
   });
 
@@ -149,6 +152,36 @@ async function main() {
     ],
   });
 
+  // Training devices allocated to the demo patient (mirrors her plan; also what patients.json would carry).
+  for (const deviceTypeId of ["PLUTO", "MARS"]) {
+    await prisma.patientDevice.upsert({
+      where: { patientId_deviceTypeId: { patientId: patient.id, deviceTypeId } },
+      update: {},
+      create: { patientId: patient.id, deviceTypeId, allocatedById: priya.id },
+    });
+  }
+
+  // The patient whose real MARS + PLUTO sessions are in localserver/testdata (load them with `npm run demo:data`).
+  const demo = await prisma.patient.upsert({
+    where: { displayCode: "HOCMCV002" },
+    update: {},
+    create: {
+      displayCode: "HOCMCV002",
+      name: "Demo Trainee",
+      therapistId: priya.id,
+      diagnosis: "Hand rehabilitation (demo data)",
+      affectedSide: "Right",
+      status: "Active",
+    },
+  });
+  for (const deviceTypeId of ["PLUTO", "MARS"]) {
+    await prisma.patientDevice.upsert({
+      where: { patientId_deviceTypeId: { patientId: demo.id, deviceTypeId } },
+      update: {},
+      create: { patientId: demo.id, deviceTypeId, allocatedById: priya.id },
+    });
+  }
+
   const pluto = await prisma.device.upsert({
     where: { displayCode: "PLUTO-001" },
     update: {},
@@ -157,9 +190,9 @@ async function main() {
       deviceTypeId: "PLUTO",
       serialNumber: "SN-PL-0001",
       firmwareVersion: "2.3.1",
-      status: "In Use",
+      status: "Available",
       location: "Therapy Bay 1",
-      currentPatientId: patient.id,
+      locationId: downtownId,
     },
   });
 
@@ -171,33 +204,33 @@ async function main() {
       deviceTypeId: "MARS",
       serialNumber: "SN-MA-0001",
       firmwareVersion: "3.1.0",
-      status: "In Use",
+      status: "Available",
       location: "Therapy Bay 3",
-      currentPatientId: patient.id,
+      locationId: downtownId,
     },
   });
 
   // A few spare units in varied states so the fleet pages aren't one-note.
   for (const d of [
     { displayCode: "MARS-002", deviceTypeId: "MARS", serialNumber: "SN-MA-0002", firmwareVersion: "3.1.0", status: "Available", location: "Therapy Bay 3" },
-    { displayCode: "PLUTO-002", deviceTypeId: "PLUTO", serialNumber: "SN-PL-0002", firmwareVersion: "2.3.1", status: "Available", location: "Therapy Bay 1" },
-    { displayCode: "VEGA-001", deviceTypeId: "VEGA", serialNumber: "SN-VE-0001", firmwareVersion: "1.2.4", status: "Maintenance", location: "Gait & Balance Lab" },
-    { displayCode: "COSMOS-001", deviceTypeId: "COSMOS", serialNumber: "SN-CO-0001", firmwareVersion: "1.0.9", status: "Available", location: "Therapy Bay 4" },
-    { displayCode: "ATLAS-001", deviceTypeId: "ATLAS", serialNumber: "SN-AT-0001", firmwareVersion: "2.0.2", status: "Available", location: "Therapy Bay 4" },
+    { displayCode: "PLUTO-002", deviceTypeId: "PLUTO", serialNumber: "SN-PL-0002", firmwareVersion: "2.3.1", status: "Available", location: "Therapy Bay 1", locationId: downtownId },
+    { displayCode: "DYNABO-001", deviceTypeId: "DYNABO", serialNumber: "SN-DY-0001", firmwareVersion: "1.0.0", status: "Available", location: "Therapy Bay 4" },
+    { displayCode: "WEARABLE-001", deviceTypeId: "WEARABLE", serialNumber: "SN-WE-0001", firmwareVersion: "1.0.0", status: "Available", location: "Therapy Bay 4", locationId: downtownId },
   ]) {
-    await prisma.device.upsert({ where: { displayCode: d.displayCode }, update: {}, create: d });
+    await prisma.device.upsert({ where: { displayCode: d.displayCode }, update: { locationId: d.locationId ?? null }, create: d });
   }
 
   const orion = await prisma.device.upsert({
-    where: { displayCode: "ORION-001" },
+    where: { displayCode: "NOARK-001" },
     update: {},
     create: {
-      displayCode: "ORION-001",
-      deviceTypeId: "ORION",
-      serialNumber: "SN-OR-0001",
+      displayCode: "NOARK-001",
+      deviceTypeId: "NOARK",
+      serialNumber: "SN-NO-0001",
       firmwareVersion: "1.8.0",
       status: "Issue Detected",
       location: "Therapy Bay 2",
+      locationId: downtownId,
     },
   });
 
@@ -215,7 +248,7 @@ async function main() {
       mobilityStatus: "Ambulatory with walker",
       therapyGoals: ["Improve bimanual coordination"],
       initialObservations: "Pending initial clinical observation.",
-      status: "Assessment Pending",
+      status: "Active",
     },
   });
 
@@ -226,10 +259,10 @@ async function main() {
     });
   }
 
-  const existingRequest = await prisma.deviceRequest.findFirst({ where: { patientId: secondPatient.id, deviceTypeId: "MARS" } });
+  const existingRequest = await prisma.deviceRequest.findFirst({ where: { locationId: downtownId, deviceTypeId: "MARS" } });
   if (!existingRequest) {
     await prisma.deviceRequest.create({
-      data: { patientId: secondPatient.id, therapistId: priya.id, deviceTypeId: "MARS", notes: "New patient, baseline done." },
+      data: { locationId: downtownId, therapistId: priya.id, deviceTypeId: "MARS", notes: "A second MARS unit for the centre." },
     });
   }
 
@@ -243,7 +276,7 @@ async function main() {
         tone: "critical",
         icon: "alert",
         title: "Device issue reported",
-        description: "ORION-001 flagged with a Medium severity issue — pending engineer review.",
+        description: "NOARK-001 flagged with a Medium severity issue — pending engineer review.",
         link: { page: "device-issues" },
       },
     });
@@ -254,13 +287,13 @@ async function main() {
         tone: "info",
         icon: "box",
         title: "New device request",
-        description: "Dr. Priya Nair requested a Mars unit for Rajiv K.",
+        description: "Dr. Priya Nair requested a Mars unit for Downtown Clinic.",
         link: { page: "device-requests" },
       },
     });
   }
 
-  // Generate 35 days of plan history: mostly "done", a couple of "partial"/"missed",
+  // Generate 35 days of plan history: mostly "done", a couple of "missed",
   // with a matching therapy session (+ trials) on any day actual therapy happened, and
   // accuracy trending upward over the plan — enough real data for the overview charts
   // to be meaningful instead of empty states.
@@ -277,7 +310,7 @@ async function main() {
       const missed = day === 8 || day === 19; // a couple of skipped days, like real adherence
       const partial = day === 3 || day === 27;
       const upcoming = day >= ELAPSED_DAYS;
-      const status = upcoming ? "upcoming" : missed ? "missed" : partial ? "partial" : "done";
+      const status = upcoming ? "upcoming" : missed ? "missed" : "done";
       const actualMinutes = upcoming || missed ? 0 : partial ? Math.round(PLAN_DAILY_TARGET_MIN * 0.5) : PLAN_DAILY_TARGET_MIN + (day % 5) - 2;
 
       const dayLog = await prisma.planDayLog.create({

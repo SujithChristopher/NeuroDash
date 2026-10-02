@@ -3,10 +3,24 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Badge from '$lib/components/Badge.svelte';
-	import { fmtDateShort, fmtHrsFromMin, pct } from '$lib/utils';
+	import { fmtDateShort, fmtDateTime, fmtHrsFromMin, pct, timeAgo } from '$lib/utils';
 	import type { PageData } from '../$types';
 
-	let { data, onrequest }: { data: PageData; onrequest: () => void } = $props();
+	let { data, goTab }: { data: PageData; goTab: (t: string) => void } = $props();
+
+	// Activity per training device, from the sessions the laptops uploaded.
+	const activity = $derived.by(() => {
+		const m = new Map<string, { sessions: number; stars: number; last: string | null }>();
+		for (const s of data.sessions) {
+			if (!s.sourceDevice) continue;
+			const v = m.get(s.sourceDevice) ?? { sessions: 0, stars: 0, last: null };
+			v.sessions++;
+			v.stars += s.totalStars;
+			if (!v.last || s.startTime > v.last) v.last = s.startTime;
+			m.set(s.sourceDevice, v);
+		}
+		return m;
+	});
 
 	const usage = $derived.by(() => {
 		const m = new Map<string, { code: string; id: string; n: number; min: number; hits: number; targets: number; stars: number }>();
@@ -23,59 +37,84 @@
 	});
 </script>
 
-{#if data.perms.canRequestDevice}
-	<div class="page-actions" style="justify-content:flex-end;margin-bottom:16px">
-		<button class="btn btn-primary btn-sm" onclick={onrequest}><Icon name="plus" size={13} /> Request device</button>
+<div class="section-title-row" style="margin-top:0">
+	<h2>Training devices</h2>
+	{#if data.perms.canModifyPlan}
+		<button class="btn btn-secondary btn-sm" onclick={() => goTab('plan')}><Icon name="edit" size={13} /> Change in plan</button>
+	{/if}
+</div>
+<div class="card" style="margin-bottom:18px">
+	{#if data.trainingDevices.length === 0}
+		<EmptyState icon="device" title="No training devices yet" sub="Devices are chosen in the therapy plan. Laptops only receive patients whose plan includes their device." />
+	{:else}
+		<div class="table-wrap">
+			<table class="dt">
+				<thead><tr><th>Device</th><th>Added</th><th>Sessions</th><th>Stars</th><th>Last upload</th></tr></thead>
+				<tbody>
+					{#each data.trainingDevices as d (d.id)}
+						{@const a = activity.get(d.deviceTypeId)}
+						<tr>
+							<td><div class="dt-name">{d.name}</div><div class="dt-sub">{d.category}</div></td>
+							<td class="mono">{fmtDateShort(d.allocatedAt)}<div class="dt-sub">by {d.by}</div></td>
+							<td class="mono">{a?.sessions ?? 0}</td>
+							<td class="mono">{a?.stars ?? 0}</td>
+							<td>{#if a?.last}{timeAgo(a.last)}{:else}<span class="muted">No data yet</span>{/if}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	{/if}
+	<div class="dt-sub" style="padding:10px 18px 14px">
+		Affected side: <b>{data.patient.affectedSide ?? 'not set'}</b>
+		{#if data.folder.enabled} · Local-server folder: <span class="mono">{data.folder.path}</span>{/if}
+	</div>
+</div>
+
+{#if data.deviceConfigs.length}
+	<div class="section-title-row"><h2>Device configuration</h2><span class="muted" style="font-size:12px">from configdata.csv</span></div>
+	<div class="card" style="margin-bottom:18px">
+		<div class="table-wrap">
+			<table class="dt">
+				<thead><tr><th>Device</th><th>Training window</th><th>Side</th><th>Target min</th><th>ML / AP / MLAP</th><th>Arm (fore / upper)</th><th>Group</th></tr></thead>
+				<tbody>
+					{#each data.deviceConfigs as c (c.id)}
+						<tr>
+							<td class="dt-name">{c.device}</td>
+							<td class="mono">{fmtDateShort(c.startDate)} → {c.endDate ? fmtDateShort(c.endDate) : '—'}</td>
+							<td>{c.trainingSide ?? '—'}</td>
+							<td class="mono">{c.totalTime ?? '—'}</td>
+							<td class="mono">{c.ml ?? '—'} / {c.ap ?? '—'} / {c.mlap ?? '—'}</td>
+							<td class="mono">{c.foreArmLength ?? '—'} / {c.upperArmLength ?? '—'}</td>
+							<td>{c.group ?? '—'}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 {/if}
 
-<div class="section-title-row" style="margin-top:0"><h2>Assignment history</h2></div>
-<div class="card" style="margin-bottom:18px">
-	{#if data.assignments.length === 0}
-		<EmptyState icon="device" title="No device has been assigned." sub="Request a device to begin therapy." />
-	{:else}
+{#if data.uploads.length}
+	<div class="section-title-row"><h2>Data received from devices</h2></div>
+	<div class="card" style="margin-bottom:18px">
 		<div class="table-wrap">
 			<table class="dt">
-				<thead><tr><th>Device</th><th>Type</th><th>Assigned</th><th>Returned</th><th>Status</th></tr></thead>
+				<thead><tr><th>File</th><th>Rows</th><th>Status</th><th>Processed</th></tr></thead>
 				<tbody>
-					{#each data.assignments as a (a.id)}
-						<tr class="clickable" onclick={() => goto(`/devices/${a.deviceId}`)}>
-							<td class="dt-name mono">{a.deviceCode}</td>
-							<td>{a.category}</td>
-							<td class="mono">{fmtDateShort(a.assignedDate)}</td>
-							<td class="mono">{a.returnedDate ? fmtDateShort(a.returnedDate) : '—'}</td>
-							<td><Badge text={a.status} /></td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	{/if}
-</div>
-
-<div class="section-title-row"><h2>Device requests</h2></div>
-<div class="card" style="margin-bottom:18px">
-	{#if data.requests.length === 0}
-		<EmptyState icon="box" title="No device requests" />
-	{:else}
-		<div class="table-wrap">
-			<table class="dt">
-				<thead><tr><th>Device</th><th>Requested</th><th>Status</th><th>Engineer</th><th>Notes</th></tr></thead>
-				<tbody>
-					{#each data.requests as r (r.id)}
+					{#each data.uploads as u (u.id)}
 						<tr>
-							<td class="dt-name">{r.deviceTypeName}</td>
-							<td class="mono">{fmtDateShort(r.requestedAt)}</td>
-							<td><Badge text={r.status} /></td>
-							<td>{r.engineer ?? '—'}</td>
-							<td class="muted">{r.notes ?? '—'}</td>
+							<td class="mono">{u.path}</td>
+							<td class="mono">{u.rows}</td>
+							<td><Badge text={u.status === 'ok' ? 'Imported' : u.status === 'unmatched' ? 'Unmatched' : 'Error'} tone={u.status === 'ok' ? 'good' : u.status === 'unmatched' ? 'warning' : 'critical'} />{#if u.message}<div class="dt-sub">{u.message}</div>{/if}</td>
+							<td class="mono">{fmtDateTime(u.at)}</td>
 						</tr>
 					{/each}
 				</tbody>
 			</table>
 		</div>
-	{/if}
-</div>
+	</div>
+{/if}
 
 {#if usage.length}
 	<div class="section-title-row"><h2>Usage by device</h2></div>

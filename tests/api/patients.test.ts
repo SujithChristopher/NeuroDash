@@ -7,56 +7,41 @@ beforeAll(async () => {
 });
 
 describe('creating a patient', () => {
-	it('makes the creating therapist the primary therapist, with a generated code and pending status', async () => {
-		const name = uniq('Created');
-		const id = await createPatient(s.priya, name);
+	it('makes the creating therapist the primary therapist, with the hospital ID as its label and Active status', async () => {
+		const code = uniq('Created');
+		const id = await createPatient(s.priya, code);
 		const p = await db().patient.findUniqueOrThrow({ where: { id }, include: { therapist: true } });
-		expect(p.displayCode).toMatch(/^P-\d{5}$/);
-		expect(p.status).toBe('Assessment Pending');
+		expect(p).toMatchObject({ displayCode: code, name: code, status: 'Active', affectedSide: 'Left', gender: 'Female' });
+		expect(p.dob?.toISOString().slice(0, 10)).toBe('1970-01-01');
 		expect(p.therapist.email).toBe('priya.nair@neurodash.care');
-		expect(p.therapyGoals).toEqual(['Improve grasp']);
 		const audit = await db().auditLog.findFirst({ where: { action: 'Patient Created', entityId: id } });
 		expect(audit?.actorRole).toBe('THERAPIST');
 	});
 
-	it('requires a name', async () => {
-		const r = await s.priya.action('/patients/new', { name: '   ' });
-		expect(r.type).toBe('failure');
-		expect(r.status).toBe(400);
+	it('needs only ID, date of birth, gender and affected side (stroke date is optional)', async () => {
+		const ok = await s.priya.action('/patients/new', { patientId: uniq('Min'), dob: '1980-05-05', gender: 'Male', affectedSide: 'Right', strokeDate: '2026-06-01' });
+		expect(ok.type).toBe('redirect');
+		for (const missing of ['patientId', 'dob', 'gender', 'affectedSide']) {
+			const f: Record<string, string> = { patientId: uniq('Req'), dob: '1980-05-05', gender: 'Male', affectedSide: 'Right' };
+			delete f[missing];
+			const r = await s.priya.action('/patients/new', f);
+			expect(r.type, missing).toBe('failure');
+			expect(r.status, missing).toBe(400);
+		}
 	});
 
-	it('rejects an impossible date of birth', async () => {
-		const r = await s.priya.action('/patients/new', { name: uniq('Bad'), dob: 'not-a-date' });
-		expect(r.type).toBe('failure');
-	});
-
-	it('generates distinct codes for many patients', async () => {
-		const ids = await Promise.all(Array.from({ length: 6 }, () => createPatient(s.priya)));
-		const codes = (await db().patient.findMany({ where: { id: { in: ids } } })).map((p) => p.displayCode);
-		expect(new Set(codes).size).toBe(6);
+	it('rejects an impossible or future date of birth', async () => {
+		for (const dob of ['not-a-date', '2999-01-01']) {
+			const r = await s.priya.action('/patients/new', { patientId: uniq('Bad'), dob, gender: 'Female', affectedSide: 'Left' });
+			expect(r.type, dob).toBe('failure');
+		}
 	});
 
 	it('only therapists can create patients', async () => {
 		for (const who of ['vikram', 'arjun', 'admin'] as const) {
-			expect((await s[who].action('/patients/new', { name: uniq('No') })).status, who).toBe(403);
+			expect((await s[who].action('/patients/new', { patientId: uniq('No') })).status, who).toBe(403);
 		}
-		expect((await s.anon.action('/patients/new', { name: uniq('No') })).status).toBe(302);
-	});
-
-	it('stores attached documents as real, type-checked files', async () => {
-		const name = uniq('WithDocs');
-		const r = await s.priya.action('/patients/new', { name, documents: [PDF('referral'), PNG()] });
-		expect(r.type).toBe('redirect');
-		const p = await db().patient.findFirstOrThrow({ where: { name }, include: { documents: true } });
-		expect(p.documents.map((d) => d.mimeType).sort()).toEqual(['application/pdf', 'image/png']);
-		expect(p.documents.every((d) => d.data && d.data.length > 0)).toBe(true);
-	});
-
-	it('refuses the whole registration if an attachment is not a real PDF/image', async () => {
-		const name = uniq('BadDoc');
-		const r = await s.priya.action('/patients/new', { name, documents: [new File(['<html>x</html>'], 'x.pdf')] });
-		expect(r.type).toBe('failure');
-		expect(await db().patient.count({ where: { name } })).toBe(0);
+		expect((await s.anon.action('/patients/new', { patientId: uniq('No') })).status).toBe(302);
 	});
 });
 
@@ -99,7 +84,6 @@ describe('location scoping', () => {
 	it('writes are scoped as well: another location cannot touch the patient', async () => {
 		expect((await s.rohan.action(`/patients/${id}?/addNote`, { text: 'hello' })).status).toBe(404);
 		expect((await s.rohan.action(`/patients/${id}?/setStatus`, { status: 'Paused' })).status).toBe(404);
-		expect((await s.rohan.action(`/patients/${id}?/requestDevice`, { deviceTypeId: 'PLUTO' })).status).toBe(404);
 	});
 
 	it('a colleague therapist at the same location may read but not change the primary therapist’s status', async () => {
@@ -117,7 +101,7 @@ describe('patient status', () => {
 		expect(r.type).toBe('success');
 		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Paused');
 		const audit = await db().auditLog.findFirst({ where: { action: 'Patient Status Changed', entityId: id } });
-		expect(audit?.previousValue).toBe('Assessment Pending');
+		expect(audit?.previousValue).toBe('Active');
 		expect(audit?.newValue).toBe('Paused');
 	});
 
@@ -125,13 +109,13 @@ describe('patient status', () => {
 		const id = await createPatient(s.priya);
 		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: 'Banana' })).type).toBe('failure');
 		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: '' })).type).toBe('failure');
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Assessment Pending');
+		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
 	});
 
 	it('a consultant (read-only) cannot change it', async () => {
 		const id = await createPatient(s.priya);
 		expect((await s.vikram.action(`/patients/${id}?/setStatus`, { status: 'Paused' })).status).toBe(403);
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Assessment Pending');
+		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
 	});
 });
 

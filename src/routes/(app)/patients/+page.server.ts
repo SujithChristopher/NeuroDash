@@ -1,3 +1,4 @@
+import { activeByCode } from '$lib/server/presence';
 import type { PageServerLoad } from './$types';
 import { prisma } from '$lib/server/db';
 import { requireRole } from '$lib/server/guard';
@@ -22,6 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		prisma.deviceType.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } })
 	]);
 
+	const active = await activeByCode();
 	const rows = patients.map((p) => {
 		const st = computePatientStats(p, []);
 		return {
@@ -31,6 +33,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			gender: p.gender,
 			dob: p.dob?.toISOString() ?? null,
 			status: p.status,
+			liveDevice: active.get(p.displayCode)?.device ?? null,
 			therapistId: p.therapist.id,
 			therapistName: p.therapist.name,
 			plan: st.plan ? { name: st.plan.name, durationDays: st.plan.durationDays, currentDay: st.currentDay } : null,

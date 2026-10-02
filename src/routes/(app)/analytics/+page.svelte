@@ -4,6 +4,7 @@
 	import Badge from '$lib/components/Badge.svelte';
 	import ProgramPanel from '$lib/components/ProgramPanel.svelte';
 	import FleetPanel from '$lib/components/FleetPanel.svelte';
+	import CentrePanel from '$lib/components/CentrePanel.svelte';
 	import { fmtDateTime } from '$lib/utils';
 
 	let { data } = $props();
@@ -27,6 +28,9 @@
 
 {#if data.program && data.inflow}
 	<ProgramPanel program={data.program} inflow={data.inflow} range={data.range} />
+
+	<div class="section-title-row"><h2>{role === 'ADMIN' ? 'Centres' : 'Your centre'}</h2></div>
+	<div style="margin-bottom:20px"><CentrePanel centres={data.centres} /></div>
 {/if}
 
 {#if data.fleet}

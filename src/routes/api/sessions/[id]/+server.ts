@@ -37,7 +37,10 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 			id: t.id,
 			number: t.trialNumberSession,
 			type: t.trialType,
-			label: t.game?.displayLabel ?? t.mechanism ?? '—',
+			// Known games show their name; an unnamed device game code (e.g. "SS") is shown as-is.
+			label: t.game?.displayLabel ?? t.gameCode ?? t.mechanism ?? '—',
+			mechanism: t.mechanism,
+			durationSec: t.durationSec,
 			targets: t.targets,
 			hits: t.hits,
 			misses: t.misses,

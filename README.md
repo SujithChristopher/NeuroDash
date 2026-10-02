@@ -127,12 +127,74 @@ npx prisma studio             # opens http://localhost:5555
 | "relation ... does not exist" / missing columns after pulling changes | `npm run db:migrate` (or `npm run db:reset` if the migrations were rewritten; it erases the dev database) |
 | `Port 5173 is already in use` | `npm run dev -- --port 5180` |
 | Want a clean slate | `npm run setup -- --reset` (or `npm run db:reset`) |
+| After pulling an update that changes the database | `npm run db:migrate`, then `npm run db:seed` (adds new reference data such as the device types (PLUTO, MARS, ATOBOT, HYPERCUBE, NOARK, DYNABO, MOBBO, WEARABLE)) |
 
 `db:reset` **erases** the database it points at. Only use it on development data.
 
 ---
 
-## 2. Scripts
+## 2. Local server integration (training laptops → dashboard)
+
+NeuroDash works with the Python **local server** in `localserver/` (`s2.py` receives uploads on port 5000, `patients_store.py`
+keeps `patients.json`). Both use one data folder, set in `.env`:
+
+```env
+NEURODASH_DATA_DIR="D:/NeuroDashData"     # the same folder as DATA_FOLDER in localserver/patients_store.py
+INGEST_INTERVAL_SECONDS=30                # how often the app looks for new uploads (0 = only on "Sync now")
+```
+
+Leave `NEURODASH_DATA_DIR` empty to switch the integration off; the rest of the app is unaffected.
+
+**When you register a patient** (Patients → New Patient), the app:
+
+1. saves the patient in the database (table `patients`) and creates the folder `<data folder>/<Patient ID>/`, where that patient's
+   laptop uploads will land;
+2. stores the chosen **training devices** in the database (table `patient_devices`) and in the **one common `patients.json`** at the
+   root of the data folder: a single file listing every patient with their status, side and devices. The database is the source
+   of truth and `patients.json` is a mirror of it for the laptops. It never contains names, dates of birth or contact details.
+   A laptop only receives patients allocated to its device. The version number goes up on every real change, and a UDP
+   "patients changed" nudge is broadcast so laptops pick it up immediately.
+
+The **Patient ID** is the ID typed on the training devices (letters, digits, `-` and `_`). Leave it blank for an auto-generated
+`P-12345`. Names such as `PLUTO`, `mars01`, `patients` or `_incoming` are refused because they would clash with the server's own
+folders. Devices can be changed later on the patient's **Devices** tab, and a patient's therapy-plan devices are added automatically.
+
+**When a laptop uploads data**, the app reads it from the folder and stores it in the database:
+
+| File (under `<ID>/<LAPTOP>/`) | Becomes |
+|---|---|
+| `sessions.csv` | sessions, trials, hits, **stars**, durations: they appear in the progress charts, session drawer and reports |
+| `configdata.csv` | the patient's device configuration (training window, arm lengths, side) |
+
+- **Live updates.** The app watches the data folder and imports a new or changed file about a second after it arrives. A scan also runs
+  every `INGEST_INTERVAL_SECONDS` (default 30) as a safety net, and an engineer can press **Sync now** on the **Data Sync** page.
+  Open dashboards check for new data every 10 seconds and refresh the page's lists and charts by themselves, with a small
+  "New training data received" notice, so a finished session shows up without anyone reloading.
+- Re-scanning is safe: a file whose content has not changed is skipped, and a re-uploaded (cumulative) file updates its sessions
+  rather than duplicating them.
+- The training device comes from the `:Device:` line in `sessions.csv` (so `PLUTO01` and `PLUTO` folders both mean PLUTO).
+- A file for a patient that is not registered yet is shown as **Unmatched** and imported automatically once the patient exists.
+- Once real data flows for a patient, plan days that pass with no training are marked **missed**, so adherence is real.
+- The **Data Sync** page (engineer: sync; admin: view) shows file status, totals and which laptops are online and up to date.
+
+The Python server is unchanged and keeps receiving the files. Let the web app be the only writer of `patients.json`; avoid editing it
+with `patients_store.py` at the same time. Details of the file formats: `localserver/DASHBOARD_DATA_GUIDE.md`.
+
+---
+
+
+### Device-specific progress, stacked colours and demo data
+
+- The patient's **Progress** tab has a tab per training device (PLUTO, MARS, ...). KPIs, accuracy, stars, games and mechanisms are for that device only. The "Therapy time per day" chart is stacked, one colour per device (the same colour everywhere).
+- Therapy time is the `MoveTime` column (falling back to `GameDuration`, then start to stop time).
+- `npm run db:seed` creates patient `HOCMCV002` (PLUTO and MARS). `npm run demo:data` copies `localserver/testdata/*_sessions.csv` into the data folder; they are imported within about 30 seconds.
+- After pulling these changes run `npm run db:migrate` (adds trial kind and assist mode) and `npm run db:seed` (device colours).
+
+### Patient in use (presence)
+
+While a patient trains, the laptop uploads `sessions.csv` about every minute. The server notes the upload in `presence.json`; the dashboard shows **In session now** on the patient page, the patient list and Data Sync. Other laptops ask the server (`check_user`) before logging the same ID in, and call `release` when done. `ACTIVE_WINDOW_SECONDS` (default 300, in `.env` and `patients_store.py`) is how long after the last upload a patient still counts as in use. The laptop software has to make that call to actually block a second login. Details: `localserver/DASHBOARD_DATA_GUIDE.md`.
+
+## 3. Scripts
 
 | Command | What it does |
 |---|---|
@@ -150,7 +212,7 @@ npx prisma studio             # opens http://localhost:5555
 
 ---
 
-## 3. What's in the app
+## 4. What's in the app
 
 - **Patients:** location-scoped list, 9-tab detail page (overview, assessments, plan, sessions, devices, progress, documents, notes, timeline).
 - **Assessments:** every scale in `clinical_scales/neuro/*.json` (FMA, ARAT, PHQ-9, MoCA, NIHSS, MAL, EQ-5D and more) is rendered by one
@@ -179,7 +241,7 @@ This is enforced in every server action, not just hidden in the UI.
 
 ---
 
-## 4. Testing
+## 5. Testing
 
 ```sh
 npm run check        # type-check
@@ -205,7 +267,7 @@ It **refuses to run unless the database name contains `test`**, so it cannot tou
 
 ---
 
-## 5. Deploying
+## 6. Deploying
 
 The project uses `adapter-auto`, which only works on a few hosts. For your own server:
 
@@ -229,14 +291,17 @@ ORIGIN=https://your.domain BODY_SIZE_LIMIT=15M DATABASE_URL="postgresql://..." n
 
 ---
 
-## 6. Project layout
+## 7. Project layout
 
 ```
 prisma/                      schema, migrations, seed script
 clinical_scales/neuro/       assessment definitions (JSON): the source of truth for every scale
 src/lib/scales/              scale engine: visibility, scoring, validation (pure TS, shared by browser and server)
 src/lib/components/scale/    the generic click-only scale form
-src/lib/server/              server-only code: db, sessions, audit, notifications, scoping, files, analytics, AI
+src/lib/server/              server-only code: db, sessions, audit, notifications, scoping, files, analytics, AI,
+                             patientFiles (folders, patient.json, patients.json), ingest (CSV → database), laptops, poller
+src/lib/ingest/              pure CSV parsing and the patient.json / patients.json builders
+localserver/                 the Python local server the laptops talk to
 src/lib/styles/              app.css (design system) and responsive.css
 src/routes/login/            sign-in, forced password reset, forgot password
 src/routes/(app)/            the authenticated app; +layout.server.ts is the auth guard
@@ -247,3 +312,11 @@ ref/                         the spec and the HTML reference design
 
 To change a scale, edit its CSV in `clinical_scales/redcap_bak` and run `python clinical_scales/redcap_bak/convert_to_json.py`.
 Free-text items in a scale are intentionally not rendered; attach a scanned document instead.
+
+### Patient reports
+
+**Reports > Patient Report** shows the devices a patient used (time, and the movements or mechanisms trained on each) and one graph per assessment scale with a plain statement of how it changed. Type notes on the report, **Print** it, or **Save report**: the snapshot (data plus your notes) is written to `<NEURODASH_DATA_DIR>/_reports/<Patient ID>/` (or `REPORTS_DIR`) and listed under *Saved reports*, where it reopens exactly as saved. The storage sits behind one small interface so it can move to S3 later without changing the pages.
+
+### Demo reset
+
+`npm run demo:reset -- --yes` wipes the database in `DATABASE_URL` and rebuilds a clean demo: the seeded users, two centres with their devices, and seven patients (Active, Ongoing, Paused, Completed, Discontinued) with weeks of sessions and assessments. It also writes them to `<NEURODASH_DATA_DIR>/patients.json`. It is destructive, so it refuses to run without `--yes`; take a `pg_dump` first. Demo logins use the password `neurodash123` (see the seeded emails printed at the end).

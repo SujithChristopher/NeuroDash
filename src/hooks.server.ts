@@ -1,5 +1,8 @@
 import type { Handle } from '@sveltejs/kit';
 import { getSession } from '$lib/server/auth';
+import { startIngestPoller } from '$lib/server/poller';
+
+startIngestPoller();
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const session = await getSession(event.cookies.get('session'));

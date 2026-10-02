@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			}
 		}),
 		prisma.patient.findMany({
-			where: { ...scope, status: 'Assessment Pending' },
+			where: { ...scope, status: 'Active', therapyPlans: { none: {} } },
 			select: { id: true, name: true, displayCode: true },
 			orderBy: { createdAt: 'desc' },
 			take: 6
@@ -60,9 +60,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				key: `p-${p.id}`,
 				icon: 'clipboard',
 				tone: 'warning',
-				title: `Record a baseline assessment for ${p.name}`,
-				sub: `${p.displayCode} · still Assessment Pending`,
-				href: user.role === 'THERAPIST' ? `/assessments/new?patient=${p.id}` : `/patients/${p.id}`
+				title: `Create a therapy plan for ${p.displayCode}`,
+				sub: 'New patient · no plan or devices yet',
+				href: user.role === 'THERAPIST' ? `/patients/${p.id}?tab=plan` : `/patients/${p.id}`
 			})),
 			...actionable
 				.filter((n) => (n.link as { page?: string } | null)?.page)

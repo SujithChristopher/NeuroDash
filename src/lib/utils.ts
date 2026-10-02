@@ -71,10 +71,9 @@ export type Tone = 'good' | 'info' | 'warning' | 'serious' | 'critical' | 'neutr
 
 /** Status string → badge tone (the literal status strings are the DB values). */
 const TONE_BY_STATUS: Record<string, Tone> = {
-	Active: 'good',
+	Active: 'accent',
+	Ongoing: 'good',
 	Completed: 'info',
-	New: 'accent',
-	'Assessment Pending': 'warning',
 	Paused: 'warning',
 	Discontinued: 'critical',
 	Available: 'good',
@@ -99,7 +98,6 @@ const TONE_BY_STATUS: Record<string, Tone> = {
 	'At Risk': 'warning',
 	Behind: 'critical',
 	done: 'good',
-	partial: 'warning',
 	missed: 'critical',
 	upcoming: 'neutral'
 };

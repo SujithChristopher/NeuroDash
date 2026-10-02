@@ -21,7 +21,8 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
 				{ to: '/assessments', label: 'Assessments', icon: 'clipboard' },
 				{ to: '/plans', label: 'Therapy Plans', icon: 'target' },
 				{ to: '/sessions', label: 'Sessions', icon: 'activity' },
-				{ to: '/device-requests', label: 'Device Requests', icon: 'device' }
+				{ to: '/devices', label: 'Devices', icon: 'device' },
+				{ to: '/device-requests', label: 'Device Requests', icon: 'box' }
 			]
 		},
 		{
@@ -68,6 +69,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
 			section: 'Records',
 			items: [
 				{ to: '/device-history', label: 'Device History', icon: 'history' },
+				{ to: '/data-sync', label: 'Data Sync', icon: 'link' },
 				{ to: '/notifications', label: 'Notifications', icon: 'bell' }
 			]
 		}
@@ -91,6 +93,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
 			items: [
 				{ to: '/reports', label: 'Reports', icon: 'report' },
 				{ to: '/audit-log', label: 'Audit Log', icon: 'history' },
+				{ to: '/data-sync', label: 'Data Sync', icon: 'link' },
 				{ to: '/ai', label: 'AI Assistant', icon: 'chat' }
 			]
 		}
@@ -111,6 +114,7 @@ export const PAGE_TITLES: Record<string, string> = {
 	maintenance: 'Maintenance',
 	'device-usage': 'Device Usage',
 	'device-history': 'Device History',
+	'data-sync': 'Data Sync',
 	users: 'Users',
 	locations: 'Locations',
 	notifications: 'Notifications',

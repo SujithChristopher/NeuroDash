@@ -1,7 +1,8 @@
+// Active: account created, no training yet. Ongoing: devices allocated and at least one session trained (set
+// automatically when device data arrives). The rest are chosen by the therapist.
 export const PATIENT_STATUSES = [
-	'New',
-	'Assessment Pending',
 	'Active',
+	'Ongoing',
 	'Paused',
 	'Completed',
 	'Discontinued'
@@ -31,11 +32,32 @@ export const MOBILITY = [
 export const GAME_LABELS: Record<string, string> = {
 	HAT: 'HAT — Hand Trainer Arcade',
 	PongGame: 'PongGame',
+	PONG: 'Pong',
 	FruitBasket: 'Fruit Basket',
+	FRUITCH: 'Fruit Catch',
 	RNR: 'RNR — Reach & Retrieve',
 	HatRick: 'HatRick Precision',
-	TukTuk: 'TukTuk Drive'
+	TukTuk: 'TukTuk Drive',
+	TUK: 'Tuk Tuk Drive'
 };
+
+/**
+ * Movement/mechanism codes the devices report. Only codes with a known meaning are listed; anything else is shown
+ * exactly as the device sent it.
+ */
+export const MECHANISM_LABELS: Record<string, string> = {
+	WFE: 'Wrist flexion / extension',
+	FPS: 'Forearm pronation / supination',
+	WURD: 'Wrist ulnar / radial deviation',
+	ML: 'Medio-lateral reach',
+	AP: 'Antero-posterior reach',
+	MLAP: 'Combined ML + AP reach'
+};
+
+/** What each device calls the thing it trains: PLUTO trains wrist mechanisms, MARS trains reach movements. */
+export const movementTerm = (deviceTypeId: string | undefined) => (deviceTypeId === 'PLUTO' ? 'Mechanism' : 'Movement');
+
+export const labelFor = (map: Record<string, string>, code: string) => map[code] ?? code;
 
 export const DEVICE_STATUSES = [
 	'Available',

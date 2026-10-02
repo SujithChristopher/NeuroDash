@@ -10,6 +10,11 @@ const modules = import.meta.glob('../../../clinical_scales/neuro/*.json', {
 
 const NOT_SCALES = new Set(['index', 'non_clickable_report']);
 
+// Definitions kept so already-recorded assessments still render, but not offered for new assessments.
+const NOT_OFFERED = new Set(['adverse_event', 'exit_questionnaire_control', 'exit_questionnaire_intervention']);
+
+export const isOffered = (id: string) => !NOT_OFFERED.has(id);
+
 const scales = new Map<string, ScaleDef>();
 for (const [path, mod] of Object.entries(modules)) {
 	const id = path.split('/').pop()!.replace(/\.json$/, '');
@@ -20,7 +25,7 @@ for (const [path, mod] of Object.entries(modules)) {
 /** Real scales only — `kind: "bookkeeping"` (consent, completion forms) are not assessments. */
 export function listScales(): ScaleSummary[] {
 	return [...scales.values()]
-		.filter((s) => s.kind === 'scale')
+		.filter((s) => s.kind === 'scale' && isOffered(s.id))
 		.map((s) => ({
 			id: s.id,
 			title: s.title,

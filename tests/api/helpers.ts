@@ -146,18 +146,9 @@ export const PNG = () =>
 	new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0])], 'photo.png', { type: 'image/png' });
 
 /** Creates a patient as Priya (Downtown) and returns its id. */
-export async function createPatient(therapist: Client, name = uniq('Pat')): Promise<string> {
-	const r = await therapist.action('/patients/new', {
-		name,
-		dob: '1970-01-01',
-		gender: 'Female',
-		contactPhone: '+91 90000 00000',
-		emergencyContact: 'Someone (Sibling)',
-		diagnosis: 'Ischemic Stroke — Right MCA territory',
-		affectedSide: 'Left',
-		mobilityStatus: 'Ambulatory with cane',
-		therapyGoals: 'Improve grasp'
-	});
+export async function createPatient(therapist: Client, code = uniq('Pat')): Promise<string> {
+	// The Patient ID doubles as the patient's label (no name is collected).
+	const r = await therapist.action('/patients/new', { patientId: code, dob: '1970-01-01', gender: 'Female', affectedSide: 'Left' });
 	if (r.type !== 'redirect' || !r.location) throw new Error(`createPatient failed: ${JSON.stringify(r.data)} ${r.status}`);
 	return r.location.split('/patients/')[1].split('?')[0];
 }

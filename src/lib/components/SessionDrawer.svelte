@@ -19,7 +19,7 @@
 		totalStars: number;
 		accuracyPct: number | null;
 		canAddNote: boolean;
-		trials: { id: string; number: number; type: string; label: string; targets: number; hits: number; stars: number; accuracyPct: number | null }[];
+		trials: { id: string; number: number; type: string; label: string; mechanism: string | null; targets: number; hits: number; stars: number; accuracyPct: number | null }[];
 		notes: { id: string; author: string; text: string; imageDataUrl: string | null; createdAt: string }[];
 	}
 
@@ -100,7 +100,7 @@
 						<tr>
 							<td class="mono">{t.number}</td>
 							<td><Badge text={t.type} tone="neutral" /></td>
-							<td style="font-size:12px">{t.label}</td>
+							<td style="font-size:12px">{t.label}{#if t.mechanism && t.mechanism !== t.label}<div class="dt-sub">{t.mechanism}</div>{/if}</td>
 							<td class="mono">{t.targets}</td>
 							<td class="mono">{t.hits}</td>
 							<td class="mono">{t.accuracyPct ?? '—'}{t.accuracyPct != null ? '%' : ''}</td>

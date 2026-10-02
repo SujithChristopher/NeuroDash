@@ -11,6 +11,7 @@
 	import SearchModal from '$lib/components/shell/SearchModal.svelte';
 	import { NAV_BY_ROLE, PAGE_TITLES, READ_ONLY_PAGES } from '$lib/navConfig';
 	import { crumbDetail } from '$lib/stores/page';
+	import { toast } from '$lib/stores/toast';
 	import { ROLE_LABEL } from '$lib/utils';
 
 	let { data, children } = $props();
@@ -41,14 +42,47 @@
 		unread = body.unread;
 	}
 
+	// Live data: when the local server has imported new device data, reload what the open page shows so lists and
+	// charts update by themselves. Skipped while the tab is hidden (it catches up when you come back).
+	let liveVersion: string | null = null;
+	let livePresence: string | null = null;
+	async function checkLive() {
+		if (document.visibilityState !== 'visible') return;
+		try {
+			const res = await fetch('/api/live', { cache: 'no-store' });
+			if (!res.ok) return;
+			const { version, presence } = (await res.json()) as { version: string; presence?: string };
+			const changed = liveVersion !== null && version !== liveVersion;
+			const presenceChanged = livePresence !== null && (presence ?? '') !== livePresence;
+			liveVersion = version;
+			livePresence = presence ?? '';
+			if (changed) {
+				await invalidateAll();
+				toast('New training data received. The dashboard has been updated.', 'info');
+			} else if (presenceChanged) {
+				await invalidateAll(); // someone started or stopped training: refresh the badges quietly
+			}
+		} catch {
+			/* offline or restarting: try again on the next tick */
+		}
+	}
+
 	onMount(() => {
+		checkLive();
+		const live = setInterval(checkLive, 10_000);
+		const onVisible = () => checkLive();
+		document.addEventListener('visibilitychange', onVisible);
 		// The bell polls every ~30s (no websockets — spec §11).
 		const t = setInterval(() => {
 			fetch('/api/notifications?limit=1')
 				.then((r) => (r.ok ? r.json() : null))
 				.then((b) => b && (unread = b.unread));
 		}, 30_000);
-		return () => clearInterval(t);
+		return () => {
+			clearInterval(t);
+			clearInterval(live);
+			document.removeEventListener('visibilitychange', onVisible);
+		};
 	});
 
 	// Below 900px the sidebar is a drawer (see responsive.css); above it, the toggle collapses the rail.

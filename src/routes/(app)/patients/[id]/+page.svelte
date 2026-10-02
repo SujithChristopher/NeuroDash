@@ -21,7 +21,6 @@
 	import NotesTab from './_components/NotesTab.svelte';
 	import TimelineTab from './_components/TimelineTab.svelte';
 	import AssessmentDrawer from './_components/AssessmentDrawer.svelte';
-	import RequestDeviceModal from './_components/RequestDeviceModal.svelte';
 
 	let { data, form } = $props();
 
@@ -56,7 +55,6 @@
 
 	let sessionId = $state<string | null>(null);
 	let assessmentId = $state<string | null>(null);
-	let showRequest = $state(false);
 
 	$effect(() => {
 		crumbDetail.set(p.name);
@@ -82,13 +80,18 @@
 			<div class="ph-av">{initials(p.name)}</div>
 			<div>
 				<div class="ph-name">
-					{p.name} <span class="mono muted" style="font-size:13px;font-weight:400">{p.displayCode}</span>
+					{p.name}{#if p.name !== p.displayCode} <span class="mono muted" style="font-size:13px;font-weight:400">{p.displayCode}</span>{/if}
 				</div>
 				<div class="ph-meta">
 					<span>{age != null ? `${age} yrs · ` : ''}{p.gender ?? '—'}</span><span class="sep"></span>
 					<span>{p.diagnosis ?? '—'}</span><span class="sep"></span>
 					<span>Affected: {p.affectedSide ?? '—'}</span>
 				</div>
+				{#if data.liveSession}
+					<div class="live-pill" role="status" title="A session file arrived in the last few minutes. Other laptops are told this patient is in use.">
+						<span class="live-dot"></span>In session now · {data.liveSession.device} · {data.liveSession.secondsAgo < 90 ? 'just now' : `${Math.round(data.liveSession.secondsAgo / 60)} min ago`}
+					</div>
+				{/if}
 			</div>
 		</div>
 		<div class="ph-actions" role="group" aria-label="Patient actions">
@@ -136,7 +139,6 @@
 		<div class="qm"><div class="fl">Total Therapy Time</div><div class="fv">{fmtHrsFromMin(stats.totalMin)}</div></div>
 		<div class="qm"><div class="fl">Sessions Completed</div><div class="fv">{stats.sessionsCount}</div></div>
 		<div class="qm"><div class="fl">Devices Used</div><div class="fv">{stats.devicesUsed.length}</div></div>
-		<div class="qm"><div class="fl">Avg. Accuracy</div><div class="fv">{stats.avgAccuracy}%</div></div>
 		<div class="qm"><div class="fl">Plan Adherence</div><div class="fv">{stats.plan ? `${stats.adherence}%` : '—'}</div></div>
 	</div>
 </div>
@@ -158,9 +160,9 @@
 {:else if tab === 'sessions'}
 	<SessionsTab {data} {openSession} />
 {:else if tab === 'devices'}
-	<DevicesTab {data} onrequest={() => (showRequest = true)} />
+	<DevicesTab {data} goTab={setTab} />
 {:else if tab === 'progress'}
-	<ProgressTab {data} {stats} />
+	<ProgressTab {data} />
 {:else if tab === 'documents'}
 	<DocumentsTab {data} {form} />
 {:else if tab === 'notes'}
@@ -171,4 +173,3 @@
 
 {#if sessionId}<SessionDrawer {sessionId} patientName={p.name} onclose={() => (sessionId = null)} />{/if}
 {#if assessmentId}<AssessmentDrawer {data} {assessmentId} onclose={() => (assessmentId = null)} />{/if}
-{#if showRequest}<RequestDeviceModal {data} {form} onclose={() => (showRequest = false)} />{/if}

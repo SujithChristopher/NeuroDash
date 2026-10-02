@@ -59,7 +59,6 @@ model User {
   documentsUploaded    PatientDocument[]   @relation("DocumentUploadedBy")
   notesAuthored        PatientNote[]       @relation("NoteAuthor")
   sessionNotesAuthored SessionNote[]       @relation("SessionNoteAuthor")
-  deviceAssignmentsMade DeviceAssignment[] @relation("AssignmentAssignedBy")
   deviceRequestsMade    DeviceRequest[]    @relation("RequestTherapist")
   deviceRequestsCleared DeviceRequest[]    @relation("RequestEngineer")
   issuesOpened          DeviceIssue[]      @relation("IssueOpenedBy")
@@ -70,6 +69,9 @@ model User {
   notifications         Notification[]     @relation("NotificationTargetUser")
   auditLogEntries        AuditLog[]         @relation("AuditActor")
   sessions               Session[]
+  deviceAllocations      PatientDevice[]    @relation("AllocatedBy")
+  reportsWritten         PatientReport[]    @relation("ReportAuthor")
+  centresCovered         Location[]         @relation("CentreEngineer")
 
   @@index([role])
   @@map("users")
@@ -79,8 +81,13 @@ model Location {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
+  // The engineer responsible for the devices at this centre (one engineer can cover several centres).
+  engineerId String?  @map("engineer_id")
+  engineer   User?    @relation("CentreEngineer", fields: [engineerId], references: [id], onDelete: SetNull)
 
   users User[]
+  devices Device[]
+  deviceRequests DeviceRequest[]
 
   @@map("locations")
 }
@@ -103,6 +110,7 @@ model DeviceType {
   devices         Device[]
   planDevices     PlanDevice[]
   deviceRequests  DeviceRequest[]
+  patientDevices  PatientDevice[]
 
   @@map("device_types")
 }
@@ -146,21 +154,22 @@ model Patient {
   affectedSide        String?  @map("affected_side")
   strokeDate          DateTime? @db.Date @map("stroke_date")
   mobilityStatus      String?  @map("mobility_status")
+  // Limb the training targets ("hand" | "leg"); the side comes from affectedSide. Mirrored to patients.json.
   therapyGoals        String[] @map("therapy_goals")
   initialObservations String?  @map("initial_observations")
   clinicalInfo        String?  @map("clinical_info")
-  status              String   @default("New") // New|Assessment Pending|Active|Paused|Completed|Discontinued
+  status              String   @default("Active") // Active|Ongoing|Paused|Completed|Discontinued
   createdAt           DateTime @default(now()) @map("created_at")
   updatedAt           DateTime @updatedAt @map("updated_at")
 
+  reports           PatientReport[]
   documents         PatientDocument[]
   notes             PatientNote[]
   assessments       Assessment[]
   therapyPlans      TherapyPlan[]
   therapySessions   TherapySession[]
-  deviceAssignments DeviceAssignment[]
-  deviceRequests    DeviceRequest[]
-  currentDevices    Device[]           @relation("DeviceCurrentPatient")
+  trainingDevices   PatientDevice[]
+  deviceConfigs     DeviceConfig[]
 
   @@index([therapistId])
   @@index([status])
@@ -246,6 +255,7 @@ model TherapyPlan {
   durationDays        Int      @map("duration_days")
   dailyTargetMinutes  Int      @map("daily_target_minutes")
   targetSessions      Int?     @map("target_sessions")
+  trainingSide        String?  @map("training_side") // Left|Right|Both: which affected side is trained
   goals               String[]
   notes               String?
   status              String   @default("Active") // Active|Paused|Completed|Discontinued
@@ -319,14 +329,13 @@ model Device {
   serialNumber      String     @map("serial_number")
   firmwareVersion   String?    @map("firmware_version")
   status            String     @default("Available") // Available|In Use|Issue Detected|Awaiting Engineer|Maintenance
-  location          String?
+  location          String? // room / bay within the centre
+  locationId        String?    @map("location_id")
+  centre            Location?  @relation(fields: [locationId], references: [id])
   registeredOn      DateTime   @default(now()) @db.Date @map("registered_on")
-  currentPatientId  String?    @map("current_patient_id")
-  currentPatient    Patient?   @relation("DeviceCurrentPatient", fields: [currentPatientId], references: [id])
   lastSyncAt        DateTime?  @map("last_sync_at")
   updatedAt         DateTime   @updatedAt @map("updated_at")
 
-  assignments      DeviceAssignment[]
   issues           DeviceIssue[]
   maintenance      DeviceMaintenance[]
   events           DeviceEvent[]
@@ -334,37 +343,20 @@ model Device {
 
   @@index([deviceTypeId])
   @@index([status])
-  @@index([currentPatientId])
+  @@index([locationId])
   @@map("devices")
-}
-
-model DeviceAssignment {
-  id             String   @id @default(uuid())
-  deviceId       String   @map("device_id")
-  device         Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-  patientId      String   @map("patient_id")
-  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  assignedDate   DateTime @db.Date @map("assigned_date")
-  returnedDate   DateTime? @db.Date @map("returned_date")
-  status         String   @default("In Use") // In Use|Returned
-  assignedById   String?  @map("assigned_by")
-  assignedBy     User?    @relation("AssignmentAssignedBy", fields: [assignedById], references: [id])
-
-  @@index([deviceId])
-  @@index([patientId])
-  @@map("device_assignments")
 }
 
 model DeviceRequest {
   id           String     @id @default(uuid())
-  patientId    String     @map("patient_id")
-  patient      Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  locationId   String     @map("location_id")
+  location     Location   @relation(fields: [locationId], references: [id], onDelete: Cascade)
   therapistId  String     @map("therapist_id")
   therapist    User       @relation("RequestTherapist", fields: [therapistId], references: [id])
   deviceTypeId String     @map("device_type_id")
   deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
   requestedAt  DateTime   @default(now()) @map("requested_at")
-  status       String     @default("Pending Engineer Review") // Pending Engineer Review|Cleared — Ready to Assign|Assigned
+  status       String     @default("Pending Engineer Review") // Pending Engineer Review|Cleared — Ready to Assign|Assigned|Declined  // Assigned = a unit was set up at the centre
   engineerId   String?    @map("engineer_id")
   engineer     User?      @relation("RequestEngineer", fields: [engineerId], references: [id])
   notes        String?
@@ -465,6 +457,9 @@ model TherapySession {
   totalHits        Int         @default(0) @map("total_hits")
   totalMisses      Int         @default(0) @map("total_misses")
   totalStars       Int         @default(0) @map("total_stars")
+  // Set for sessions ingested from the local server's CSV uploads: "<patient>:<DEVICE>:<session#>:<start>".
+  sourceKey        String?     @unique @map("source_key")
+  sourceDevice     String?     @map("source_device")
 
   trials SessionTrial[]
   notes  SessionNote[]
@@ -522,6 +517,17 @@ model SessionTrial {
   cumulativeMisses    Int?           @map("cumulative_misses")
   cumulativeStars     Int?           @map("cumulative_stars")
   rawDataRef          String?        @map("raw_data_ref")
+  // Straight from the device CSV (game codes like "SS" need not exist in DeviceGame).
+  gameCode            String?        @map("game_code")
+  // PLUTO: TrialType (TRAIN, SR85PCTRAIN, SR85PCCATCH…) and AssistMode (AAN, ACTIVE…)
+  trialKind           String?        @map("trial_kind")
+  assistMode          String?        @map("assist_mode")
+  durationSec         Int?           @map("duration_sec")
+  successRate         Float?         @map("success_rate")
+  moveTime            Float?         @map("move_time")
+  reachSpeed          Float?         @map("reach_speed")
+  gameParameter       Float?         @map("game_parameter")
+  planeAngle          Float?         @map("plane_angle")
 
   @@index([sessionId, trialNumberSession])
   @@map("session_trials")
@@ -586,4 +592,87 @@ model Session {
 
   @@index([userId])
   @@map("sessions")
+}
+
+// ============================================================================
+// LOCAL SERVER INTEGRATION
+// The Python local server (localserver/s2.py) stores uploads under <data dir>/<patient ID>/<DEVICE>/.
+// The web app writes patients.json + <patient ID>/patient.json and ingests the uploaded CSVs.
+// ============================================================================
+
+// Training devices (PLUTO, MARS, …) a patient is allocated to. Mirrored into patients.json, which decides
+// which laptop receives the patient.
+model PatientDevice {
+  id           String     @id @default(uuid())
+  patientId    String     @map("patient_id")
+  patient      Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  deviceTypeId String     @map("device_type_id")
+  deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
+  allocatedAt  DateTime   @default(now()) @map("allocated_at")
+  allocatedById String?   @map("allocated_by")
+  allocatedBy  User?      @relation("AllocatedBy", fields: [allocatedById], references: [id])
+
+  @@unique([patientId, deviceTypeId])
+  @@index([deviceTypeId])
+  @@map("patient_devices")
+}
+
+// One row of a device's configdata.csv (training window, arm lengths, side…).
+model DeviceConfig {
+  id             String   @id @default(uuid())
+  patientId      String   @map("patient_id")
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  device         String // training device the file came from, e.g. "PLUTO"
+  startDate      DateTime @map("start_date")
+  endDate        DateTime? @map("end_date")
+  totalTime      Int?     @map("total_time")
+  ml             Int?
+  ap             Int?
+  mlap           Int?
+  foreArmLength  Float?   @map("fore_arm_length")
+  upperArmLength Float?   @map("upper_arm_length")
+  trainingSide   String?  @map("training_side")
+  location       String?
+  groupName      String?  @map("group_name")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@unique([patientId, device, startDate])
+  @@map("device_configs")
+}
+
+// One uploaded CSV the ingester has looked at. The hash makes re-scans idempotent.
+model IngestedFile {
+  id          String   @id @default(uuid())
+  path        String   @unique // relative to the data dir, forward slashes
+  kind        String // sessions | config
+  sha256      String
+  patientCode String?  @map("patient_code")
+  device      String?
+  rows        Int      @default(0)
+  status      String // ok | unmatched | error
+  message     String?
+  ingestedAt  DateTime @default(now()) @map("ingested_at")
+
+  @@index([status])
+  @@map("ingested_files")
+}
+
+// ============================================================================
+// SAVED PATIENT REPORTS — the report snapshot (data + the therapist's notes) lives in a file store
+// (local server folder now, S3 later); this row is the index that lets people find and reopen it.
+// ============================================================================
+
+model PatientReport {
+  id          String   @id @default(uuid())
+  patientId   String   @map("patient_id")
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdById String   @map("created_by")
+  createdBy   User     @relation("ReportAuthor", fields: [createdById], references: [id])
+  title       String
+  storage     String   @default("local") // local | s3
+  storageKey  String   @map("storage_key") // path of the snapshot inside that store
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([patientId, createdAt(sort: Desc)])
+  @@map("patient_reports")
 }

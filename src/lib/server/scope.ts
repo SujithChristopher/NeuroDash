@@ -11,6 +11,13 @@ export function patientScopeFor(user: User): Prisma.PatientWhereInput {
 	return {};
 }
 
+/** Devices belong to a centre: therapists and consultants only see the devices set up at their own centre. */
+export function deviceScopeFor(user: User): Prisma.DeviceWhereInput {
+	if (!user) return { id: 'never-matches' };
+	if (user.role === 'THERAPIST' || user.role === 'CONSULTANT') return { locationId: user.locationId ?? 'no-centre' };
+	return {};
+}
+
 export function isOwnerTherapist(user: User, therapistId: string) {
 	return user?.role === 'THERAPIST' && user.id === therapistId;
 }

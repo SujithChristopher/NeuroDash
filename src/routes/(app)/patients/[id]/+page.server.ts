@@ -6,9 +6,12 @@ import { prisma } from '$lib/server/db';
 import { requireRole } from '$lib/server/guard';
 import { canModifyPlan, isOwnerTherapist, patientScopeFor } from '$lib/server/scope';
 import { auditAs } from '$lib/server/audit';
-import { notifyRole, notifyUser } from '$lib/server/notify';
+import { notifyUser } from '$lib/server/notify';
 import { accuracyPct } from '$lib/patientStats';
 import { assessmentView } from '$lib/server/assessments';
+import { syncPatientToLocalServer } from '$lib/server/patientFiles';
+import { dataRoot } from '$lib/server/dataDir';
+import { activeByCode } from '$lib/server/presence';
 import { checkUpload } from '$lib/server/files';
 import { PATIENT_STATUSES, PLAN_STATUSES } from '$lib/constants';
 
@@ -36,8 +39,8 @@ const patientInclude = {
 	therapySessions: {
 		orderBy: [{ sessionDate: 'desc' }, { startTime: 'desc' }],
 		include: {
-			device: { select: { id: true, displayCode: true, deviceType: { select: { name: true, category: true } } } },
-			trials: { select: { id: true, mechanism: true, gameId: true, stars: true } }
+			device: { select: { id: true, displayCode: true, deviceType: { select: { id: true, name: true, category: true, colorSeries: true } } } },
+			trials: { select: { id: true, mechanism: true, gameId: true, gameCode: true, stars: true } }
 		}
 	},
 	// Never pull `data` (the file bytes) into page loads — downloads go through /api/documents/[id].
@@ -54,16 +57,11 @@ const patientInclude = {
 		}
 	},
 	notes: { orderBy: { noteDate: 'desc' }, include: { author: { select: { name: true } } } },
-	deviceAssignments: {
-		orderBy: { assignedDate: 'desc' },
-		include: {
-			device: { select: { id: true, displayCode: true, status: true, deviceType: { select: { category: true } } } }
-		}
+	trainingDevices: {
+		orderBy: { allocatedAt: 'asc' },
+		include: { deviceType: { select: { id: true, name: true, category: true } }, allocatedBy: { select: { name: true } } }
 	},
-	deviceRequests: {
-		orderBy: { requestedAt: 'desc' },
-		include: { deviceType: { select: { id: true, name: true } }, engineer: { select: { name: true } } }
-	}
+	deviceConfigs: { orderBy: [{ device: 'asc' }, { startDate: 'desc' }] }
 } satisfies Prisma.PatientInclude;
 
 export const load: PageServerLoad = async ({ locals, params }) => {
@@ -82,17 +80,53 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 					orderBy: { name: 'asc' }
 				});
 
+	const [uploads, allDeviceTypes] = await Promise.all([
+		prisma.ingestedFile.findMany({
+			where: { patientCode: { equals: p.displayCode, mode: 'insensitive' } },
+			orderBy: { ingestedAt: 'desc' },
+			take: 20
+		}),
+		prisma.deviceType.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } })
+	]);
+
 	const owner = isOwnerTherapist(user, p.therapist.id);
+	const active = (await activeByCode()).get(p.displayCode);
 
 	return {
+		liveSession: active ? { device: active.device, secondsAgo: active.secondsAgo } : null,
 		perms: {
 			isOwner: owner,
 			// Status changes are the primary therapist's. Consultants are read-only apart from adding notes.
 			canManage: owner,
 			canModifyPlan: canModifyPlan(user, p.therapist),
-			canRequestDevice: user.role === 'THERAPIST'
 		},
 		deviceTypes,
+		allDeviceTypes,
+		folder: { enabled: dataRoot() !== null, path: dataRoot() ? `${p.displayCode}/` : null },
+		trainingDevices: p.trainingDevices.map((d) => ({
+			id: d.id,
+			deviceTypeId: d.deviceTypeId,
+			name: d.deviceType.name,
+			category: d.deviceType.category,
+			allocatedAt: d.allocatedAt.toISOString(),
+			by: d.allocatedBy?.name ?? '—'
+		})),
+		deviceConfigs: p.deviceConfigs.map((c) => ({
+			id: c.id,
+			device: c.device,
+			startDate: c.startDate.toISOString(),
+			endDate: c.endDate?.toISOString() ?? null,
+			totalTime: c.totalTime,
+			ml: c.ml,
+			ap: c.ap,
+			mlap: c.mlap,
+			foreArmLength: c.foreArmLength,
+			upperArmLength: c.upperArmLength,
+			trainingSide: c.trainingSide,
+			location: c.location,
+			group: c.groupName
+		})),
+		uploads: uploads.map((u) => ({ id: u.id, path: u.path, kind: u.kind, device: u.device, rows: u.rows, status: u.status, message: u.message, at: u.ingestedAt.toISOString() })),
 		patient: {
 			id: p.id,
 			displayCode: p.displayCode,
@@ -115,6 +149,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		plans: p.therapyPlans.map((pl) => ({
 			id: pl.id,
 			name: pl.name,
+			trainingSide: pl.trainingSide,
 			status: pl.status,
 			startDate: pl.startDate.toISOString(),
 			durationDays: pl.durationDays,
@@ -154,8 +189,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			totalTargets: s.totalTargets,
 			totalHits: s.totalHits,
 			totalStars: s.totalStars,
+			sourceDevice: s.sourceDevice,
 			accuracyPct: accuracyPct(s.totalTargets, s.totalHits),
-			device: { id: s.device.id, displayCode: s.device.displayCode, category: s.device.deviceType.category },
+			device: {
+				id: s.device.id,
+				displayCode: s.device.displayCode,
+				category: s.device.deviceType.category,
+				typeId: s.device.deviceType.id,
+				typeName: s.device.deviceType.name,
+				colorSeries: s.device.deviceType.colorSeries
+			},
 			trials: s.trials
 		})),
 		documents: p.documents.map((d) => ({
@@ -167,25 +210,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			fromAssessment: d.assessmentId != null,
 			by: d.uploadedBy?.name ?? '—'
 		})),
-		notes: p.notes.map((n) => ({ id: n.id, author: n.author.name, date: n.noteDate.toISOString(), text: n.text })),
-		assignments: p.deviceAssignments.map((a) => ({
-			id: a.id,
-			deviceId: a.device.id,
-			deviceCode: a.device.displayCode,
-			deviceStatus: a.device.status,
-			category: a.device.deviceType.category,
-			assignedDate: a.assignedDate.toISOString(),
-			returnedDate: a.returnedDate?.toISOString() ?? null,
-			status: a.status
-		})),
-		requests: p.deviceRequests.map((r) => ({
-			id: r.id,
-			deviceTypeName: r.deviceType.name,
-			requestedAt: r.requestedAt.toISOString(),
-			status: r.status,
-			engineer: r.engineer?.name ?? null,
-			notes: r.notes
-		}))
+		notes: p.notes.map((n) => ({ id: n.id, author: n.author.name, date: n.noteDate.toISOString(), text: n.text }))
 	};
 };
 
@@ -206,7 +231,8 @@ const dateStr = z
 	.refine((d) => !Number.isNaN(d.getTime()), 'Invalid date.');
 
 const createPlanSchema = z.object({
-	name: z.string().trim().min(1, 'Plan name is required.').max(160),
+	name: z.string().trim().max(160).optional(),
+	trainingSide: z.enum(['Left', 'Right', 'Both'], { message: 'Select the affected side to train.' }),
 	startDate: dateStr,
 	durationDays: z.coerce.number().int().min(1).max(365),
 	dailyTargetMinutes: z.coerce.number().int().min(1).max(600),
@@ -218,6 +244,7 @@ const createPlanSchema = z.object({
 const editPlanSchema = z.object({
 	planId: z.string().min(1),
 	status: z.enum(PLAN_STATUSES),
+	trainingSide: z.enum(['Left', 'Right', 'Both'], { message: 'Select the affected side to train.' }),
 	dailyTargetMinutes: z.coerce.number().int().min(1).max(600),
 	targetSessions: z.coerce.number().int().min(1).max(1000),
 	notes: z.string().trim().max(4000).optional(),
@@ -242,6 +269,7 @@ export const actions: Actions = {
 			previousValue: p.status,
 			newValue: status
 		});
+		await syncPatientToLocalServer(p.id);
 		return { ok: true, message: `Status set to ${status}.` };
 	},
 
@@ -295,6 +323,9 @@ export const actions: Actions = {
 		// Creation stays owner-only; editing uses the wider canModifyPlan.
 		if (!isOwnerTherapist(user, p.therapist.id)) throw error(403, 'Only the primary therapist can create plans.');
 
+		// One plan per patient: change it with "Modify plan" (devices, side, targets) instead of creating another.
+		if (await prisma.therapyPlan.count({ where: { patientId: p.id } })) return fail(409, { planError: 'This patient already has a plan. Modify it instead.' });
+
 		const fd = await request.formData();
 		const parsed = createPlanSchema.safeParse(Object.fromEntries([...fd.entries()].filter(([, v]) => typeof v === 'string')));
 		if (!parsed.success) return fail(400, { planError: parsed.error.issues[0].message });
@@ -312,7 +343,8 @@ export const actions: Actions = {
 			const created = await tx.therapyPlan.create({
 				data: {
 					patientId: p.id,
-					name: v.name,
+					name: v.name || 'Training plan',
+					trainingSide: v.trainingSide,
 					startDate: start,
 					durationDays: v.durationDays,
 					dailyTargetMinutes: v.dailyTargetMinutes,
@@ -337,12 +369,15 @@ export const actions: Actions = {
 					};
 				})
 			});
-			if (p.status === 'Assessment Pending' || p.status === 'New') {
-				await tx.patient.update({ where: { id: p.id }, data: { status: 'Active' } });
-			}
 			return created;
 		});
 
+		// A plan's devices are always among the patient's allocated training devices.
+		await prisma.patientDevice.createMany({
+			data: deviceTypeIds.map((deviceTypeId) => ({ patientId: p.id, deviceTypeId, allocatedById: user.id })),
+			skipDuplicates: true
+		});
+		await syncPatientToLocalServer(p.id);
 		await auditAs(user)({ action: 'Plan Created', entityType: 'Therapy Plan', entityId: plan.id, newValue: plan.name });
 		throw redirect(303, `/patients/${p.id}?tab=plan`);
 	},
@@ -352,19 +387,28 @@ export const actions: Actions = {
 		const p = await scopedPatient(user, params.id);
 		if (!canModifyPlan(user, p.therapist)) throw error(403, 'You cannot edit this plan.');
 
-		const parsed = editPlanSchema.safeParse(Object.fromEntries(await request.formData()));
+		const fd = await request.formData();
+		const parsed = editPlanSchema.safeParse(Object.fromEntries(fd));
 		if (!parsed.success) return fail(400, { editError: parsed.error.issues[0].message });
 		const v = parsed.data;
 
-		const plan = await prisma.therapyPlan.findFirst({ where: { id: v.planId, patientId: p.id } });
+		const plan = await prisma.therapyPlan.findFirst({ where: { id: v.planId, patientId: p.id }, include: { devices: { select: { deviceTypeId: true } } } });
 		if (!plan) throw error(404, 'Plan not found');
 
-		const next = { status: v.status, dailyTargetMinutes: v.dailyTargetMinutes, targetSessions: v.targetSessions, notes: v.notes || null };
+		// The plan's devices are the patient's training devices: adding or removing one here updates the table and patients.json.
+		const deviceTypeIds = [...new Set(fd.getAll('deviceTypeIds').map(String))].sort();
+		if (!deviceTypeIds.length) return fail(400, { editError: 'Select at least one device.' });
+		if ((await prisma.deviceType.count({ where: { id: { in: deviceTypeIds } } })) !== deviceTypeIds.length) return fail(400, { editError: 'Unknown device selected.' });
+		const hadDevices = plan.devices.map((d) => d.deviceTypeId).sort();
+
+		const next = { status: v.status, trainingSide: v.trainingSide, dailyTargetMinutes: v.dailyTargetMinutes, targetSessions: v.targetSessions, notes: v.notes || null };
 		const changes: { field: string; previous: string | null; next: string | null }[] = [];
 		const diff = (field: string, a: unknown, b: unknown) => {
 			if ((a ?? null) !== (b ?? null)) changes.push({ field, previous: a == null ? null : String(a), next: b == null ? null : String(b) });
 		};
 		diff('Plan Status', plan.status, next.status);
+		diff('Side trained', plan.trainingSide, next.trainingSide);
+		diff('Devices', hadDevices.join(', '), deviceTypeIds.join(', '));
 		diff('Daily Target Duration (min)', plan.dailyTargetMinutes, next.dailyTargetMinutes);
 		diff('Target Sessions', plan.targetSessions, next.targetSessions);
 		diff('Notes', plan.notes, next.notes);
@@ -372,6 +416,10 @@ export const actions: Actions = {
 
 		await prisma.$transaction(async (tx) => {
 			await tx.therapyPlan.update({ where: { id: plan.id }, data: next });
+			await tx.planDevice.deleteMany({ where: { planId: plan.id, deviceTypeId: { notIn: deviceTypeIds } } });
+			await tx.planDevice.createMany({ data: deviceTypeIds.map((deviceTypeId) => ({ planId: plan.id, deviceTypeId })), skipDuplicates: true });
+			await tx.patientDevice.deleteMany({ where: { patientId: p.id, deviceTypeId: { notIn: deviceTypeIds } } });
+			await tx.patientDevice.createMany({ data: deviceTypeIds.map((deviceTypeId) => ({ patientId: p.id, deviceTypeId, allocatedById: user.id })), skipDuplicates: true });
 			if (next.dailyTargetMinutes !== plan.dailyTargetMinutes) {
 				await tx.planDayLog.updateMany({
 					where: { planId: plan.id, status: 'upcoming' },
@@ -400,6 +448,8 @@ export const actions: Actions = {
 			notes: v.reason
 		});
 
+		await syncPatientToLocalServer(p.id); // patients.json: devices, side and status for the laptops
+
 		if (!isOwnerTherapist(user, p.therapist.id)) {
 			await notifyUser(p.therapist.id, {
 				notifType: 'plan',
@@ -411,34 +461,5 @@ export const actions: Actions = {
 			});
 		}
 		return { ok: true, message: 'Plan modification saved and recorded in plan history.' };
-	},
-
-	requestDevice: async ({ request, locals, params }) => {
-		const user = requireRole(locals.user, 'THERAPIST');
-		const p = await scopedPatient(user, params.id);
-		const fd = await request.formData();
-		const deviceTypeId = String(fd.get('deviceTypeId') ?? '');
-		const notes = String(fd.get('notes') ?? '').trim().slice(0, 1000);
-		const type = await prisma.deviceType.findUnique({ where: { id: deviceTypeId } });
-		if (!type) return fail(400, { requestError: 'Choose a device type.' });
-
-		const req = await prisma.deviceRequest.create({
-			data: { patientId: p.id, therapistId: user.id, deviceTypeId, notes: notes || null }
-		});
-		await notifyRole('ENGINEER', {
-			notifType: 'request',
-			tone: 'info',
-			icon: 'box',
-			title: 'New device request',
-			description: `${user.name} requested a ${type.name} unit for ${p.name}.`,
-			link: { page: 'device-requests' }
-		});
-		await auditAs(user)({
-			action: 'Device Requested',
-			entityType: 'Device Request',
-			entityId: req.id,
-			newValue: { patient: p.displayCode, deviceType: type.id }
-		});
-		return { ok: true, message: `Device request for ${type.name} sent to engineering.` };
 	}
 };

@@ -3,7 +3,8 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import { fmtDateShort, fmtMin } from '$lib/utils';
-	import { assessmentSeries, activitySeries } from './series';
+	import ScaleTrends from './ScaleTrends.svelte';
+	import { devicesOf, durationByDay } from './series';
 	import type { PageData } from '../$types';
 	import type { computePatientStats } from '$lib/patientStats';
 
@@ -19,8 +20,9 @@
 		goTab: (t: string) => void;
 	} = $props();
 
-	const asmt = $derived(assessmentSeries(data.assessments));
-	const activity = $derived(stats.plan ? activitySeries(stats.plan.dayLog) : null);
+	// Minutes per day, stacked by training device (last 30 days with data).
+	const devices = $derived(devicesOf(data.sessions));
+	const activity = $derived(durationByDay(data.sessions, devices, 30));
 	const recent = $derived(data.sessions.slice(0, 4));
 </script>
 
@@ -29,26 +31,22 @@
 		<div class="card" style="margin-bottom:16px">
 			<div class="card-head">
 				<h3>Assessment score trend</h3>
-				<span class="hint">{data.assessments[0]?.typeName ?? ''}</span>
+				<span class="hint">Choose a scale</span>
 			</div>
 			<div class="card-body">
-				{#if asmt.labels.length >= 2}
-					<Chart kind="area" labels={asmt.labels} datasets={asmt.datasets} opts={{ legend: true, suggestedMax: 100 }} height={200} />
-				{:else}
-					<EmptyState icon="clipboard" title="Not enough assessments to chart" sub="Record at least two assessments to see a trend." />
-				{/if}
+				<ScaleTrends assessments={data.assessments} />
 			</div>
 		</div>
 		<div class="card">
 			<div class="card-head">
-				<h3>Therapy activity</h3>
-				{#if stats.plan}<span class="hint">Target {stats.plan.dailyTargetMinutes} min/day</span>{/if}
+				<h3>Therapy time per day</h3>
+				<span class="hint">{stats.plan ? `Target ${stats.plan.dailyTargetMinutes} min/day · ` : ''}stacked by device</span>
 			</div>
 			<div class="card-body">
-				{#if activity && activity.labels.length}
-					<Chart kind="bar" labels={activity.labels} datasets={[{ label: 'Actual minutes', data: activity.actual, color: 'var(--accent)' }]} height={200} />
+				{#if activity.days.length}
+					<Chart kind="bar" labels={activity.labels} datasets={activity.datasets} opts={{ stacked: true, legend: devices.length > 1, valueSuffix: ' min', thick: 22 }} height={200} />
 				{:else}
-					<EmptyState icon="activity" title="No therapy plan created" sub="A therapy plan has not yet been created for this patient." />
+					<EmptyState icon="activity" title="No therapy sessions yet" sub="Sessions appear here as the training devices upload them." />
 				{/if}
 			</div>
 		</div>

@@ -15,7 +15,6 @@ interface Input {
 	assessments: { date: string; typeName: string; score: number | null; maxScore: number | null; percentage: number | null }[];
 	sessions: { date: string; durationMinutes: number | null; device: { displayCode: string } }[];
 	documents: { uploadDate: string; name: string }[];
-	assignments: { assignedDate: string; deviceCode: string }[];
 	notes: { date: string; author: string }[];
 }
 
@@ -27,8 +26,6 @@ export function buildTimeline(d: Input): TimelineEvent[] {
 		evs.push({ date: a.date, icon: 'clipboard', tone: 'info', title: `${a.typeName} completed`, desc: a.score == null ? 'Recorded' : `Score: ${a.score}${a.maxScore != null ? `/${a.maxScore}` : ''}${a.percentage != null ? ` (${a.percentage}%)` : ''}` });
 	for (const p of d.plans)
 		evs.push({ date: p.createdAt, icon: 'target', tone: 'accent', title: 'Therapy plan created', desc: `${p.name} (by ${p.createdBy})` });
-	for (const a of d.assignments)
-		evs.push({ date: a.assignedDate, icon: 'link', tone: 'good', title: 'Device assigned', desc: `${a.deviceCode} assigned for therapy` });
 	for (const x of d.documents)
 		evs.push({ date: x.uploadDate, icon: 'file', tone: 'neutral', title: 'Document uploaded', desc: x.name });
 	for (const n of d.notes)

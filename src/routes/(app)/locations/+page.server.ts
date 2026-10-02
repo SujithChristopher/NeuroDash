@@ -7,11 +7,11 @@ import { auditAs } from '$lib/server/audit';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	requireRole(locals.user, 'ADMIN');
-	const locations = await prisma.location.findMany({
-		orderBy: { name: 'asc' },
-		include: { _count: { select: { users: true } } }
-	});
-	return { locations: locations.map((l) => ({ id: l.id, name: l.name, staff: l._count.users })) };
+	const [locations, engineers] = await Promise.all([
+		prisma.location.findMany({ orderBy: { name: 'asc' }, include: { _count: { select: { users: true } } } }),
+		prisma.user.findMany({ where: { role: 'ENGINEER', isActive: true }, select: { id: true, name: true }, orderBy: { name: 'asc' } })
+	]);
+	return { engineers, locations: locations.map((l) => ({ id: l.id, name: l.name, staff: l._count.users, engineerId: l.engineerId })) };
 };
 
 export const actions: Actions = {
@@ -31,6 +31,31 @@ export const actions: Actions = {
 			entityType: 'Location',
 			entityId: loc.id,
 			newValue: { name: loc.name }
+		});
+		return { ok: true };
+	},
+
+	// The engineer responsible for the devices at a centre ('' clears it).
+	setEngineer: async ({ request, locals }) => {
+		const admin = requireRole(locals.user, 'ADMIN');
+		const fd = await request.formData();
+		const id = String(fd.get('id') ?? '');
+		const engineerId = String(fd.get('engineerId') ?? '');
+		const loc = await prisma.location.findUnique({ where: { id }, include: { engineer: { select: { name: true } } } });
+		if (!loc) return fail(404, { error: 'Location not found.' });
+		let engineerName: string | null = null;
+		if (engineerId) {
+			const eng = await prisma.user.findFirst({ where: { id: engineerId, role: 'ENGINEER', isActive: true } });
+			if (!eng) return fail(400, { error: 'Choose an active engineer.' });
+			engineerName = eng.name;
+		}
+		await prisma.location.update({ where: { id }, data: { engineerId: engineerId || null } });
+		await auditAs(admin)({
+			action: 'Centre Engineer Set',
+			entityType: 'Location',
+			entityId: id,
+			previousValue: loc.engineer?.name ?? 'None',
+			newValue: engineerName ?? 'None'
 		});
 		return { ok: true };
 	},

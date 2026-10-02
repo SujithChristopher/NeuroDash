@@ -38,6 +38,7 @@ describe('the assessment screen', () => {
 			expect(html, title).toContain(title);
 		}
 		expect(html).not.toContain('Consent Form');
+		for (const gone of ['Adverse Event', 'Exit Questionnaire']) expect(html, gone).not.toContain(gone);
 		expect(html).not.toContain('Completed Screening');
 	});
 
@@ -154,6 +155,9 @@ describe('validation: the server never trusts the client', () => {
 		const good = JSON.stringify({ [firstId]: 1 });
 		expect((await submit(s.priya, id, { scaleId: 'nope', answers: good })).type).toBe('failure');
 		expect((await submit(s.priya, id, { scaleId: 'consent_form', answers: good })).type).toBe('failure'); // bookkeeping
+		for (const retired of ['adverse_event', 'exit_questionnaire_control', 'exit_questionnaire_intervention']) {
+			expect((await submit(s.priya, id, { scaleId: retired, answers: good })).type, retired).toBe('failure'); // no longer offered
+		}
 		expect((await submit(s.priya, id, { scaleId: '../../etc/passwd', answers: good })).type).toBe('failure');
 		expect(await count()).toBe(0);
 	});

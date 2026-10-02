@@ -1,15 +1,13 @@
 <script lang="ts">
-	import Chart from '$lib/components/Chart.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import { fmtDateShort } from '$lib/utils';
-	import { assessmentSeries } from './series';
+	import ScaleTrends from './ScaleTrends.svelte';
 	import type { PageData } from '../$types';
 
 	let { data, openAssessment }: { data: PageData; openAssessment: (id: string) => void } = $props();
 
 	const list = $derived(data.assessments);
-	const series = $derived(assessmentSeries(list));
 	// Headline comparison uses the assessments that have a score (some scales have none, e.g. BBT).
 	const scored = $derived(list.filter((a) => a.score != null && a.maxScore != null && a.percentage != null));
 	const baseline = $derived(scored[0]);
@@ -54,13 +52,9 @@
 	</div>
 	{/if}
 	<div class="card" style="margin-bottom:18px">
-		<div class="card-head"><h3>Score trend</h3><span class="hint">Comparison across all recorded assessments</span></div>
+		<div class="card-head"><h3>Score trend</h3><span class="hint">Choose one or more scales to graph</span></div>
 		<div class="card-body">
-			{#if series.labels.length >= 2}
-				<Chart kind="area" labels={series.labels} datasets={series.datasets} opts={{ legend: true, suggestedMax: 100 }} height={230} />
-			{:else}
-				<EmptyState icon="trend" title="Not enough data" sub="A trend needs at least two assessments." />
-			{/if}
+			<ScaleTrends assessments={list} height={230} />
 		</div>
 	</div>
 	<div class="section-title-row"><h2>Assessment history</h2></div>

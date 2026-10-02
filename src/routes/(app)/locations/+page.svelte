@@ -33,12 +33,21 @@
 	{:else}
 		<div class="table-wrap">
 			<table class="dt">
-				<thead><tr><th>Location</th><th>Staff</th><th></th></tr></thead>
+				<thead><tr><th>Location</th><th>Staff</th><th>Responsible engineer</th><th></th></tr></thead>
 				<tbody>
 					{#each data.locations as l (l.id)}
 						<tr>
 							<td class="dt-name">{l.name}</td>
 							<td>{l.staff} {l.staff === 1 ? 'user' : 'users'}</td>
+							<td>
+								<form method="POST" action="?/setEngineer" use:enhance style="display:flex;gap:6px;align-items:center">
+									<input type="hidden" name="id" value={l.id} />
+									<select name="engineerId" class="filter-select" value={l.engineerId ?? ''} aria-label="Responsible engineer for {l.name}" onchange={(e) => e.currentTarget.form?.requestSubmit()}>
+										<option value="">Not assigned</option>
+										{#each data.engineers as e (e.id)}<option value={e.id}>{e.name}</option>{/each}
+									</select>
+								</form>
+							</td>
 							<td style="text-align:right">
 								<form method="POST" action="?/delete" use:enhance>
 									<input type="hidden" name="id" value={l.id} />

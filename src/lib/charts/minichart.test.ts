@@ -227,3 +227,50 @@ describe('animation controls', () => {
 		expect(c._t).toBe(before);
 	});
 });
+
+describe('stacked bars (one colour per device)', () => {
+	const stackedCfg = () => ({
+		type: 'bar',
+		data: {
+			labels: ['d1', 'd2', 'd3'],
+			datasets: [
+				{ label: 'MARS', data: [10, 0, 30], backgroundColor: '#aa0000', borderRadius: 4, maxBarThickness: 28 },
+				{ label: 'PLUTO', data: [5, 20, 0], backgroundColor: '#0000bb', borderRadius: 4, maxBarThickness: 28 }
+			]
+		},
+		options: { scales: {}, stacked: true, valueSuffix: ' min' }
+	});
+
+	it('scales the axis to the tallest stack, not the tallest single value', () => {
+		const c = new MiniChart(fakeCanvas().ctx, stackedCfg());
+		expect(c._stackMax(c.data.datasets, 3)).toBe(30); // 10+5, 20, 30
+		const two = stackedCfg();
+		two.data.datasets[1].data = [25, 20, 5];
+		const d = new MiniChart(fakeCanvas().ctx, two);
+		expect(d._stackMax(d.data.datasets, 3)).toBe(35);
+	});
+
+	it('draws one segment per device that trained that day, in each device colour', () => {
+		const { ctx, calls } = fakeCanvas();
+		const c = new MiniChart(ctx, stackedCfg());
+		run(1500);
+		const rects = c._barRects as { i: number; ds: { label: string }; v: number; y: number; h: number }[];
+		expect(rects.map((r) => `${r.i}:${r.ds.label}`)).toEqual(['0:MARS', '0:PLUTO', '1:PLUTO', '2:MARS']); // zero minutes: no segment
+		const day0 = rects.filter((r) => r.i === 0);
+		expect(day0[0].y).toBeGreaterThan(day0[1].y); // the second device sits on top of the first
+		expect(day0[0].y).toBeCloseTo(day0[1].y + day0[1].h, 5); // stacked flush, no gap
+		expect(calls.filter((x) => x.fn === 'fill').length).toBeGreaterThanOrEqual(4);
+	});
+
+	it('the tooltip lists each device and the day total', () => {
+		const c = new MiniChart(fakeCanvas().ctx, stackedCfg());
+		run(1500);
+		let html = '';
+		c._showTip = (_x: number, _y: number, h: string) => (html = h);
+		const r = (c._barRects as { x: number; y: number; w: number; h: number; i: number }[]).find((x) => x.i === 0)!;
+		c._hoverBar(r.x + 1, r.y + 1, { clientX: 0, clientY: 0 });
+		expect(html).toContain('MARS: 10 min');
+		expect(html).toContain('PLUTO: 5 min');
+		expect(html).toContain('Total: 15 min');
+	});
+});

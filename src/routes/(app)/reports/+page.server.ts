@@ -1,11 +1,15 @@
-import type { PageServerLoad } from './$types';
+import { error, fail } from '@sveltejs/kit';
+import { randomUUID } from 'node:crypto';
+import type { Actions, PageServerLoad } from './$types';
 import { prisma } from '$lib/server/db';
 import { requireRole } from '$lib/server/guard';
 import { patientScopeFor } from '$lib/server/scope';
+import { auditAs } from '$lib/server/audit';
 import { deviceUsage } from '$lib/server/devices';
 import { inflowSeries, parseRange } from '$lib/server/analytics';
-import { accuracyPct, computePatientStats } from '$lib/patientStats';
-import { getScale } from '$lib/scales/registry';
+import { loadPatientReport } from '$lib/server/patientReport';
+import { reportStore } from '$lib/server/reportStore';
+import { cleanNotes, parsePeriod } from '$lib/patientReport';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const user = requireRole(locals.user, 'THERAPIST', 'CONSULTANT', 'ADMIN');
@@ -14,6 +18,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		: 'patient';
 	const range = parseRange(url.searchParams.get('range'));
 	const patientId = url.searchParams.get('patient');
+	const period = parsePeriod(url.searchParams.get('from'), url.searchParams.get('to'));
 
 	const patients = await prisma.patient.findMany({
 		where: patientScopeFor(user),
@@ -22,63 +27,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	});
 
 	let patientReport = null;
+	let sessions: { date: string; device: string; minutes: number | null }[] = [];
+	let savedReports: { id: string; title: string; createdAt: string; by: string }[] = [];
 	if (view === 'patient' && patientId) {
-		const p = await prisma.patient.findFirst({
-			where: { AND: [{ id: patientId }, patientScopeFor(user)] },
-			include: {
-				therapist: { select: { name: true } },
-				therapyPlans: { include: { dayLog: true }, orderBy: { createdAt: 'desc' } },
-				assessments: {
-					orderBy: { assessmentDate: 'asc' },
-					select: { scaleId: true, score: true, maxScore: true }
-				},
-				therapySessions: {
-					orderBy: { startTime: 'asc' },
-					include: { device: { select: { displayCode: true } } }
-				}
-			}
-		});
-		if (p) {
-			const sessions = p.therapySessions.map((s) => ({
-				id: s.id,
-				date: s.sessionDate.toISOString().slice(0, 10),
-				device: { displayCode: s.device.displayCode },
-				durationMinutes: s.durationMinutes == null ? null : Number(s.durationMinutes),
-				accuracyPct: accuracyPct(s.totalTargets, s.totalHits),
-				targets: s.totalTargets,
-				hits: s.totalHits,
-				stars: s.totalStars
-			}));
-			const st = computePatientStats(p, sessions);
-			// Baseline → latest across scored assessments of the most recently used scored scale.
-			const scored = p.assessments.filter((a) => a.score != null && a.maxScore);
-			const scale = scored[scored.length - 1]?.scaleId;
-			const series = scored.filter((a) => a.scaleId === scale);
-			const first = series[0];
-			const last = series[series.length - 1];
-			patientReport = {
-				patient: { id: p.id, name: p.name, displayCode: p.displayCode, status: p.status, therapist: p.therapist.name },
-				plan: st.plan ? { name: st.plan.name, status: st.plan.status, durationDays: st.plan.durationDays } : null,
-				currentDay: st.currentDay,
-				adherence: st.adherence,
-				completionPct: st.completionPct,
-				sessionsCount: st.sessionsCount,
-				totalMin: Math.round(st.totalMin),
-				devicesUsed: st.devicesUsed,
-				avgAccuracy: st.avgAccuracy,
-				assessment:
-					first && last
-						? {
-								type: getScale(last.scaleId)?.title ?? last.scaleId,
-								baseline: Math.round((first.score! / first.maxScore!) * 100),
-								latest: Math.round((last.score! / last.maxScore!) * 100),
-								baselineScore: `${first.score}/${first.maxScore}`,
-								latestScore: `${last.score}/${last.maxScore}`,
-								count: series.length
-							}
-						: null,
-				sessions
-			};
+		const loaded = await loadPatientReport(user, patientId, period);
+		if (loaded) {
+			patientReport = loaded.report;
+			sessions = loaded.sessions;
+			const saved = await prisma.patientReport.findMany({
+				where: { patientId: loaded.patientId },
+				orderBy: { createdAt: 'desc' },
+				include: { createdBy: { select: { name: true } } }
+			});
+			savedReports = saved.map((x) => ({ id: x.id, title: x.title, createdAt: x.createdAt.toISOString(), by: x.createdBy.name }));
 		}
 	}
 
@@ -117,5 +78,56 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const inflow = view === 'inflow' ? await inflowSeries(user, range) : null;
 
-	return { view, range, patientId, patients, patientReport, deviceRows, inflow };
+	return {
+		view,
+		range,
+		patientId,
+		period,
+		patients,
+		patientReport,
+		sessions,
+		savedReports,
+		// Consultants may add notes (so they may save a report); admin is view-only.
+		canSave: user.role === 'THERAPIST' || user.role === 'CONSULTANT',
+		storageReady: reportStore() !== null,
+		deviceRows,
+		inflow
+	};
 };
+
+export const actions: Actions = {
+	/** Saves the report as it is now, with the notes typed on it, to the report store; it can be reopened later. */
+	saveReport: async ({ request, locals }) => {
+		const user = requireRole(locals.user, 'THERAPIST', 'CONSULTANT');
+		const fd = await request.formData();
+		const patientId = String(fd.get('patientId') ?? '');
+		const title = String(fd.get('title') ?? '').trim().slice(0, 120);
+
+		// The report is rebuilt here from the database: only the notes are taken from the browser.
+		const period = parsePeriod(String(fd.get('from') ?? ''), String(fd.get('to') ?? ''));
+		const loaded = await loadPatientReport(user, patientId, period);
+		if (!loaded) throw error(404, 'Patient not found');
+		const store = reportStore();
+		if (!store) return fail(400, { error: 'Report storage is not set up. Set NEURODASH_DATA_DIR (or REPORTS_DIR) and restart.' });
+
+		let rawNotes: unknown = {};
+		try {
+			rawNotes = JSON.parse(String(fd.get('notes') ?? '{}'));
+		} catch {
+			return fail(400, { error: 'The notes could not be read.' });
+		}
+		const notes = cleanNotes(rawNotes, loaded.report.scales.map((x) => x.scaleId));
+
+		const id = randomUUID();
+		const key = `${loaded.report.patient.displayCode}/${id}.json`;
+		const savedAt = new Date().toISOString();
+		const covers = period.from || period.to ? ` (${period.from ?? 'start'} to ${period.to ?? 'today'})` : '';
+		const finalTitle = title || `Report ${savedAt.slice(0, 10)}${covers}`;
+		await store.put(key, JSON.stringify({ version: 1, id, title: finalTitle, savedAt, savedBy: { name: user.name, role: user.role }, report: loaded.report, notes }, null, 2));
+
+		await prisma.patientReport.create({ data: { id, patientId: loaded.patientId, createdById: user.id, title: finalTitle, storage: store.kind, storageKey: key } });
+		await auditAs(user)({ action: 'Report Saved', entityType: 'Patient Report', entityId: id, newValue: { patient: loaded.report.patient.displayCode, title: finalTitle } });
+		return { ok: true, message: 'Report saved. You can reopen it under Saved reports.', savedId: id };
+	}
+};
+

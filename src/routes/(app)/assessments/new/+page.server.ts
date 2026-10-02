@@ -7,7 +7,7 @@ import { isOwnerTherapist, patientScopeFor } from '$lib/server/scope';
 import { auditAs } from '$lib/server/audit';
 import { checkUpload } from '$lib/server/files';
 import { ASSESSMENT_LABELS } from '$lib/constants';
-import { getScale, listScales } from '$lib/scales/registry';
+import { getScale, isOffered, listScales } from '$lib/scales/registry';
 import { allItems, computeScores, maxScore, primaryScoreId, validateAnswers } from '$lib/scales/evaluate';
 import type { Answers } from '$lib/scales/types';
 
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const patient = await ownedPatient(user, url.searchParams.get('patient'));
 
 	const scaleId = url.searchParams.get('scale');
-	const scale = scaleId ? getScale(scaleId) : null;
+	const scale = scaleId && isOffered(scaleId) ? getScale(scaleId) : null;
 
 	// Examiners: staff at the same location, chosen from a dropdown (never typed).
 	const examiners = await prisma.user.findMany({
@@ -69,7 +69,7 @@ export const actions: Actions = {
 		if (!parsed.success) return fail(400, { error: parsed.error.issues[0].message });
 
 		const def = getScale(parsed.data.scaleId);
-		if (!def) return fail(400, { error: 'Unknown assessment scale.' });
+		if (!def || !isOffered(def.id)) return fail(400, { error: 'Unknown assessment scale.' });
 
 		let answers: Answers;
 		try {
@@ -149,9 +149,6 @@ export const actions: Actions = {
 						uploadedById: user.id
 					}
 				});
-			}
-			if (patient.status === 'Assessment Pending') {
-				await tx.patient.update({ where: { id: patient.id }, data: { status: 'Active' } });
 			}
 			return a;
 		});

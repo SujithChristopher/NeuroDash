@@ -38,8 +38,39 @@ npm run db:migrate | db:seed | db:reset | db:generate
   `audit`, `notify`, `analytics`, `devices`, `files`, `ai`, `assessments`.
 - `src/lib/scales/` — pure scale engine (`expr`, `evaluate`, `describe`, `registry`). Shared by browser, server, seed and tests.
   Uses **relative imports** (the seed runs under `tsx` with no `$lib` alias).
+- `src/lib/ingest/` — pure CSV parsing (`parse.ts`) and the `patients.json` entry builder (`patientJson.ts`). No fs or database here.
+- `src/lib/server/patientFiles.ts` (folder + patients.json), `ingest.ts`, `laptops.ts`, `poller.ts`, `dataDir.ts` — the local-server integration (see below).
+- `localserver/` — the Python server the training laptops talk to (`s2.py`, `patients_store.py`, `sender.py`). Formats: `DASHBOARD_DATA_GUIDE.md`.
 - `src/lib/components/` — shared UI; `scale/` holds the generic click-only scale form.
 - `tests/api/` — backend suite; `helpers.ts` has a cookie-jar client that speaks form actions and `pageData()` for server-load data.
+
+## Local-server integration
+- `NEURODASH_DATA_DIR` (same folder as `DATA_FOLDER` in `patients_store.py`) turns it on; unset = every folder feature is a no-op.
+- Registering a patient / changing devices or status calls `syncPatientToLocalServer(patientId)`: creates `<dir>/<ID>/` and upserts the patient in
+  the ONE common `patients.json` (there is deliberately no per-patient JSON file; the database is the source of truth and `patients.json` a one-way mirror) (version bumps only on a real change, other entries and unknown fields are preserved, writes are atomic
+  and serialised). It never throws: a missing folder must not break registering a patient.
+- The Patient ID (`Patient.displayCode`) **is** the folder name and the `:User:` / `HomerID` in the CSVs. It is validated by `PATIENT_ID_PATTERN`
+  and `isReservedPatientId` (no `PLUTO`, `mars01`, `_incoming`, `patients`…) and is unique case-insensitively.
+- `patients.json` sits on a shared folder: **never put name, date of birth or contact details in it** (tested).
+- `runIngest()` scans `<dir>/<patient>/<laptop>/{sessions,configdata}.csv`. Skips folders starting `_` and `backup`. Idempotent via the file SHA-256
+  (`IngestedFile`) and `TherapySession.sourceKey`. The device comes from the `:Device:` header, not the laptop folder name. Unknown patient ⇒ `unmatched`
+  (retried every scan). Sessions are linked to the plan covering their date; plan days get real minutes; once a patient has ingested data, past
+  `upcoming` days become `missed`.
+- Live data: `poller.ts` runs a scan every `INGEST_INTERVAL_SECONDS` and an `fs.watch` that scans ~1 s after a `sessions.csv`/`configdata.csv` changes
+  (`isWatchedUpload` handles Windows `\` paths). The app layout polls `/api/live` every 10 s and calls `invalidateAll()` when its marker changes.
+- The poller (`hooks.server.ts`) is off in tests (`INGEST_INTERVAL_SECONDS=0`, `NEURODASH_NUDGE=0`); tests call `/data-sync?/sync` explicitly.
+- Only engineers trigger a sync; admin is view-only. `PatientDevice` (training devices, mirrored to `patients.json`) is separate from
+  `DeviceAssignment` (a physical unit lent to a patient) and `PlanDevice` (device types in a plan).
+
+
+- **Progress is per device.** `patients/[id]/_components/series.ts` holds the pure per-device helpers (tested); device colour comes from `DeviceType.colorSeries` (`--series-N` in `refresh.css`). The therapy-time chart uses `stacked: true` in `MiniChart`.
+- **Therapy time** = `MoveTime`, then `GameDuration`, then stop-start (0 counts as missing). See `parse.ts`.
+- **Presence:** the Python server writes `presence.json` on each `sessions.csv`; `$lib/server/presence.ts` reads it (read-only) with the pure `$lib/ingest/presence.ts`. `/api/live` returns `{version, presence}`; the layout refreshes silently when only presence changes. Laptops call `check_user`/`release` over TCP; only they can actually block a login. Window: `ACTIVE_WINDOW_SECONDS` (keep equal to `patients_store.py`).
+- Demo data: `npm run demo:data`; `HOCMCV002` is seeded.
+- **Patients** are registered with the hospital ID only (ID, date of birth, gender, affected side, optional stroke date); `name` is set to the ID and no contact details are collected. Registering creates the folder but NOT the `patients.json` entry; creating a plan (side to train + devices) adds the patient to `patients.json`.
+- **Patient status:** Active (account created) -> Ongoing (devices allocated + a session trained; set by `markOngoing` in `ingest.ts`) -> Paused / Completed / Discontinued (therapist). Plan days are `done` (any training), `missed` or `upcoming`: there is no `partial`.
+- **Patient report** (`$lib/patientReport.ts`, pure + tested; rendered by `PatientReportView.svelte`): devices used (time, movements/mechanisms) and one graph + change statement per scored scale. The therapist adds notes, prints (`@media print` in `refresh.css`) and saves it: `saveReport` rebuilds the data on the server and writes a JSON snapshot (data + notes) through `$lib/server/reportStore.ts` (local folder `<data dir>/_reports/<ID>/<id>.json`, or `REPORTS_DIR`) and indexes it in `PatientReport`. `/reports/saved/[id]` reopens it. S3 later = another `ReportStore`; the row keeps `storage` + `storageKey`. Therapist and consultant may save, admin views, engineer has no access.
+- Overview inflow has New / Old / Overall series (`inflowSeries`): old = registered earlier and trained in the period. Assessment graphs are one per selected scale (`ScaleTrends.svelte`); `adverse_event` and the exit questionnaires are no longer offered (`isOffered`).
 
 ## Rules that must not be broken
 **Permissions are enforced server-side in every action/endpoint, never only in the UI.**

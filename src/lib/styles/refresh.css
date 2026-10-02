@@ -4,6 +4,14 @@
    bolder metrics, AA-contrast micro-labels, more breathing room.
    ============================================================ */
 
+/* More categorical colours: one distinct colour per training device (there are ten device types). */
+:root {
+	--series-7: #0891b2;
+	--series-8: #a21caf;
+	--series-9: #65a30d;
+	--series-10: #e11d48;
+}
+
 /* ---------- Cards: white, 1px crisp border, very soft shadow ---------- */
 .card {
 	background: var(--surface);
@@ -174,4 +182,23 @@ hr.sep {
 	.ph-actions .btn {
 		flex: 1 1 auto;
 	}
+}
+
+/* "In session now" indicator (patient is uploading session files from a laptop) */
+.live-pill { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; color: #166534; background: #dcfce7; white-space: nowrap; }
+.ph-meta + .live-pill { margin: 6px 0 0; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; animation: live-pulse 1.6s ease-out infinite; }
+@keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, .55); } 100% { box-shadow: 0 0 0 7px rgba(22, 163, 74, 0); } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+
+/* Printing (patient reports): only the report itself, without the app chrome or any controls. */
+.print-only { display: none; }
+@media print {
+	.sidebar, .topbar, .tabs, .no-print, #toast-host { display: none !important; }
+	.print-only { display: block !important; }
+	.shell { display: block !important; }
+	.content { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+	body { background: #fff !important; }
+	.card { box-shadow: none !important; break-inside: avoid; }
+	.report-scale { break-inside: avoid; }
 }

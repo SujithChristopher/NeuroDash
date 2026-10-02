@@ -22,8 +22,8 @@
 <PageHead
 	title="Device Requests"
 	sub={data.isEngineer
-		? 'Review therapist requests, clear devices and assign a specific unit.'
-		: 'Request rehabilitation devices for your patients and track engineer clearance.'}
+		? 'Review each centre requests, clear them and set up a unit at the centre.'
+		: `Request rehabilitation devices for ${data.centre ?? 'your centre'} and track engineer clearance.`}
 >
 	{#snippet actions()}
 		{#if !data.isEngineer}
@@ -47,20 +47,13 @@
 	>
 		<div class="form-grid">
 			<div class="field">
-				<label for="dr-patient">Patient</label>
-				<select id="dr-patient" name="patientId" required>
-					<option value="">Select a patient…</option>
-					{#each data.patients as p (p.id)}<option value={p.id}>{p.name} ({p.displayCode})</option>{/each}
-				</select>
-			</div>
-			<div class="field">
 				<label for="dr-type">Device type</label>
 				<select id="dr-type" name="deviceTypeId" required>
 					<option value="">Select a device type…</option>
 					{#each data.deviceTypes as t (t.id)}<option value={t.id}>{t.name} — {t.category}</option>{/each}
 				</select>
 			</div>
-			<div class="field full"><label for="dr-notes">Notes for engineering</label><textarea id="dr-notes" name="notes" maxlength="1000" placeholder="Clinical context for this device request…"></textarea></div>
+			<div class="field full"><label for="dr-notes">Notes for engineering</label><textarea id="dr-notes" name="notes" maxlength="1000" placeholder="Why the centre needs this device…"></textarea></div>
 		</div>
 		{#if form?.error}<div class="alert alert-critical" style="margin-bottom:12px"><Icon name="alert" size={15} /><span>{form.error}</span></div>{/if}
 		<div style="display:flex;justify-content:flex-end;gap:10px">
@@ -73,7 +66,7 @@
 {#if !data.isEngineer}
 	<div class="alert alert-info" style="margin-bottom:18px">
 		<Icon name="info" size={15} />
-		<span>A device must be inspected and <b>cleared by an engineer</b>, who then assigns a specific unit. You’ll be notified at each step.</span>
+		<span>A device must be <b>cleared by an engineer</b>, who then sets up a unit at your centre. Once it is set up you can raise issues for it and follow its history. You will be notified at each step.</span>
 	</div>
 {/if}
 
@@ -82,13 +75,13 @@
 		<table class="dt">
 			<thead>
 				<tr>
-					<th>Patient</th><th>Device Type</th>{#if data.isEngineer}<th>Requested By</th>{/if}<th>Requested</th><th>Engineer</th><th>Status</th>{#if data.isEngineer}<th></th>{/if}
+					<th>Centre</th><th>Device Type</th>{#if data.isEngineer}<th>Requested By</th>{/if}<th>Requested</th><th>Engineer</th><th>Status</th>{#if data.isEngineer}<th></th>{/if}
 				</tr>
 			</thead>
 			<tbody>
 				{#each data.requests as r (r.id)}
 					<tr>
-						<td>{r.patient.name}{#if r.notes}<div class="dt-sub">{r.notes}</div>{/if}</td>
+						<td>{r.location.name}{#if r.notes}<div class="dt-sub">{r.notes}</div>{/if}</td>
 						<td>{r.deviceType.name} — {r.deviceType.category}</td>
 						{#if data.isEngineer}<td>{r.therapist}</td>{/if}
 						<td class="mono">{fmtDateShort(r.requestedAt)}</td>

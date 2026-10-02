@@ -14,7 +14,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 			: Promise.resolve(0),
 		user.role === 'THERAPIST'
 			? prisma.deviceRequest.count({
-					where: { therapistId: user.id, status: { notIn: ['Assigned', 'Declined'] } }
+					where: { locationId: user.locationId ?? 'no-centre', status: { notIn: ['Assigned', 'Declined'] } }
 				})
 			: Promise.resolve(0)
 	]);

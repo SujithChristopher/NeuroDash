@@ -24,12 +24,12 @@
 	<div class="card" style="margin-bottom:20px">
 		<div class="table-wrap">
 			<table class="dt">
-				<thead><tr><th>Requested By</th><th>Patient</th><th>Device Type</th><th>Requested</th><th></th></tr></thead>
+				<thead><tr><th>Requested By</th><th>Centre</th><th>Device Type</th><th>Requested</th><th></th></tr></thead>
 				<tbody>
 					{#each data.pending as r (r.id)}
 						<tr>
 							<td>{r.therapist}</td>
-							<td class="mono">{r.patientCode}</td>
+							<td class="mono">{r.centre}</td>
 							<td>{r.deviceType.name}</td>
 							<td class="mono">{fmtDateShort(r.requestedAt)}</td>
 							<td>{#if data.canAct}<RequestActions request={r} available={data.available} />{/if}</td>

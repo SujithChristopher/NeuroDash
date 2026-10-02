@@ -19,6 +19,10 @@ export interface ChartOpts {
 	maxTicksX?: number;
 	horizontal?: boolean;
 	thick?: number;
+	/** Bar charts: stack the datasets into one bar per label (e.g. minutes per device per day). */
+	stacked?: boolean;
+	/** Appended to values in bar tooltips, e.g. " min". */
+	valueSuffix?: string;
 }
 
 export const cssVar = (name: string) =>
@@ -134,6 +138,8 @@ export function barConfig(labels: string[], datasets: BarDataset[], opts: ChartO
 			responsive: true,
 			maintainAspectRatio: false,
 			indexAxis: opts.horizontal ? 'y' : 'x',
+			stacked: !!opts.stacked,
+			valueSuffix: opts.valueSuffix ?? '',
 			plugins: {
 				legend: {
 					display: !!opts.legend,

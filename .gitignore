@@ -8,6 +8,10 @@ node_modules
 /.svelte-kit
 /build
 
+# Local server test data
+/localserver/testdata
+
+
 # OS
 .DS_Store
 Thumbs.db
@@ -23,3 +27,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .superpowers/
 /graphify-out/
+# Python
+__pycache__/
+*.pyc

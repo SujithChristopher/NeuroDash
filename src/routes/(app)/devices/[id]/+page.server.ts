@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { Actions, PageServerLoad } from './$types';
 import { prisma } from '$lib/server/db';
 import { requireRole, requireUser } from '$lib/server/guard';
+import { deviceScopeFor } from '$lib/server/scope';
 import { auditAs } from '$lib/server/audit';
 import { deviceUsage, logDeviceEvent } from '$lib/server/devices';
 import { MAINTENANCE_TYPES } from '$lib/deviceEvents';
@@ -10,15 +11,12 @@ import { utcDay } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const user = requireUser(locals.user);
-	const d = await prisma.device.findUnique({
-		where: { id: params.id },
+	const d = await prisma.device.findFirst({
+		where: { AND: [{ id: params.id }, deviceScopeFor(user)] }, // out-of-centre devices are a 404 for therapists
+
 		include: {
 			deviceType: { include: { mechanisms: true, games: true } },
-			currentPatient: { select: { id: true, name: true, displayCode: true } },
-			assignments: {
-				orderBy: { assignedDate: 'desc' },
-				include: { patient: { select: { id: true, name: true, displayCode: true } } }
-			},
+			centre: { select: { id: true, name: true } },
 			issues: {
 				orderBy: { openedAt: 'desc' },
 				include: {
@@ -37,13 +35,12 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	since.setUTCDate(since.getUTCDate() - 13);
 	const isEngineer = user.role === 'ENGINEER';
 
-	const [usage, recent, trialGroups, games, patientsUsing, recentSessions, patients] = await Promise.all([
+	const [usage, recent, games, patientsUsing, recentSessions, centres] = await Promise.all([
 		deviceUsage(d.id),
 		prisma.therapySession.findMany({
 			where: { deviceId: d.id, sessionDate: { gte: since } },
 			select: { sessionDate: true, durationMinutes: true }
 		}),
-		prisma.sessionTrial.count({ where: { session: { deviceId: d.id } } }),
 		prisma.sessionTrial.groupBy({
 			by: ['gameId'],
 			where: { session: { deviceId: d.id }, gameId: { not: null } },
@@ -60,9 +57,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			take: 12,
 			include: { patient: { select: { name: true, displayCode: true } } }
 		}),
-		isEngineer && d.status === 'Available'
-			? prisma.patient.findMany({ select: { id: true, displayCode: true }, orderBy: { displayCode: 'asc' } })
-			: Promise.resolve([])
+		isEngineer ? prisma.location.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } }) : Promise.resolve([])
 	]);
 
 	const u = usage.get(d.id);
@@ -87,7 +82,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			isEngineer,
 			canReport: user.role === 'THERAPIST' || user.role === 'ENGINEER'
 		},
-		patients,
+		centres,
 		maintenanceTypes: MAINTENANCE_TYPES,
 		device: {
 			id: d.id,
@@ -96,6 +91,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			firmwareVersion: d.firmwareVersion,
 			status: d.status,
 			location: d.location,
+			centre: d.centre ? { id: d.centre.id, name: d.centre.name } : null,
 			registeredOn: d.registeredOn.toISOString(),
 			lastSyncAt: d.lastSyncAt?.toISOString() ?? null,
 			type: {
@@ -105,15 +101,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				colorSeries: d.deviceType.colorSeries,
 				mechanisms: d.deviceType.mechanisms.map((m) => m.mechanismName),
 				games: d.deviceType.games.map((g) => g.displayLabel)
-			},
-			currentPatient: d.currentPatient ? { id: d.currentPatient.id, label: label(d.currentPatient) } : null
+			}
 		},
 		stats: {
 			sessions: u?.sessions ?? 0,
-			totalTrials: trialGroups,
-			avgAccuracy: u?.avgAccuracy ?? 0,
-			totalStars: u?.totalStars ?? 0,
 			totalMin: u?.totalMin ?? 0,
+			patients: u?.patients ?? 0,
+			sessionsPerWeek: u?.sessionsPerWeek ?? 0,
+			activeDays30: u?.activeDays30 ?? 0,
+			firstDay: u?.firstDay ?? null,
+			lastDay: u?.lastDay ?? null,
 			patientsUsing: patientsUsing.map((p) => ({ id: p.patient.id, label: label(p.patient), code: p.patient.displayCode }))
 		},
 		utilization: { labels: days, minutes: days.map((k) => Math.round(minutes.get(k) ?? 0)) },
@@ -122,18 +119,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			id: s.id,
 			patient: label(s.patient),
 			startTime: s.startTime.toISOString(),
-			durationMinutes: s.durationMinutes == null ? null : Number(s.durationMinutes),
-			totalHits: s.totalHits,
-			totalTargets: s.totalTargets,
-			totalStars: s.totalStars
-		})),
-		assignments: d.assignments.map((a) => ({
-			id: a.id,
-			patient: label(a.patient),
-			patientId: a.patient.id,
-			assignedDate: a.assignedDate.toISOString(),
-			returnedDate: a.returnedDate?.toISOString() ?? null,
-			status: a.status
+			durationMinutes: s.durationMinutes == null ? null : Number(s.durationMinutes)
 		})),
 		issues: d.issues.map((i) => ({
 			id: i.id,
@@ -170,47 +156,27 @@ const maintenanceSchema = z.object({
 });
 
 export const actions: Actions = {
-	assign: async ({ request, locals, params }) => {
+	// Engineers set a unit up at a centre (or return it to stock with an empty centre).
+	setCentre: async ({ request, locals, params }) => {
 		const user = requireRole(locals.user, 'ENGINEER');
-		const patientId = String((await request.formData()).get('patientId') ?? '');
-		const device = await prisma.device.findUnique({ where: { id: params.id } });
+		const locationId = String((await request.formData()).get('locationId') ?? '');
+		const device = await prisma.device.findUnique({ where: { id: params.id }, include: { centre: { select: { name: true } } } });
 		if (!device) throw error(404, 'Device not found');
-		if (device.status !== 'Available') return fail(409, { error: `${device.displayCode} is not available.` });
-		const patient = await prisma.patient.findUnique({ where: { id: patientId } });
-		if (!patient) return fail(400, { error: 'Choose a patient.' });
+		const centre = locationId ? await prisma.location.findUnique({ where: { id: locationId } }) : null;
+		if (locationId && !centre) return fail(400, { error: 'Choose a centre.' });
+		if ((device.locationId ?? '') === locationId) return fail(400, { error: 'The device is already there.' });
 
-		await prisma.$transaction([
-			prisma.device.update({ where: { id: device.id }, data: { status: 'In Use', currentPatientId: patient.id } }),
-			prisma.deviceAssignment.create({
-				data: { deviceId: device.id, patientId: patient.id, assignedDate: new Date(), status: 'In Use', assignedById: user.id }
-			})
-		]);
-		await logDeviceEvent(device.id, 'assigned', `Assigned to patient ${patient.displayCode} by ${user.name}.`);
+		await prisma.device.update({ where: { id: device.id }, data: { locationId: centre?.id ?? null } });
+		const text = centre ? `Set up at ${centre.name} by ${user.name}.` : `Returned to stock by ${user.name}.`;
+		await logDeviceEvent(device.id, 'assigned', text);
 		await auditAs(user)({
-			action: 'Device Assigned',
+			action: centre ? 'Device Set Up' : 'Device Returned to Stock',
 			entityType: 'Device',
 			entityId: device.id,
-			newValue: `Assigned to ${patient.displayCode}`
+			previousValue: device.centre?.name ?? 'In stock',
+			newValue: centre?.name ?? 'In stock'
 		});
-		return { ok: true, message: `${device.displayCode} assigned to ${patient.displayCode}.` };
-	},
-
-	returnDevice: async ({ locals, params }) => {
-		const user = requireRole(locals.user, 'ENGINEER');
-		const device = await prisma.device.findUnique({ where: { id: params.id } });
-		if (!device) throw error(404, 'Device not found');
-		if (device.status !== 'In Use' || !device.currentPatientId) return fail(409, { error: 'This device is not assigned.' });
-
-		await prisma.$transaction([
-			prisma.deviceAssignment.updateMany({
-				where: { deviceId: device.id, status: 'In Use' },
-				data: { status: 'Returned', returnedDate: new Date() }
-			}),
-			prisma.device.update({ where: { id: device.id }, data: { status: 'Available', currentPatientId: null } })
-		]);
-		await logDeviceEvent(device.id, 'assigned', `Returned to inventory by ${user.name}.`);
-		await auditAs(user)({ action: 'Device Returned', entityType: 'Device', entityId: device.id });
-		return { ok: true, message: `${device.displayCode} returned to inventory.` };
+		return { ok: true, message: centre ? `${device.displayCode} set up at ${centre.name}.` : `${device.displayCode} returned to stock.` };
 	},
 
 	logMaintenance: async ({ request, locals, params }) => {

@@ -13,12 +13,9 @@
 			active: number;
 			newPatients: number;
 			activePlans: number;
-			totalSessions: number;
-			therapyHours: number;
-			assessments: number;
 			statusMix: { status: string; count: number }[];
 		};
-		inflow: { labels: string[]; values: number[] };
+		inflow: { labels: string[]; newValues: number[]; oldValues: number[]; overallValues: number[] };
 		range: string;
 	}
 	let { program, inflow, range }: Props = $props();
@@ -40,6 +37,20 @@
 	};
 	const colors = $derived(program.statusMix.map((s) => TONE_VAR[statusTone(s.status)]));
 
+	// Which inflow graph is shown: patients registered in the period, returning patients who trained in it, or both.
+	const KINDS = [
+		['new', 'New'],
+		['old', 'Old'],
+		['overall', 'Overall']
+	] as const;
+	const KIND_INFO = {
+		new: { hint: 'Patients registered in each period', label: 'New patients', color: 'var(--accent)' },
+		old: { hint: 'Returning patients (registered earlier) who trained in each period', label: 'Old patients', color: 'var(--series-2)' },
+		overall: { hint: 'New and old patients together', label: 'All patients', color: 'var(--good)' }
+	};
+	let kind = $state<(typeof KINDS)[number][0]>('new');
+	const values = $derived(kind === 'new' ? inflow.newValues : kind === 'old' ? inflow.oldValues : inflow.overallValues);
+
 	function setRange(r: string) {
 		const q = new URLSearchParams(page.url.searchParams);
 		q.set('range', r);
@@ -47,34 +58,36 @@
 	}
 </script>
 
-<div class="grid grid-4" style="margin-bottom:16px">
+<div class="grid" style="margin-bottom:16px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
 	<KpiCard label="Total Patients" value={program.total} icon="users" tone="accent" />
 	<KpiCard label="Active Patients" value={program.active} icon="activity" tone="good" />
 	<KpiCard label="New Patients (30d)" value={program.newPatients} icon="plus" tone="accent" />
 	<KpiCard label="Active Plans" value={program.activePlans} icon="target" tone="good" />
-</div>
-<div class="grid grid-4" style="margin-bottom:16px">
-	<KpiCard label="Therapy Hours" value="{program.therapyHours}h" icon="clock" tone="info" />
-	<KpiCard label="Total Sessions" value={program.totalSessions} icon="activity" tone="info" />
-	<KpiCard label="Assessments Completed" value={program.assessments} icon="clipboard" tone="info" />
 	<KpiCard label="Completed / Discontinued" value="{program.statusMix.find((s) => s.status === 'Completed')?.count ?? 0} / {program.statusMix.find((s) => s.status === 'Discontinued')?.count ?? 0}" icon="check" tone="neutral" />
 </div>
 
 <div class="two-col">
 	<div class="card">
 		<div class="card-head">
-			<div><h3>Patient inflow</h3><div class="hint">New patient registrations over time</div></div>
+			<div><h3>Patient inflow</h3><div class="hint">{KIND_INFO[kind].hint}</div></div>
+			<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+			<div class="range-toggle" role="group" aria-label="Patients shown">
+				{#each KINDS as [k, l] (k)}
+					<button class:active={kind === k} onclick={() => (kind = k)}>{l}</button>
+				{/each}
+			</div>
 			<div class="range-toggle">
 				{#each RANGES as [k, l] (k)}
 					<button class:active={range === k} onclick={() => setRange(k)}>{l}</button>
 				{/each}
+			</div>
 			</div>
 		</div>
 		<div class="card-body">
 			<Chart
 				kind="area"
 				labels={inflow.labels}
-				datasets={[{ label: 'New patients', data: inflow.values, color: 'var(--accent)' }]}
+				datasets={[{ label: KIND_INFO[kind].label, data: values, color: KIND_INFO[kind].color }]}
 				opts={{ maxTicksX: range === 'year' ? 12 : 8 }}
 				height={220}
 			/>

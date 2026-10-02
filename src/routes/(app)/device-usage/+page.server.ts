@@ -22,8 +22,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 				category: d.deviceType.category,
 				sessions: u?.sessions ?? 0,
 				totalMin: Math.round(u?.totalMin ?? 0),
-				avgAccuracy: u?.avgAccuracy ?? 0,
-				totalStars: u?.totalStars ?? 0
+				patients: u?.patients ?? 0,
+				sessionsPerWeek: u?.sessionsPerWeek ?? 0,
+				lastDay: u?.lastDay ?? null
 			};
 		})
 		.sort((a, b) => b.totalMin - a.totalMin);

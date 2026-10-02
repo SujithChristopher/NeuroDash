@@ -20,6 +20,8 @@
 	// Roving tabindex: the selected button (or the first) is the one tab stop.
 	const stop = $derived(selected >= 0 ? selected : 0);
 	let root = $state<HTMLDivElement>();
+	// Text options are listed one per row; short numeric scales (0-5, 0.5 steps) stay in a single wrapped row.
+	const compact = $derived(choices.every((c) => String(c.label).length <= 3));
 
 	function key(e: KeyboardEvent, i: number) {
 		const next = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? i + 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? i - 1 : null;
@@ -31,7 +33,7 @@
 	}
 </script>
 
-<div class="choice-group" role="radiogroup" aria-label={label} bind:this={root}>
+<div class="choice-group" class:list={!compact} role="radiogroup" aria-label={label} bind:this={root}>
 	{#each choices as c, i (String(c.value))}
 		<button
 			type="button"
@@ -73,6 +75,14 @@
 		cursor: pointer;
 		max-width: 100%;
 		white-space: normal; /* long translated labels wrap, never truncate */
+	}
+	.choice-group.list {
+		flex-direction: column;
+		gap: 6px;
+	}
+	.choice-group.list .choice {
+		width: 100%;
+		justify-content: flex-start;
 	}
 	.choice:hover {
 		border-color: var(--accent);

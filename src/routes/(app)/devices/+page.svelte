@@ -68,7 +68,7 @@
 	</div>
 	<div class="table-wrap">
 		<table class="dt">
-			<thead><tr><th>Device</th><th>Current Patient</th><th>Status</th><th></th></tr></thead>
+			<thead><tr><th>Device</th><th>Centre</th><th>Status</th><th></th></tr></thead>
 			<tbody>
 				{#each items as d (d.id)}
 					<tr class="clickable" onclick={() => goto(`/devices/${d.id}`)}>
@@ -76,7 +76,7 @@
 							<div class="dt-name mono">{d.displayCode}</div>
 							<div class="dt-sub">{d.type.category}{d.location ? ` · ${d.location}` : ''}{d.lastSyncAt ? ` · synced ${timeAgo(d.lastSyncAt)}` : ''}</div>
 						</td>
-						<td>{#if d.patient}{d.patient}{:else}<span class="muted">—</span>{/if}</td>
+						<td>{#if d.centre}{d.centre}{:else}<span class="muted">In stock</span>{/if}</td>
 						<td><Badge text={d.status} /></td>
 						<td class="row-chevron"><Icon name="chevron" size={14} /></td>
 					</tr>
@@ -110,7 +110,11 @@
 			</div>
 			<div class="field"><label for="rg-serial">Serial number</label><input id="rg-serial" name="serialNumber" type="text" required /></div>
 			<div class="field"><label for="rg-fw">Firmware version</label><input id="rg-fw" name="firmwareVersion" type="text" placeholder="e.g. 2.3.1" /></div>
-			<div class="field"><label for="rg-loc">Location</label><input id="rg-loc" name="location" type="text" placeholder="e.g. Therapy Bay 2" /></div>
+			<div class="field">
+				<label for="rg-centre">Centre</label>
+				<select id="rg-centre" name="locationId"><option value="">In stock (set up later)</option>{#each data.centres as c (c.id)}<option value={c.id}>{c.name}</option>{/each}</select>
+			</div>
+			<div class="field"><label for="rg-loc">Room / bay</label><input id="rg-loc" name="location" type="text" placeholder="e.g. Therapy Bay 2" /></div>
 			<div class="field-hint">A device code such as PLUTO-004 is generated automatically.</div>
 			{#if form?.error}<div class="alert alert-critical" style="margin-top:10px"><Icon name="alert" size={15} /><span>{form.error}</span></div>{/if}
 		</form>

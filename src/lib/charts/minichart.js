@@ -358,11 +358,52 @@ MiniChart.prototype._drawBar = function(){
   var gridColor = '#e6e5df', tickColor='#8a8983';
   var n = labels.length;
   var dsCount = datasets.length || 1;
-  var yAxis = computeYAxis(this._dataMax(datasets), undefined);
+  // Stacked bars (vertical only): each category is one bar made of one segment per dataset, e.g. minutes per device.
+  var stacked = !!this.o.stacked && !horizontal;
+  var yAxis = computeYAxis(stacked ? this._stackMax(datasets, n) : this._dataMax(datasets), undefined);
   this._barRects = [];
   var self = this;
 
-  if(!horizontal){
+  if(stacked){
+    ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.font='11px IBM Plex Sans, system-ui, sans-serif';
+    yAxis.ticks.forEach(function(t){
+      var ty = p.y + p.h - (t/(yAxis.max||1))*p.h;
+      ctx.strokeStyle=gridColor; ctx.beginPath(); ctx.moveTo(p.x, ty+0.5); ctx.lineTo(p.x+p.w, ty+0.5); ctx.stroke();
+      ctx.fillStyle=tickColor; ctx.fillText(String(Math.round(t*10)/10), p.x-8, ty);
+    });
+    ctx.strokeStyle=gridColor; ctx.beginPath(); ctx.moveTo(p.x,p.y+p.h+0.5); ctx.lineTo(p.x+p.w,p.y+p.h+0.5); ctx.stroke();
+
+    var sCatW = n>0 ? p.w/n : p.w;
+    var sThick = (datasets[0]&&datasets[0].maxBarThickness) || 28;
+    var sBarW = Math.min(sThick, sCatW*0.7);
+    var sStep = this._xTickStep(n);
+    var scale = p.h/(yAxis.max||1);
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    labels.forEach(function(lb,i){
+      var cx = p.x + sCatW*i + sCatW/2;
+      if(i%sStep===0 || i===n-1){ ctx.fillStyle=tickColor; ctx.fillText(String(lb).length>10?String(lb).slice(0,9)+'…':String(lb), cx, p.y+p.h+7); }
+      var bx = cx - sBarW/2, w = Math.max(1, sBarW-2);
+      var prog = self._barProg(i, n);
+      var topDs = -1;
+      datasets.forEach(function(ds,di){ if(((ds.data||[])[i]||0)>0) topDs = di; });
+      var acc = 0;
+      datasets.forEach(function(ds,di){
+        var v = (ds.data||[])[i]||0;
+        if(v<=0) return;
+        var segH = v*scale;
+        // Full-size geometry is kept for hover; the drawn segment grows from the baseline with the animation.
+        self._barRects.push({x:bx, y:p.y+p.h-(acc+v)*scale, w:w, h:Math.max(segH,1), i:i, v:v, ds:ds, stack:true});
+        var drawH = segH*prog;
+        var drawY = p.y+p.h-(acc*scale)*prog-drawH;
+        ctx.fillStyle = (i===self._hoverIdx) ? shade(ds.backgroundColor,-10) : (ds.backgroundColor||'#2a78d6');
+        if(di===topDs) roundRectTop(ctx, bx, drawY, w, drawH, ds.borderRadius||4);
+        else { ctx.beginPath(); ctx.rect(bx, drawY, w, drawH); }
+        ctx.fill();
+        if(di!==topDs && drawH>1){ ctx.strokeStyle='#ffffff'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(bx, drawY+0.5); ctx.lineTo(bx+w, drawY+0.5); ctx.stroke(); }
+        acc += v;
+      });
+    });
+  } else if(!horizontal){
     ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.font='11px IBM Plex Sans, system-ui, sans-serif';
     yAxis.ticks.forEach(function(t){
       var ty = p.y + p.h - (t/(yAxis.max||1))*p.h;
@@ -418,6 +459,16 @@ MiniChart.prototype._drawBar = function(){
     });
   }
   this._barGeom = { horizontal: horizontal, n: n, labels: labels, datasets: datasets, yAxis: yAxis };
+};
+
+MiniChart.prototype._stackMax = function(datasets, n){
+  var m = 0;
+  for(var i=0;i<n;i++){
+    var sum = 0;
+    datasets.forEach(function(ds){ var v=(ds.data||[])[i]; if(typeof v==='number' && isFinite(v) && v>0) sum+=v; });
+    m = Math.max(m, sum);
+  }
+  return m;
 };
 
 MiniChart.prototype._drawDoughnut = function(){
@@ -527,8 +578,21 @@ MiniChart.prototype._hoverBar = function(mx,my,e){
   if(!hit){ this._hoverIdx=null; this._hideTip(); this._draw(); return; }
   this._hoverIdx = hit.i;
   var label = (this._barGeom.labels||[])[hit.i];
-  var text = (hit.ds.label? hit.ds.label+': ':'')+hit.v;
-  this._showTip(e.clientX, e.clientY, this._tipRowsHTML([{color:hit.ds.backgroundColor,text:text}], String(label)));
+  var suffix = this.o.valueSuffix || '';
+  var fmt = function(v){ return String(Math.round(v*10)/10)+suffix; };
+  if(hit.stack){
+    // Stacked bar: list every segment of the hovered day, then the total.
+    var rows = [], total = 0;
+    (this._barGeom.datasets||[]).forEach(function(ds){
+      var v = (ds.data||[])[hit.i]||0;
+      if(v>0){ rows.push({color:ds.backgroundColor, text:(ds.label? ds.label+': ':'')+fmt(v)}); total += v; }
+    });
+    if(rows.length>1) rows.push({text:'Total: '+fmt(total)});
+    this._showTip(e.clientX, e.clientY, this._tipRowsHTML(rows, String(label)));
+  } else {
+    var text = (hit.ds.label? hit.ds.label+': ':'')+fmt(hit.v);
+    this._showTip(e.clientX, e.clientY, this._tipRowsHTML([{color:hit.ds.backgroundColor,text:text}], String(label)));
+  }
   this._draw();
 };
 

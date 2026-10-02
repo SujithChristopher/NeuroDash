@@ -48,15 +48,18 @@
 			<Icon name="search" size={14} />
 			<input placeholder="Filter scales…" bind:value={filter} aria-label="Filter scales" />
 		</div>
-		<div class="grid grid-3">
+		<div class="scale-list" role="listbox" aria-label="Assessment scales">
 			{#each visibleScales as s (s.id)}
 				<button
 					type="button"
-					class="card card-pad scale-card"
+					role="option"
+					aria-selected="false"
+					class="scale-row"
 					onclick={() => ((answers = {}), goto(`?patient=${data.patient.id}&scale=${s.id}`))}
 				>
-					<div class="dt-name" style="font-size:13px">{s.title}</div>
-					<div class="dt-sub" style="margin-top:4px">{s.answerable} items{s.computed ? ` · ${s.computed} auto-scored` : ''}</div>
+					<span class="dt-name" style="font-size:13.5px">{s.title}</span>
+					<span class="dt-sub">{s.answerable} items{s.computed ? ` · ${s.computed} auto-scored` : ''}</span>
+					<Icon name="chevron" size={14} />
 				</button>
 			{:else}
 				<EmptyState icon="search" title="No scales match" />
@@ -153,14 +156,33 @@
 {/if}
 
 <style>
-	.scale-card {
-		text-align: left;
-		cursor: pointer;
-		min-height: 44px;
-		font: inherit;
+	.scale-list {
+		display: flex;
+		flex-direction: column;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-s);
+		overflow: hidden;
 	}
-	.scale-card:hover {
-		border-color: var(--accent);
+	.scale-row {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		min-height: 48px;
+		padding: 10px 14px;
+		text-align: left;
+		font: inherit;
+		background: var(--surface);
+		border: none;
+		border-bottom: 1px solid var(--border);
+		cursor: pointer;
+	}
+	.scale-row:last-child {
+		border-bottom: none;
+	}
+	.scale-row .dt-name {
+		flex: 1;
+	}
+	.scale-row:hover {
 		background: var(--accent-soft);
 	}
 	.lbl {

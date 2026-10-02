@@ -24,10 +24,10 @@
 
 {#if !plan}
 	<div class="card">
-		<EmptyState icon="target" title="No therapy plan has been created." sub="Create a plan to begin structured, device-assisted therapy." />
+		<EmptyState icon="target" title="No therapy plan yet." sub="Choose the side to train and the devices to begin device-assisted therapy. You can change them later with Modify Plan." />
 		{#if data.perms.isOwner}
 			<div style="text-align:center;padding-bottom:24px">
-				<button class="btn btn-primary" onclick={() => (showNew = true)}><Icon name="plus" size={14} /> Create Plan</button>
+				<button class="btn btn-primary" onclick={() => (showNew = true)}><Icon name="plus" size={14} /> Set Up Plan</button>
 			</div>
 		{/if}
 	</div>
@@ -35,9 +35,6 @@
 	<div class="page-actions" style="justify-content:flex-end;margin-bottom:16px">
 		{#if data.perms.canModifyPlan}
 			<button class="btn btn-secondary btn-sm" onclick={() => (showEdit = true)}><Icon name="edit" size={13} /> Modify Plan</button>
-		{/if}
-		{#if data.perms.isOwner}
-			<button class="btn btn-secondary btn-sm" onclick={() => (showNew = true)}><Icon name="plus" size={13} /> New Plan</button>
 		{/if}
 	</div>
 
@@ -59,7 +56,7 @@
 		<div class="card-head"><h3>Plan details</h3><Badge text={plan.status} /></div>
 		<div class="card-body">
 			<div class="form-grid">
-				<div class="kv-row"><span class="kl">Plan name</span><span class="kv">{plan.name}</span></div>
+				<div class="kv-row"><span class="kl">Side trained</span><span class="kv">{plan.trainingSide ?? '—'}</span></div>
 				<div class="kv-row"><span class="kl">Start date</span><span class="kv">{fmtDateShort(plan.startDate)}</span></div>
 				<div class="kv-row"><span class="kl">Duration</span><span class="kv">{plan.durationDays} days</span></div>
 				<div class="kv-row"><span class="kl">Daily target duration</span><span class="kv">{plan.dailyTargetMinutes} minutes</span></div>
@@ -79,7 +76,6 @@
 					<div class="day-chip" title="Day {d.dayNumber} — {d.status} — {d.actualMinutes}min / {d.targetMinutes}min">
 						<div class="dc-mark {d.status}" class:today={d.dayNumber === todayIdx && d.status !== 'upcoming'}>
 							{#if d.status === 'done'}<Icon name="check" size={13} />
-							{:else if d.status === 'partial'}<Icon name="minus" size={13} />
 							{:else if d.status === 'missed'}<Icon name="x" size={13} />{/if}
 						</div>
 						<div class="dc-num">{d.dayNumber}</div>
@@ -88,7 +84,6 @@
 			</div>
 			<div class="legend-row" style="margin-top:6px">
 				<div class="legend-item"><span class="sw" style="background:var(--good)"></span>Completed</div>
-				<div class="legend-item"><span class="sw" style="background:var(--warning)"></span>Partial</div>
 				<div class="legend-item"><span class="sw" style="background:var(--critical)"></span>Missed</div>
 				<div class="legend-item"><span class="sw" style="background:var(--border-strong)"></span>Upcoming</div>
 			</div>
@@ -122,4 +117,4 @@
 {/if}
 
 {#if showNew}<NewPlanModal {data} {form} onclose={() => (showNew = false)} />{/if}
-{#if showEdit && plan}<EditPlanModal {plan} {form} onclose={() => (showEdit = false)} />{/if}
+{#if showEdit && plan}<EditPlanModal {plan} {data} {form} onclose={() => (showEdit = false)} />{/if}
