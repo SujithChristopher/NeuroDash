@@ -69,7 +69,5 @@ export const DEVICE_STATUSES = [
 
 export const ISSUE_SEVERITIES = ['Low', 'Medium', 'High', 'Critical'] as const;
 
-export const ASSESSMENT_LABELS = ['Baseline', 'Day 7', 'Day 14', 'Day 21', 'Day 28', 'Follow-up', 'Discharge'];
-
 export const REQUEST_PENDING = 'Pending Engineer Review';
 export const REQUEST_CLEARED = 'Cleared — Ready to Assign';

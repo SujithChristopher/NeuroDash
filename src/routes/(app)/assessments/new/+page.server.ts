@@ -6,7 +6,6 @@ import { requireRole } from '$lib/server/guard';
 import { isOwnerTherapist, patientScopeFor } from '$lib/server/scope';
 import { auditAs } from '$lib/server/audit';
 import { checkUpload } from '$lib/server/files';
-import { ASSESSMENT_LABELS } from '$lib/constants';
 import { getScale, isOffered, listScales } from '$lib/scales/registry';
 import { allItems, computeScores, maxScore, primaryScoreId, validateAnswers } from '$lib/scales/evaluate';
 import type { Answers } from '$lib/scales/types';
@@ -39,9 +38,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	return {
 		patient,
-		labels: ASSESSMENT_LABELS,
 		scales: listScales(),
 		scale,
+		// the first assessment of a scale for this patient is their Baseline; nothing else needs a label
+		isBaseline: scale ? (await prisma.assessment.count({ where: { patientId: patient.id, scaleId: scale.id } })) === 0 : false,
 		primary: scale ? primaryScoreId(scale, patient.affectedSide) : null,
 		examiners: examiners.some((e) => e.id === user.id) ? examiners : [{ id: user.id, name: user.name }, ...examiners]
 	};
@@ -56,7 +56,6 @@ const schema = z.object({
 		.min(1)
 		.transform((v) => new Date(v))
 		.refine((d) => !Number.isNaN(d.getTime()), 'Invalid date.'),
-	label: z.enum(ASSESSMENT_LABELS as [string, ...string[]]).optional()
 });
 
 export const actions: Actions = {
@@ -120,6 +119,9 @@ export const actions: Actions = {
 		const badUpload = uploads.find((u) => !u.ok);
 		if (badUpload && !badUpload.ok) return fail(400, { error: badUpload.error });
 
+		// No timepoint is chosen: a patient's first assessment of a scale is its Baseline, later ones carry no label (they are dated).
+		const priorOfThisScale = await prisma.assessment.count({ where: { patientId: patient.id, scaleId: def.id } });
+
 		const assessment = await prisma.$transaction(async (tx) => {
 			const a = await tx.assessment.create({
 				data: {
@@ -128,7 +130,7 @@ export const actions: Actions = {
 					scaleVersion: def.version,
 					administeredById,
 					assessmentDate,
-					label: parsed.data.label ?? null,
+					label: priorOfThisScale === 0 ? 'Baseline' : null,
 					answers,
 					scoreItem: primary,
 					score,

@@ -577,7 +577,7 @@ describe('the demo MARS and PLUTO files (localserver/testdata)', () => {
 // --- "in session now": presence.json written by the Python server ------------------------------------------------------
 describe('a patient who is training right now', () => {
 	const local = (ms: number) => new Date(Date.now() - ms - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 19);
-	const setPresence = (o: Record<string, { device: string; last_upload: string }>) => fs.writeFileSync(path.join(ROOT(), 'presence.json'), JSON.stringify(o));
+	const setPresence = (o: Record<string, { device: string; client?: string; last_upload: string }>) => fs.writeFileSync(path.join(ROOT(), 'presence.json'), JSON.stringify(o));
 	const live = async (c: Client) => (await (await c.get('/api/live')).json()) as { version: string; presence: string };
 	let code: string;
 	let pid: string;
@@ -601,6 +601,12 @@ describe('a patient who is training right now', () => {
 		expect((await inList()).liveDevice).toBe('MARS01');
 		expect((await pageData(s.arjun, '/data-sync')).training).toContainEqual(expect.objectContaining({ code, device: 'MARS01' }));
 		expect((await live(s.priya)).presence).toContain(`${code}@MARS01`);
+	});
+
+	it('says which laptop holds the patient when the sender reported one', async () => {
+		setPresence({ [code]: { device: 'MARS', client: 'LAPTOP-A', last_upload: local(5_000) } });
+		expect((await pageData(s.priya, `/patients/${pid}`)).liveSession).toMatchObject({ device: 'MARS', client: 'LAPTOP-A' });
+		setPresence({});
 	});
 
 	it('the live signal changes when training starts or stops, not on every upload', async () => {

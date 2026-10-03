@@ -8,7 +8,7 @@ beforeAll(async () => {
 
 type Centre = { id: string; name: string; engineer: string | null; therapists: number; consultants: number; devices: number; patients: number; byStatus: Record<string, number>; totalHours: number; activeDays: number; activeDays30: number };
 const centres = async (c: typeof s.admin) => (await pageData(c, '/analytics')).centres as Centre[];
-const downtown = async (c = s.admin) => (await centres(c)).find((x) => x.name === 'Downtown Clinic')!;
+const downtown = async (c = s.admin) => (await centres(c)).find((x) => x.name === 'CMC Ranipet')!;
 
 describe('analytics per centre', () => {
 	it('shows each centre with its staff, devices, patients by status, hours and active days, matching the database', async () => {
@@ -46,10 +46,10 @@ describe('analytics per centre', () => {
 	});
 
 	it('the admin sees every centre; therapists and consultants only their own; engineers none', async () => {
-		expect((await centres(s.admin)).map((c) => c.name)).toEqual(expect.arrayContaining(['Downtown Clinic', 'North Campus']));
-		expect((await centres(s.priya)).map((c) => c.name)).toEqual(['Downtown Clinic']);
-		expect((await centres(s.vikram)).map((c) => c.name)).toEqual(['Downtown Clinic']);
-		expect((await centres(s.rohan)).map((c) => c.name)).toEqual(['North Campus']);
+		expect((await centres(s.admin)).map((c) => c.name)).toEqual(expect.arrayContaining(['CMC Ranipet', 'CMC Vellore']));
+		expect((await centres(s.priya)).map((c) => c.name)).toEqual(['CMC Ranipet']);
+		expect((await centres(s.vikram)).map((c) => c.name)).toEqual(['CMC Ranipet']);
+		expect((await centres(s.rohan)).map((c) => c.name)).toEqual(['CMC Vellore']);
 		expect(await centres(s.arjun)).toEqual([]);
 	});
 });
@@ -62,9 +62,9 @@ describe('the engineer responsible for a centre', () => {
 		const arjun = await db().user.findFirstOrThrow({ where: { email: 'arjun.rao@neurodash.care' } });
 		expect((await set(s.admin, north, '')).type).toBe('success');
 		expect((await db().location.findUniqueOrThrow({ where: { id: north } })).engineerId).toBeNull();
-		expect((await centres(s.admin)).find((c) => c.name === 'North Campus')!.engineer).toBeNull();
+		expect((await centres(s.admin)).find((c) => c.name === 'CMC Vellore')!.engineer).toBeNull();
 		expect((await set(s.admin, north, arjun.id)).type).toBe('success');
-		expect((await centres(s.admin)).find((c) => c.name === 'North Campus')!.engineer).toBe('Arjun Rao');
+		expect((await centres(s.admin)).find((c) => c.name === 'CMC Vellore')!.engineer).toBe('Arjun Rao');
 		expect(await db().auditLog.findFirst({ where: { action: 'Centre Engineer Set', entityId: north } })).toBeTruthy();
 	});
 

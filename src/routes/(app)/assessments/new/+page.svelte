@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import PageHead from '$lib/components/PageHead.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import Badge from '$lib/components/Badge.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ScaleForm from '$lib/components/scale/ScaleForm.svelte';
 	import type { Answers } from '$lib/scales/types';
@@ -12,7 +13,6 @@
 	const today = new Date().toISOString().slice(0, 10);
 	let answers = $state<Answers>({});
 	let examinerId = $state('');
-	let label = $state('Baseline');
 	let date = $state(today);
 	let busy = $state(false);
 	let filter = $state('');
@@ -90,7 +90,6 @@
 		}}
 	>
 		<input type="hidden" name="scaleId" value={data.scale.id} />
-		<input type="hidden" name="label" value={label} />
 
 		<div class="form-section-head">
 			<span class="num">1</span><h3>{data.scale.title}</h3>
@@ -102,16 +101,12 @@
 				<label for="am-date">Assessment date</label>
 				<input id="am-date" name="assessmentDate" type="date" bind:value={date} max={today} required />
 			</div>
-			<div class="field">
-				<span class="lbl">Timepoint</span>
-				<div style="display:flex;gap:6px;flex-wrap:wrap" role="radiogroup" aria-label="Timepoint">
-					{#each data.labels as l (l)}
-						<button type="button" role="radio" aria-checked={label === l} class="btn btn-sm {label === l ? 'btn-primary' : 'btn-secondary'}" style="min-height:44px" onclick={() => (label = l)}>
-							{#if label === l}<Icon name="check" size={13} />{/if}{l}
-						</button>
-					{/each}
+			{#if data.isBaseline}
+				<div class="field">
+					<span class="lbl">Assessment</span>
+					<div><Badge text="Baseline" tone="accent" /> <span class="muted" style="font-size:12px">first {data.scale.title} for this patient</span></div>
 				</div>
-			</div>
+			{/if}
 		</div>
 
 		<div class="form-section-head"><span class="num">2</span><h3>Responses</h3></div>

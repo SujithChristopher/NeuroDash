@@ -89,7 +89,7 @@
 				</div>
 				{#if data.liveSession}
 					<div class="live-pill" role="status" title="A session file arrived in the last few minutes. Other laptops are told this patient is in use.">
-						<span class="live-dot"></span>In session now · {data.liveSession.device} · {data.liveSession.secondsAgo < 90 ? 'just now' : `${Math.round(data.liveSession.secondsAgo / 60)} min ago`}
+						<span class="live-dot"></span>In session now · {data.liveSession.device}{data.liveSession.client ? ` (${data.liveSession.client})` : ''} · {data.liveSession.secondsAgo < 90 ? 'just now' : `${Math.round(data.liveSession.secondsAgo / 60)} min ago`}
 					</div>
 				{/if}
 			</div>

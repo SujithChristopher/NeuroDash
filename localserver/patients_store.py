@@ -20,8 +20,10 @@ Admin usage:
 
 import json
 import os
+import hashlib
 import socket
 import sys
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -35,16 +37,32 @@ VALID_STATUS = {"active", "paused", "discharged"}
 VALID_SIDE = {"left", "right", "both"}
 
 NUDGE_PORT = 5001
+NUDGE_ENABLED = os.environ.get("NEURODASH_NUDGE", "1") != "0"
 
 POLL_SECONDS = 60
 OFFLINE_AFTER = 3 * POLL_SECONDS
 
-# A laptop uploads sessions.csv about once a minute while a patient is training. A patient counts as "in use" if an
-# upload arrived within this window (a few missed uploads are tolerated). Keep ACTIVE_WINDOW_SECONDS in the web app's
-# .env equal to this value.
+# A patient counts as "in use" while their laptop has shown a sign of life recently: it claimed them, a trial ended, or a
+# sessions.csv upload arrived. See ACTIVE_WINDOW_SECONDS below.
 PRESENCE_FILE = DATA_FOLDER / "presence.json"
-ACTIVE_WINDOW_SECONDS = 300
+# 15 minutes: some games run that long between signs of life (a claim, a trial end, an upload). Keep it longer than your longest
+# trial. Set the ACTIVE_WINDOW_SECONDS environment variable to change it (and the same value in the web app's .env).
+ACTIVE_WINDOW_SECONDS = int(os.environ.get("ACTIVE_WINDOW_SECONDS", "900"))
 PRESENCE_KEEP_SECONDS = 24 * 3600
+
+
+# The server handles each laptop in its own thread, so every read-modify-write of a JSON file takes this lock.
+_lock = threading.RLock()
+
+
+def _locked(fn):
+    def wrapper(*args, **kwargs):
+        with _lock:
+            return fn(*args, **kwargs)
+
+    wrapper.__name__ = fn.__name__
+    wrapper.__doc__ = fn.__doc__
+    return wrapper
 
 
 def now():
@@ -110,9 +128,12 @@ def _broadcast_addresses():
     return addresses
 
 
-def send_nudge(version):
+def send_nudge(version, kind="patients_changed"):
+    if not NUDGE_ENABLED:
+        return
+
     message = json.dumps({
-        "type": "patients_changed",
+        "type": kind,
         "version": version
     }).encode("utf-8")
 
@@ -129,6 +150,7 @@ def send_nudge(version):
         sock.close()
 
 
+@_locked
 def upsert_patient(
     user_id, status=None, devices=None, side=None
 ):
@@ -184,17 +206,31 @@ def upsert_patient(
     return _save_patients(data)
 
 
-def patients_for_device(data, device_id):
+def patients_for_device(data, device_id, client_id=None, hide_held=False):
+    """The patients of this device. With hide_held, patients another laptop is training right now are left out, so a
+    laptop never offers a patient who is busy elsewhere. patients.json itself is never changed for this: it is a view."""
+
+    busy = held_by_others(device_id, client_id) if hide_held else set()
+
     return [
         p for p in data["patients"]
-        if device_id.upper() in p["devices"]
+        if device_id.upper() in p["devices"] and p["user_id"] not in busy
     ]
+
+
+def view_token(patients):
+    """Short fingerprint of which patients a laptop is shown. It changes when a patient is hidden or shown again even
+    though patients.json (and its version) did not, which is how a laptop knows its list is out of date."""
+
+    ids = "|".join(sorted(p["user_id"] for p in patients))
+    return hashlib.sha1(ids.encode("utf-8")).hexdigest()[:12]
 
 
 # ---------------------------------------------------------
 # devices.json (heartbeat)
 # ---------------------------------------------------------
 
+@_locked
 def record_sync(device_id, device_version, ip):
     """Called on every laptop sync request."""
 
@@ -209,6 +245,7 @@ def record_sync(device_id, device_version, ip):
     _write_atomic(DEVICES_FILE, devices)
 
 
+@_locked
 def log_sync(device_id, from_version, to_version):
     """Append a line when a laptop actually receives an update."""
 
@@ -260,13 +297,35 @@ def _age_seconds(iso, at=None):
         return float("inf")
 
 
-def record_presence(user_id, device_id, ip=None, at=None):
-    """Note that `device_id` has just uploaded a session for `user_id`."""
+def same_holder(entry, device_id, client_id=None):
+    """Is `entry` (a presence record) held by the requester? A laptop is identified by its client_id; two laptops can
+    both be "MARS", so the device name alone only decides when either side has no client_id (older senders)."""
+
+    if entry.get("client") and client_id:
+        return entry["client"] == client_id
+
+    return entry.get("device") == device_id
+
+
+@_locked
+def record_presence(user_id, device_id, ip=None, at=None, client_id=None):
+    """Note that `device_id` (laptop `client_id`) has just uploaded a session, or renewed its claim, for `user_id`."""
 
     presence = _read(PRESENCE_FILE, {})
 
+    previous = presence.get(user_id) or {}
+    if client_id is None and previous.get("device") == device_id:
+        client_id = previous.get("client")  # an upload from an older sender must not erase who the laptop is
+
+    # A patient becoming held (or changing hands) changes what the other laptops should offer: tell them right away.
+    became_held = (
+        not previous
+        or _age_seconds(previous.get("last_upload"), at) > ACTIVE_WINDOW_SECONDS
+        or not same_holder(previous, device_id, client_id)
+    )
+
     stamp = (at or datetime.now()).isoformat(timespec="seconds")
-    presence[user_id] = {"device": device_id, "last_upload": stamp, "ip": ip}
+    presence[user_id] = {"device": device_id, "client": client_id, "last_upload": stamp, "ip": ip}
 
     # Keep the file small: forget patients idle for a day.
     presence = {
@@ -276,9 +335,13 @@ def record_presence(user_id, device_id, ip=None, at=None):
 
     _write_atomic(PRESENCE_FILE, presence)
 
+    if became_held:
+        send_nudge(0, "presence_changed")
 
-def clear_presence(user_id, device_id=None):
-    """Free the patient now. If device_id is given, only that laptop may free it.
+
+@_locked
+def clear_presence(user_id, device_id=None, client_id=None):
+    """Free the patient now. If device_id is given, only the laptop that holds them may free it.
     Returns True if something was cleared."""
 
     presence = _read(PRESENCE_FILE, {})
@@ -287,14 +350,16 @@ def clear_presence(user_id, device_id=None):
     if entry is None:
         return False
 
-    if device_id is not None and entry.get("device") != device_id:
+    if device_id is not None and not same_holder(entry, device_id, client_id):
         return False
 
     del presence[user_id]
     _write_atomic(PRESENCE_FILE, presence)
+    send_nudge(0, "presence_changed")  # the patient is free again: other laptops can offer them
     return True
 
 
+@_locked
 def presence_for(user_id, at=None):
     """The active session for a patient, or None if nobody is training."""
 
@@ -310,9 +375,39 @@ def presence_for(user_id, at=None):
 
     return {
         "device": entry.get("device"),
+        "client": entry.get("client"),
         "last_upload": entry.get("last_upload"),
         "seconds_ago": int(age),
     }
+
+
+@_locked
+def held_by_others(device_id, client_id=None, at=None):
+    """User ids that some OTHER laptop is training right now."""
+
+    return {
+        uid for uid, entry in _read(PRESENCE_FILE, {}).items()
+        if _age_seconds(entry.get("last_upload"), at) <= ACTIVE_WINDOW_SECONDS
+        and not same_holder(entry, device_id, client_id)
+    }
+
+
+@_locked
+def claim_presence(user_id, device_id, ip=None, at=None, client_id=None):
+    """Login-time lock: take the patient for this laptop, unless another laptop holds them.
+
+    Returns (True, None) when the patient is now held by this laptop (a laptop that already holds them just renews the
+    hold: the sender does that every 30 s as a heartbeat), or (False, holder) with the other laptop's details when it is
+    refused. The hold lapses on its own after ACTIVE_WINDOW_SECONDS without a renewal or an upload, and `release` frees it.
+    """
+
+    holder = presence_for(user_id, at)
+
+    if holder is not None and not same_holder(holder, device_id, client_id):
+        return False, holder
+
+    record_presence(user_id, device_id, ip, at, client_id)
+    return True, None
 
 
 # ---------------------------------------------------------

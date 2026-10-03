@@ -13,6 +13,7 @@
 	import { crumbDetail } from '$lib/stores/page';
 	import { toastEnhance } from '$lib/enhance';
 	import { EVENT_ICON, EVENT_TONE } from '$lib/deviceEvents';
+	import { MECHANISM_LABELS, labelFor, movementTerm } from '$lib/constants';
 	import { fmtDate, fmtDateShort, fmtDateTime, fmtHrsFromMin, fmtMin, timeAgo } from '$lib/utils';
 
 	let { data, form } = $props();
@@ -31,6 +32,7 @@
 		return TABS.some((x) => x[0] === t) ? t : 'overview';
 	});
 	const openIssues = $derived(data.issues.filter((i) => !['Resolved', 'Cleared'].includes(i.status)));
+	const term = $derived(movementTerm(d.type.id));
 	const seriesIdx = $derived(Number(/^series-(\d+)$/.exec(d.type.colorSeries ?? '')?.[1]) || 1);
 
 	let reporting = $state(false);
@@ -118,18 +120,19 @@
 	{:else}
 		<div class="two-col" style="margin-bottom:16px">
 			<div class="card">
-				<div class="card-head"><h3>Game distribution</h3></div>
+				<div class="card-head"><h3>{term}s used</h3><span class="hint">trials across all patients</span></div>
 				<div class="card-body">
-					{#if data.games.length}
-						<div style="display:flex;align-items:center;gap:16px">
-							<div style="width:130px;flex-shrink:0"><Chart kind="donut" labels={data.games.map((g) => g.label)} data={data.games.map((g) => g.count)} height={130} /></div>
-							<div class="legend-row" style="flex-direction:column;gap:8px">
-								{#each data.games as g, i (g.label)}
-									<div class="legend-item"><span class="sw" style="background:var(--series-{(i % 6) + 1})"></span>{g.label} <span class="mono muted">({g.count})</span></div>
+					{#if data.movements.length}
+						<Chart kind="bar" labels={data.movements.map((m) => labelFor(MECHANISM_LABELS, m.code))} datasets={[{ label: 'Trials', data: data.movements.map((m) => m.trials), color: `var(--series-${seriesIdx})` }]} opts={{ horizontal: true }} height={Math.max(120, data.movements.length * 44 + 40)} />
+						<table class="dt" style="margin-top:8px">
+							<thead><tr><th>{term}</th><th>Trials</th><th>Time</th></tr></thead>
+							<tbody>
+								{#each data.movements as m (m.code)}
+									<tr><td>{labelFor(MECHANISM_LABELS, m.code)}</td><td class="mono">{m.trials}</td><td class="mono">{fmtMin(m.minutes)}</td></tr>
 								{/each}
-							</div>
-						</div>
-					{:else}<EmptyState icon="target" title="No game trials recorded" />{/if}
+							</tbody>
+						</table>
+					{:else}<EmptyState icon="activity" title="No {term.toLowerCase()} data recorded" />{/if}
 				</div>
 			</div>
 			<div class="card">

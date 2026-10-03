@@ -24,7 +24,7 @@ Open **http://localhost:5173** and sign in as `priya.nair@neurodash.care` / `neu
 (all demo accounts and the [demo patients](#demo-patients) are listed below).
 
 `npm run setup` is the only command another developer needs to get a working copy with realistic data: it applies the migrations,
-loads the reference data (users, centres, device types, devices) and seven demo patients with weeks of sessions and assessments.
+loads the reference data (users, centres, device types, devices) and 37 demo patients with weeks of sessions and assessments.
 
 Something not working? See [Troubleshooting](#troubleshooting). The details are explained next.
 
@@ -55,7 +55,7 @@ npm run setup
 2. **Database:** connects to PostgreSQL and creates the database if it doesn't exist. No `psql` needed.
 3. **Tables:** applies the migrations (`prisma migrate deploy`) and generates the Prisma client.
 4. **Demo data:** if the database has no patients yet, it seeds the reference data (users, two centres, device types, devices)
-   and adds the [seven demo patients](#demo-patients). If the database already has patients, it changes nothing.
+   and adds the [37 demo patients](#demo-patients). If the database already has patients, it changes nothing.
 
 It prints a clear message if PostgreSQL isn't running or the password is wrong. Options:
 
@@ -103,15 +103,35 @@ npm run dev
 
 Starts the dev server with hot reload at **http://localhost:5173**. Stop it with `Ctrl+C`.
 
+### Open it from another device (phone, tablet, another PC)
+
+The other device must be on the **same network** as the computer running NeuroDash.
+
+1. Find this computer's address: `ipconfig` (Windows) and look for the **IPv4 Address**, e.g. `172.17.227.246`.
+2. Add this line to `.env` (a development setup over plain `http` needs it, or sign-in silently fails because the session cookie is `Secure`):
+   ```env
+   ALLOW_HTTP_COOKIES=1
+   ```
+3. Start the app so it listens on the network, not just on this computer: `npm run dev:lan`. It always uses **port 5180** (`--strictPort`): if something else already holds that port it stops with an error instead of quietly picking another one, so the address never changes.
+4. Allow it through the Windows firewall (run once, in an administrator PowerShell):
+   ```powershell
+   netsh advfirewall firewall add rule name="NeuroDash 5180" dir=in action=allow protocol=TCP localport=5180
+   ```
+5. On the other device open **http://172.17.227.246:5180** (use your own address) and sign in as usual. On this computer use http://localhost:5180.
+
+`ALLOW_HTTP_COOKIES` is for a trusted clinic network only. For anything reachable from the internet, serve the built app over HTTPS
+(see [Deploying](#6-deploying)) and leave it unset. A built app (`node build`) also needs `ORIGIN` set to the exact address people type,
+e.g. `ORIGIN=http://172.17.227.246:3000` (the built app's own port), or form posts are refused.
+
 ### Demo accounts
 
 Every account uses the password **`neurodash123`**.
 
 | Role | Email | Try this |
 |---|---|---|
-| Therapist (Downtown) | `priya.nair@neurodash.care` | Owns the seeded patients; create patients, plans, assessments, upload scans |
-| Therapist (North Campus) | `rohan.mehta@neurodash.care` | Sees no Downtown patients (location scoping) |
-| Consultant (Downtown) | `vikram.suresh@neurodash.care` | Read-only, except adding notes |
+| Therapist (Ranipet) | `priya.nair@neurodash.care` | Owns the seeded patients; create patients, plans, assessments, upload scans |
+| Therapist (CMC Vellore) | `rohan.mehta@neurodash.care` | Sees no Ranipet patients (location scoping) |
+| Consultant (Ranipet) | `vikram.suresh@neurodash.care` | Read-only, except adding notes |
 | Engineer | `arjun.rao@neurodash.care` | Devices, request queue, issues, maintenance |
 | Admin | `biorehabilitationgroup@gmail.com` | Users, locations, audit log, read-only oversight |
 
@@ -120,17 +140,20 @@ New accounts created by an admin get a one-time temporary password and must choo
 ### Demo patients
 
 Loaded by `npm run setup` (on an empty database) and by `npm run demo:reset -- --yes`. Patient IDs have the form `AG10001`;
-the ID is the only label a patient has (no names are collected).
+the ID is the only label a patient has (no names are collected). Seven are hand-made (below); **AG30001 to AG30030** are 30 more
+(18 at Ranipet, 12 at CMC Vellore) with several assessment scales measured over their first 30 days, so the Analytics page has
+enough data to draw its per-scale graphs. `npm run demo:bulk` adds just those 30 to the current database without touching anything else
+(patients that already exist are skipped).
 
 | ID | Centre | Status | What it shows |
 |---|---|---|---|
-| AG10001 | Downtown (Priya) | Ongoing | MARS and PLUTO, about 4 weeks of sessions, FMA and ARAT improving, two notes |
-| AG10002 | Downtown | Ongoing | PLUTO only, some missed days, FMA and MAS |
-| AG10003 | Downtown | Active | Brand new, no plan yet |
-| AG10004 | Downtown | Paused | Stopped after a few sessions, with a note |
-| AG10005 | Downtown | Completed | Full plan, FMA from baseline to discharge |
-| AG20001 | North Campus (Rohan) | Ongoing | MARS and PLUTO |
-| AG20002 | North Campus | Discontinued | A few sessions only |
+| AG10001 | Ranipet (Priya) | Ongoing | MARS and PLUTO, about 4 weeks of sessions, FMA and ARAT improving, two notes |
+| AG10002 | Ranipet | Ongoing | PLUTO only, some missed days, FMA and MAS |
+| AG10003 | Ranipet | Active | Brand new, no plan yet |
+| AG10004 | Ranipet | Paused | Stopped after a few sessions, with a note |
+| AG10005 | Ranipet | Completed | Full plan, FMA from baseline to discharge |
+| AG20001 | CMC Vellore (Rohan) | Ongoing | MARS and PLUTO |
+| AG20002 | CMC Vellore | Discontinued | A few sessions only |
 
 Reset the demo at any time with `npm run demo:reset -- --yes`. It **erases every table** of the database in `DATABASE_URL`
 (it prints which database first and refuses to run without `--yes`), so take a `pg_dump` first if anything matters.
@@ -150,7 +173,7 @@ npx prisma studio             # opens http://localhost:5555
 | `P1001: Can't reach database server` | PostgreSQL isn't running, or host/port/password in `DATABASE_URL` is wrong |
 | `password authentication failed` | Wrong password in `DATABASE_URL` (URL-encode special characters) |
 | "relation ... does not exist" / missing columns after pulling changes | `npm run db:migrate` (or `npm run db:reset` if the migrations were rewritten; it erases the dev database) |
-| `Port 5173 is already in use` | `npm run dev -- --port 5180` |
+| `Port 5173 is already in use` | `npm run dev -- --port 5181` |
 | Want a clean slate | `npm run setup -- --reset` (or `npm run db:reset`), or just the demo data: `npm run demo:reset -- --yes` |
 | After pulling an update that changes the database | `npm run db:migrate`, then `npm run db:seed` (adds new reference data such as the device types (PLUTO, MARS, ATOBOT, HYPERCUBE, NOARK, DYNABO, MOBBO, WEARABLE)) |
 
@@ -166,7 +189,7 @@ keeps `patients.json`). **It is a separate program: the web app does not start i
 ```env
 NEURODASH_DATA_DIR="D:/NeuroDashData"     # the same folder as DATA_FOLDER in localserver/patients_store.py
 INGEST_INTERVAL_SECONDS=30                # how often the app looks for new uploads (0 = only on "Sync now")
-ACTIVE_WINDOW_SECONDS=300                 # a patient counts as "in session" this long after their last upload
+ACTIVE_WINDOW_SECONDS=900                 # a patient counts as "in session" this long after their last sign of life (15 min: some games run that long)
 # REPORTS_DIR="D:/NeuroDashData/_reports" # where saved patient reports go (default: <data dir>/_reports)
 ```
 
@@ -179,7 +202,7 @@ cd localserver
 python s2.py          # listens on TCP 5000; the laptops' sender.py talks to it
 ```
 
-Open TCP 5000 and UDP 5001 in the firewall. Run `python -m unittest test_presence` in the same folder for its tests.
+Open TCP 5000 and UDP 5001 in the firewall. Run `python -m unittest test_agent test_presence` in the same folder for its tests. On each training laptop also run `python agent.py` (see below).
 
 **Patients and `patients.json`**
 
@@ -226,9 +249,9 @@ Details of the file formats: `localserver/DASHBOARD_DATA_GUIDE.md`.
 - To try the live CSV path without a laptop, `npm run demo:data` copies sample device CSVs from `localserver/testdata/` into the data folder (patient ID `HOCMCV002`, which you register first); they are imported within about 30 seconds.
 - After pulling an update run `npm run db:migrate`, then `npm run db:seed` (device types and colours).
 
-### Patient in use (presence)
+### The laptop agent and the patient lock
 
-While a patient trains, the laptop uploads `sessions.csv` about every minute. The server notes the upload in `presence.json`; the dashboard shows **In session now** on the patient page, the patient list and Data Sync. Other laptops ask the server (`check_user`) before logging the same ID in, and call `release` when done. `ACTIVE_WINDOW_SECONDS` (default 300, in `.env` and `patients_store.py`) is how long after the last upload a patient still counts as in use. The laptop software has to make that call to actually block a second login. Details: `localserver/DASHBOARD_DATA_GUIDE.md`.
+Each training laptop runs `python localserver/agent.py` all day. It does not poll the server on a timer: it checks in when a patient starts or stops, once at the end of every trial, and when the server nudges it. It syncs the patient list and keeps the **patient lock** (`sender.py` still uploads the session files). When a patient logs in, the training software calls the agent on the same computer, `http://127.0.0.1:5055/start?patient=118`. The server then treats that **laptop** (identified by its own computer name, not just "MARS") as holding the patient. At the end of every trial the agent renews the hold (it notices a trial ending because `sessions.csv` changes, or the software can call `/trial-ended`), and the reply says if another laptop took the patient meanwhile. If another laptop tries the same patient, `/start` answers **409** with a message and the software must not start. Patients being trained on another laptop are also left out of a laptop's patient list (a per-laptop view: the server's `patients.json` and its version never change for this). The hold ends on `/stop`, or by itself after `ACTIVE_WINDOW_SECONDS` (default 900, i.e. 15 minutes: keep it longer than your longest trial) without a sign of life. The dashboard shows a held patient as **In session now** (with the laptop's name) on the patient page, the patient list and Data Sync. A laptop with no patient playing shows as offline after 3 minutes unless you set `NEURODASH_KEEPALIVE_SECONDS=120`. The training software has to make the `/start` call to actually block a second login; the server cannot do it alone. On a Raspberry Pi copy just `agent.py` and `sender_rapberryPI.py` and run `python3 agent.py` (it picks `sender_rapberryPI.py` when there is no `sender.py`). Full API, examples and limits: `localserver/DASHBOARD_DATA_GUIDE.md`. Tests: `python -m unittest test_agent test_presence` in `localserver/`.
 
 ## 3. Scripts
 
@@ -243,7 +266,8 @@ While a patient trains, the laptop uploads `sessions.csv` about every minute. Th
 | `npm run db:deploy` | Apply existing migrations (production) |
 | `npm run db:seed` | Load / refresh the demo data |
 | `npm run setup` | One-command setup: `.env`, create database, migrations, demo data (`-- --no-seed`, `-- --demo`, `-- --reset`) |
-| `npm run demo:reset -- --yes` | **Wipes the database** and loads the demo users, centres, devices and the seven demo patients |
+| `npm run demo:reset -- --yes` | **Wipes the database** and loads the demo users, centres, devices and the 37 demo patients |
+| `npm run demo:bulk` | Adds the 30 bulk demo patients (AG30001 to AG30030) to the current database; nothing is wiped |
 | `npm run demo:data` | Copies the sample device CSVs into the data folder for the live-upload demo |
 | `npm run db:reset` | Drop and rebuild the database, then re-seed it (erases all data) |
 | `npm run db:generate` | Regenerate the Prisma client |
@@ -252,13 +276,13 @@ While a patient trains, the laptop uploads `sessions.csv` about every minute. Th
 
 ## 4. What's in the app
 
-- **Patients:** location-scoped list, 9-tab detail page (overview, assessments, plan, sessions, devices, progress, documents, notes, timeline).
+- **Patients:** location-scoped list, 9-tab detail page (overview, assessments, plan, sessions, devices, progress, documents, notes, timeline). Assessments, therapy plans and sessions are reached through the patient, not from the sidebar.
 - **Assessments:** every scale in `clinical_scales/neuro/*.json` (FMA, ARAT, PHQ-9, MoCA, NIHSS, MAL, EQ-5D and more) is rendered by one
-  generic **click-only** form. Answers are validated and scores recomputed on the server. Scanned documents can be attached.
+  generic **click-only** form, with every question on one page (short answers such as numbers or one word sit side by side in a single row). The first assessment of a scale for a patient is automatically their **Baseline**; there is no timepoint to pick. Answers are validated and scores recomputed on the server. Scanned documents can be attached. On the patient's **Assessments** tab, pick a scale to see its graph, the change since baseline and its own history.
 - **Therapy plans:** one plan per patient (side to train, devices, daily target), a day log (done / missed / upcoming), and a full revision history with a required reason for every change. Devices are added or removed in **Modify Plan**.
-- **Devices:** devices belong to a centre. A centre requests a device type, an engineer clears it and sets up a unit there. Issue lifecycle with troubleshooting log, maintenance, usage and history. Each centre has a responsible engineer (set by the admin on the Locations page).
+- **Devices:** devices belong to a centre. A centre requests a device type on the **Devices** page (Request device), an engineer clears it there and sets up a unit at the centre. Issue lifecycle with troubleshooting log, maintenance, usage and history. Each centre has a responsible engineer (set by the admin on the Locations page).
 - **Sessions:** trial-level detail in a side drawer, with notes and optional photos.
-- **Insights:** role-adaptive overview (patient inflow: new / old / overall) and analytics with a card per centre, **patient reports** (devices, movements and mechanisms, one graph and change statement per assessment scale, any date range, notes, print, saved snapshots), and a rules-based AI assistant (answers only from your data).
+- **Insights:** role-adaptive overview (patient inflow: new / old / overall) and analytics with a card per centre and, for every assessment scale, a graph of the average score of all patients from Day 1 to Day 30, **patient reports** (devices, movements and mechanisms, one graph and change statement per assessment scale, any date range, notes, print, saved snapshots), and a rules-based AI assistant (answers only from your data).
 - **Admin:** user accounts, locations, and the audit log.
 - **Responsive:** works on desktop, tablet and phone.
 

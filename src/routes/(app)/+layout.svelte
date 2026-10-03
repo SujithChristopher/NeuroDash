@@ -127,7 +127,7 @@
 
 	function badgeFor(to: string) {
 		if (to === '/device-issues') return { n: data.navBadges.openIssues, kind: 'critical' as const };
-		if (to === '/device-requests') return { n: data.navBadges.myOpenRequests, kind: 'pill' as const };
+		if (to === '/devices') return { n: data.navBadges.myOpenRequests, kind: 'pill' as const };
 		return null;
 	}
 </script>

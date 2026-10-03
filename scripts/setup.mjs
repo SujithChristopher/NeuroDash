@@ -142,5 +142,5 @@ if (!args.has('--no-seed')) {
 say('\n✔ Setup complete.\n');
 say('  Start the app:   npm run dev      → http://localhost:5173');
 say('  Sign in:         priya.nair@neurodash.care   /   neurodash123   (every demo account uses this password)');
-say('  Demo patients:   AG10001 to AG10005 (Downtown) and AG20001, AG20002 (North Campus)');
+say('  Demo patients:   AG10001 to AG10005 (Ranipet) and AG20001, AG20002 (CMC Vellore)');
 say('  Browse the data: npx prisma studio\n');

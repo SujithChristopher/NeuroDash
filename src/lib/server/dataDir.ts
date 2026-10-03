@@ -32,8 +32,8 @@ export const nudgeEnabled = () => (env.NEURODASH_NUDGE ?? '1') !== '0';
 
 /** A patient counts as "in session" if a sessions.csv arrived this recently. Keep equal to ACTIVE_WINDOW_SECONDS in patients_store.py. */
 export function activeWindowSeconds(): number {
-	const n = Number(env.ACTIVE_WINDOW_SECONDS ?? '300');
-	return Number.isFinite(n) && n > 0 ? n : 300;
+	const n = Number(env.ACTIVE_WINDOW_SECONDS ?? '900');
+	return Number.isFinite(n) && n > 0 ? n : 900;
 }
 
 export const presencePath = (root: string) => path.join(root, 'presence.json');

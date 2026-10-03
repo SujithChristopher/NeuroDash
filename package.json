@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"dev:lan": "vite dev --host --port 5180 --strictPort",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -15,6 +16,7 @@
 		"setup": "node scripts/setup.mjs",
 		"demo:data": "node scripts/load-demo-data.mjs",
 		"demo:reset": "tsx prisma/demo.ts",
+		"demo:bulk": "tsx prisma/demo.ts --yes --only-bulk",
 		"db:generate": "prisma generate",
 		"db:migrate": "prisma migrate dev",
 		"db:deploy": "prisma migrate deploy",

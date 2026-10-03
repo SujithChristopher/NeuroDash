@@ -3,6 +3,7 @@ import socket
 import json
 import os
 import shutil
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -141,7 +142,15 @@ def handle_sync(connection, address, device_id, header):
     # Heartbeat: remember this laptop was seen and what it holds
     patients_store.record_sync(device_id, device_version, address[0])
 
-    if device_version == server_version:
+    # Newer senders send their laptop id and the "view" they hold: then patients that another laptop is training right
+    # now are left out of this laptop's list (patients.json itself is untouched). Older senders get the plain list.
+    client_id = clean_id(str(header.get("client_id", "")))
+    aware = "view" in header
+
+    patients = patients_store.patients_for_device(data, device_id, client_id, hide_held=aware)
+    view = patients_store.view_token(patients) if aware else None
+
+    if device_version == server_version and (not aware or header.get("view") == view):
 
         send_sync_response(connection, {
             "success": True,
@@ -158,14 +167,14 @@ def handle_sync(connection, address, device_id, header):
         "up_to_date": False,
         "version": server_version,
         "updated_at": data["updated_at"],
-        "patients": patients_store.patients_for_device(
-            data, device_id
-        )
+        "patients": patients,
+        "view": view
     })
 
-    patients_store.log_sync(device_id, device_version, server_version)
+    if device_version != server_version:
+        patients_store.log_sync(device_id, device_version, server_version)
 
-    print(f"Sync      : sent v{server_version} (had v{device_version})")
+    print(f"Sync      : sent v{server_version} (had v{device_version}), {len(patients)} patient(s)")
 
 
 # =========================================================
@@ -173,13 +182,17 @@ def handle_sync(connection, address, device_id, header):
 # =========================================================
 
 def handle_presence(connection, device_id, header, action):
-    """check_user: "can I log this patient in?"   release: "my session has ended, free the patient".
+    """check_user: "is this patient in use?" (just asks)
+    claim_user: "I am logging this patient in: lock them for me" (refused if another laptop holds them)
+    release:    "my session has ended, free the patient"
 
     The patient counts as in use while an upload from a laptop arrived within
     patients_store.ACTIVE_WINDOW_SECONDS. A laptop is never blocked by its own session.
     """
 
     user_id = clean_id(str(header.get("user_id", "")))
+    # Which laptop is asking. Two laptops can both be "MARS", so the laptop's own id is what tells them apart.
+    client_id = clean_id(str(header.get("client_id", "")))
 
     if not user_id:
         send_sync_response(connection, {
@@ -191,7 +204,7 @@ def handle_presence(connection, device_id, header, action):
     if action == "release":
 
         # Only the laptop that holds the patient can free it.
-        released = patients_store.clear_presence(user_id, device_id)
+        released = patients_store.clear_presence(user_id, device_id, client_id)
 
         send_sync_response(connection, {
             "success": True,
@@ -202,9 +215,27 @@ def handle_presence(connection, device_id, header, action):
         print(f"Release   : {user_id} by {device_id} ({'freed' if released else 'nothing to free'})")
         return
 
+    if action == "claim_user":
+
+        claimed, holder = patients_store.claim_presence(user_id, device_id, header.get("ip"), client_id=client_id)
+
+        send_sync_response(connection, {
+            "success": True,
+            "user_id": user_id,
+            "claimed": claimed,
+            "in_use_by": holder,
+            "window_seconds": patients_store.ACTIVE_WINDOW_SECONDS
+        })
+
+        print(
+            f"Claim     : {user_id} by {device_id} -> "
+            f"{'LOCKED' if claimed else 'REFUSED, held by ' + holder['device']}"
+        )
+        return
+
     session = patients_store.presence_for(user_id)
 
-    own = session is not None and session["device"] == device_id
+    own = session is not None and patients_store.same_holder(session, device_id, client_id)
     blocked = session is not None and not own
 
     send_sync_response(connection, {
@@ -278,7 +309,7 @@ def handle_device(connection, address):
             handle_sync(connection, address, device_id, header)
             return
 
-        if action in ("check_user", "release"):
+        if action in ("check_user", "claim_user", "release"):
 
             if device_id not in ALLOWED_DEVICES:
                 send_sync_response(connection, {
@@ -469,7 +500,10 @@ def handle_device(connection, address):
         # A sessions.csv arrives about once a minute while a patient trains:
         # remember who is using the patient so other laptops (and the dashboard) can tell.
         if user_id and filename.lower() == "sessions.csv":
-            patients_store.record_presence(user_id, device_id, address[0])
+            patients_store.record_presence(
+                user_id, device_id, address[0],
+                client_id=clean_id(str(header.get("client_id", "")))
+            )
 
         if user_id:
             print(f"User ID   : {user_id}")
@@ -551,6 +585,10 @@ def start_server():
 
     server.listen(10)
 
+    # A blocking accept() cannot be interrupted by Ctrl+C on Windows until a connection arrives. Waking up once a second
+    # lets Ctrl+C stop the server within a second.
+    server.settimeout(1.0)
+
     # Find local IP
     try:
 
@@ -592,12 +630,19 @@ def start_server():
 
         while True:
 
-            connection, address = server.accept()
+            try:
+                connection, address = server.accept()
+            except socket.timeout:
+                continue  # nothing connected this second: look again (and let Ctrl+C through)
 
-            handle_device(
-                connection,
-                address
-            )
+            connection.settimeout(None)  # the timeout above is for accept() only, not for slow uploads
+
+            # One thread per laptop: a large upload from one must never delay another laptop's claim or heartbeat.
+            threading.Thread(
+                target=handle_device,
+                args=(connection, address),
+                daemon=True
+            ).start()
 
     except KeyboardInterrupt:
 

@@ -5,6 +5,7 @@
 	import ProgramPanel from '$lib/components/ProgramPanel.svelte';
 	import FleetPanel from '$lib/components/FleetPanel.svelte';
 	import CentrePanel from '$lib/components/CentrePanel.svelte';
+	import ScaleChangePanel from '$lib/components/ScaleChangePanel.svelte';
 	import { fmtDateTime } from '$lib/utils';
 
 	let { data } = $props();
@@ -31,6 +32,12 @@
 
 	<div class="section-title-row"><h2>{role === 'ADMIN' ? 'Centres' : 'Your centre'}</h2></div>
 	<div style="margin-bottom:20px"><CentrePanel centres={data.centres} /></div>
+
+	<div class="section-title-row">
+		<h2>Assessment change, Day 1 to Day 30</h2>
+		<span class="muted" style="font-size:12px">average score of {role === 'ADMIN' ? 'all patients' : 'your centre’s patients'}, per scale</span>
+	</div>
+	<div style="margin-bottom:20px"><ScaleChangePanel scales={data.scaleChanges} /></div>
 {/if}
 
 {#if data.fleet}

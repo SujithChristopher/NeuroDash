@@ -15,11 +15,7 @@ const PAGES: [string, number, number, number, number, number][] = [
 	['/analytics', 200, 200, 200, 200, 200],
 	['/patients', 200, 200, 200, 403, 200],
 	['/patients/new', 200, 200, 403, 403, 403],
-	['/assessments', 200, 200, 200, 403, 200],
-	['/plans', 200, 200, 200, 403, 200],
-	['/sessions', 200, 200, 200, 403, 200],
 	['/devices', 200, 200, 200, 200, 200],
-	['/device-requests', 200, 200, 403, 200, 403],
 	['/device-issues', 403, 403, 403, 200, 200],
 	['/maintenance', 200, 200, 200, 200, 200],
 	['/device-usage', 200, 200, 200, 200, 200],
@@ -66,7 +62,7 @@ describe('the consultant is read-only apart from adding notes', () => {
 			['register device', '/devices?/register', { deviceTypeId: 'PLUTO', serialNumber: 'X' }],
 			['set device centre', `/devices/${dev.id}?/setCentre`, { locationId: '' }],
 			['log maintenance', `/devices/${dev.id}?/logMaintenance`, { maintenanceType: 'Inspection & Safety Check', maintenanceDate: '2026-01-01' }],
-			['clear request', '/device-requests?/clear', { id: 'x' }],
+			['clear request', '/devices?/clear', { id: 'x' }],
 			['create user', '/users?/create', { name: 'x', email: 'x@y.z', role: 'ENGINEER' }],
 			['create location', '/locations?/create', { name: 'Nope' }]
 		];

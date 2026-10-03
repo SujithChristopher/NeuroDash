@@ -73,14 +73,6 @@ describe('location scoping', () => {
 		expect(await (await s.admin.get('/patients')).text()).toContain(name);
 	});
 
-	it('every patient-linked list is location-scoped too (assessments, plans, sessions)', async () => {
-		for (const path of ['/assessments', '/plans', '/sessions']) {
-			const html = await (await s.rohan.get(path)).text();
-			expect(html, path).not.toContain('Ananya R.');
-			expect(await (await s.priya.get(path)).text(), path).toContain('Ananya R.');
-		}
-	});
-
 	it('writes are scoped as well: another location cannot touch the patient', async () => {
 		expect((await s.rohan.action(`/patients/${id}?/addNote`, { text: 'hello' })).status).toBe(404);
 		expect((await s.rohan.action(`/patients/${id}?/setStatus`, { status: 'Paused' })).status).toBe(404);

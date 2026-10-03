@@ -18,11 +18,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
 			items: [
 				{ to: '/', label: 'Overview', icon: 'home' },
 				{ to: '/patients', label: 'My Patients', icon: 'users' },
-				{ to: '/assessments', label: 'Assessments', icon: 'clipboard' },
-				{ to: '/plans', label: 'Therapy Plans', icon: 'target' },
-				{ to: '/sessions', label: 'Sessions', icon: 'activity' },
-				{ to: '/devices', label: 'Devices', icon: 'device' },
-				{ to: '/device-requests', label: 'Device Requests', icon: 'box' }
+				{ to: '/devices', label: 'Devices', icon: 'device' }
 			]
 		},
 		{
@@ -40,8 +36,6 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
 			items: [
 				{ to: '/', label: 'Overview', icon: 'home' },
 				{ to: '/patients', label: 'Patients', icon: 'users' },
-				{ to: '/plans', label: 'Therapy Plans', icon: 'target' },
-				{ to: '/assessments', label: 'Assessments', icon: 'clipboard' },
 				{ to: '/sessions', label: 'Sessions', icon: 'activity' }
 			]
 		},
@@ -82,10 +76,7 @@ export const NAV_BY_ROLE: Record<Role, NavSection[]> = {
 				{ to: '/patients', label: 'Patients', icon: 'users' },
 				{ to: '/users', label: 'Users', icon: 'shield' },
 				{ to: '/locations', label: 'Locations', icon: 'flag' },
-				{ to: '/devices', label: 'Devices', icon: 'device' },
-				{ to: '/sessions', label: 'Sessions', icon: 'activity' },
-				{ to: '/assessments', label: 'Assessments', icon: 'clipboard' },
-				{ to: '/plans', label: 'Plans', icon: 'target' }
+				{ to: '/devices', label: 'Devices', icon: 'device' }
 			]
 		},
 		{
@@ -106,10 +97,7 @@ export const PAGE_TITLES: Record<string, string> = {
 	analytics: 'Analytics',
 	patients: 'Patients',
 	assessments: 'Assessments',
-	plans: 'Therapy Plans',
-	sessions: 'Sessions',
 	devices: 'Devices',
-	'device-requests': 'Device Requests',
 	'device-issues': 'Device Issues',
 	maintenance: 'Maintenance',
 	'device-usage': 'Device Usage',
@@ -125,4 +113,4 @@ export const PAGE_TITLES: Record<string, string> = {
 };
 
 /** Pages where Admin sees the READ ONLY banner. */
-export const READ_ONLY_PAGES = ['patients', 'assessments', 'plans', 'sessions', 'devices', 'analytics'];
+export const READ_ONLY_PAGES = ['patients', 'devices', 'analytics'];

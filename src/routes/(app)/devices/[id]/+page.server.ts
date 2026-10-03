@@ -35,16 +35,18 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	since.setUTCDate(since.getUTCDate() - 13);
 	const isEngineer = user.role === 'ENGINEER';
 
-	const [usage, recent, games, patientsUsing, recentSessions, centres] = await Promise.all([
+	const [usage, recent, moves, patientsUsing, recentSessions, centres] = await Promise.all([
 		deviceUsage(d.id),
 		prisma.therapySession.findMany({
 			where: { deviceId: d.id, sessionDate: { gte: since } },
 			select: { sessionDate: true, durationMinutes: true }
 		}),
+		// What the device was used for: the movements (MARS) or mechanisms (PLUTO) trained on it, across all patients
 		prisma.sessionTrial.groupBy({
-			by: ['gameId'],
-			where: { session: { deviceId: d.id }, gameId: { not: null } },
-			_count: { _all: true }
+			by: ['mechanism'],
+			where: { session: { deviceId: d.id }, mechanism: { not: null } },
+			_count: { _all: true },
+			_sum: { durationSec: true }
 		}),
 		prisma.therapySession.findMany({
 			where: { deviceId: d.id },
@@ -75,7 +77,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		minutes.set(k, (minutes.get(k) ?? 0) + Number(s.durationMinutes ?? 0));
 	}
 
-	const gameLabel = new Map(d.deviceType.games.map((g) => [g.id, g.displayLabel]));
 
 	return {
 		perms: {
@@ -114,7 +115,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			patientsUsing: patientsUsing.map((p) => ({ id: p.patient.id, label: label(p.patient), code: p.patient.displayCode }))
 		},
 		utilization: { labels: days, minutes: days.map((k) => Math.round(minutes.get(k) ?? 0)) },
-		games: games.map((g) => ({ label: gameLabel.get(g.gameId!) ?? g.gameId!, count: g._count._all })),
+		movements: moves
+			.map((m) => ({ code: m.mechanism!, trials: m._count._all, minutes: Math.round(((m._sum.durationSec ?? 0) / 60) * 10) / 10 }))
+			.sort((a, b) => b.trials - a.trials),
 		recentSessions: recentSessions.map((s) => ({
 			id: s.id,
 			patient: label(s.patient),

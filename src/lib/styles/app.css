@@ -161,9 +161,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{ outline:2px s
 
 /* ---------- App shell ---------- */
 #app-root{ height:100%; }
-.shell{ display:grid; grid-template-columns:248px 1fr; height:100%; min-height:100vh; }
+/* The shell must be as tall as the PAGE (height:auto), not exactly one screen: a sticky sidebar can only stay in view while it is inside a taller box. */
+.shell{ display:grid; grid-template-columns:248px 1fr; height:auto; min-height:100vh; }
 .shell.collapsed{ grid-template-columns:72px 1fr; }
-.sidebar{ background:var(--surface); color:var(--ink-700); display:flex; flex-direction:column; height:100%; position:sticky; top:0; border-right:1px solid var(--border); }
+/* sticky only works if the sidebar is NOT as tall as the page: it is exactly one screen high and stays at the top while the page scrolls */
+.sidebar{ background:var(--surface); color:var(--ink-700); display:flex; flex-direction:column; height:100vh; align-self:start; overflow-y:auto; position:sticky; top:0; border-right:1px solid var(--border); }
 .sidebar .side-brand{ display:flex; align-items:center; gap:10px; padding:18px 18px; border-bottom:1px solid var(--border); }
 .sidebar .side-brand .txt{ overflow:hidden; }
 .sidebar .side-brand .brand-name{ font-family:var(--font-display); font-size:16.5px; font-weight:600; color:var(--ink-900); white-space:nowrap; }

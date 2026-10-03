@@ -14,13 +14,13 @@ const prisma = new PrismaClient({ adapter });
 // can log in as any of the demo users listed below.
 const DEMO_PASSWORD = "neurodash123";
 
-// Two sites — Priya + Vikram staff Downtown together (so "secondary
+// Two sites — Priya + Vikram staff CMC Ranipet together (so "secondary
 // therapist edits Priya's patient's plan" is directly demonstrable); Rohan
-// is alone at North Campus (no consultant yet, to show an under-staffed
+// is alone at CMC Vellore (no consultant yet, to show an under-staffed
 // location in the admin Locations list).
 const LOCATIONS = [
-  { id: "downtown", name: "Downtown Clinic" },
-  { id: "north", name: "North Campus" },
+  { id: "downtown", name: "CMC Ranipet" },
+  { id: "north", name: "CMC Vellore" },
 ];
 
 const USERS = [
@@ -49,6 +49,11 @@ const DEVICE_TYPES = [
 
 async function main() {
   const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
+
+  // The demo centres used to be called "Downtown Clinic" and "North Campus": rename them in place on older databases
+  // (otherwise the upsert below would create two new centres next to them).
+  await prisma.location.updateMany({ where: { name: "Downtown Clinic" }, data: { name: "CMC Ranipet" } });
+  await prisma.location.updateMany({ where: { name: "North Campus" }, data: { name: "CMC Vellore" } });
 
   const locationIdByKey = new Map<string, string>();
   for (const l of LOCATIONS) {
@@ -287,8 +292,8 @@ async function main() {
         tone: "info",
         icon: "box",
         title: "New device request",
-        description: "Dr. Priya Nair requested a Mars unit for Downtown Clinic.",
-        link: { page: "device-requests" },
+        description: "Dr. Priya Nair requested a Mars unit for CMC Ranipet.",
+        link: { page: "devices" },
       },
     });
   }

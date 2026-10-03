@@ -1,6 +1,8 @@
 import { prisma } from './db';
 import { patientScopeFor } from './scope';
 import { utcDay } from '$lib/utils';
+import { getScale } from '$lib/scales/registry';
+import { buildScaleChanges, type ScaleChange } from '$lib/scaleChanges';
 
 type User = NonNullable<App.Locals['user']>;
 
@@ -235,5 +237,16 @@ export async function centreStats(user: User): Promise<CentreStats[]> {
 				lastTrained: dayList.length ? new Date(dayList[dayList.length - 1]).toISOString() : null
 			};
 		})
+	);
+}
+
+/** For every assessment scale: how the average score of all the caller's patients moved from Day 1 to Day 30. */
+export async function scaleChangeStats(user: User): Promise<ScaleChange[]> {
+	const rows = await prisma.assessment.findMany({
+		where: { patient: patientScopeFor(user), score: { not: null }, maxScore: { gt: 0 } },
+		select: { scaleId: true, patientId: true, assessmentDate: true, score: true, maxScore: true }
+	});
+	return buildScaleChanges(
+		rows.map((r) => ({ scaleId: r.scaleId, title: getScale(r.scaleId)?.title ?? r.scaleId, patientId: r.patientId, date: r.assessmentDate, score: Number(r.score), maxScore: Number(r.maxScore) }))
 	);
 }

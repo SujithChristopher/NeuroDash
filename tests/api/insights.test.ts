@@ -172,9 +172,9 @@ describe('AI assistant', () => {
 
 describe('analytics are scoped and bucketed server-side', () => {
 	it('program KPIs match the database for each location', async () => {
-		await createPatient(s.rohan, uniq('NorthPat')); // make sure North Campus has a patient of its own
-		const down = await db().patient.count({ where: { therapist: { location: { name: 'Downtown Clinic' } } } });
-		const north = await db().patient.count({ where: { therapist: { location: { name: 'North Campus' } } } });
+		await createPatient(s.rohan, uniq('NorthPat')); // make sure CMC Vellore has a patient of its own
+		const down = await db().patient.count({ where: { therapist: { location: { name: 'CMC Ranipet' } } } });
+		const north = await db().patient.count({ where: { therapist: { location: { name: 'CMC Vellore' } } } });
 		const all = await db().patient.count();
 		expect((await pageData(s.priya, '/analytics')).program.total).toBe(down);
 		expect((await pageData(s.vikram, '/analytics')).program.total).toBe(down);
@@ -203,7 +203,7 @@ describe('analytics are scoped and bucketed server-side', () => {
 	it('inflow buckets by calendar day (UTC) or month and totals what was registered', async () => {
 		const today = new Date();
 		const startOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
-		const registeredToday = await db().patient.count({ where: { registrationDate: { gte: startOfDay }, therapist: { location: { name: 'Downtown Clinic' } } } });
+		const registeredToday = await db().patient.count({ where: { registrationDate: { gte: startOfDay }, therapist: { location: { name: 'CMC Ranipet' } } } });
 		const shape = { today: 2, week: 8, month: 31, year: 12 } as const;
 		for (const [range, n] of Object.entries(shape)) {
 			const d = await pageData(s.priya, `/analytics?range=${range}`);
@@ -220,14 +220,10 @@ describe('analytics are scoped and bucketed server-side', () => {
 		expect((await pageData(s.priya, '/analytics?range=decade')).range).toBe('month');
 	});
 
-	it('the Overview’s today list uses UTC calendar days', async () => {
+	it('the Overview carries a schedule and a to-do list for the therapist', async () => {
 		const d = await pageData(s.priya, '/');
-		const startOfDay = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
-		const expected = await db().therapySession.count({
-			where: { sessionDate: { gte: startOfDay, lt: new Date(startOfDay.getTime() + 86400_000) }, patient: { therapist: { location: { name: 'Downtown Clinic' } } } }
-		});
-		expect(d.today).toHaveLength(expected);
-		expect(d.todos.some((t: { title: string }) => /Create a therapy plan/.test(t.title))).toBe(true);
+		expect(Array.isArray(d.schedule)).toBe(true);
+		expect(d.todos.some((t: { sub: string }) => /Therapy plan needed/.test(t.sub))).toBe(true);
 	});
 });
 

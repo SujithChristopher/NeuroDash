@@ -3,6 +3,7 @@
 //
 //   npm run demo:reset -- --yes
 //   (--no-wipe keeps existing rows and only adds the demo patients: used by `npm run setup` on a database with no patients yet)
+//   npm run demo:bulk     adds only the 30 bulk patients (AG30001 to AG30030) to the current database, touching nothing else
 //
 // DESTRUCTIVE. It truncates every table of the database in DATABASE_URL, so it refuses to run without --yes and prints which
 // database it is about to wipe. Take a backup first (pg_dump) if there is anything worth keeping.
@@ -11,7 +12,7 @@ import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { allItems, answerableItems, computeScores, maxScore, primaryScoreId } from "../src/lib/scales/evaluate";
 import type { Answers, ScaleDef } from "../src/lib/scales/types";
@@ -156,6 +157,65 @@ const PATIENTS: DemoPatient[] = [
   },
 ];
 
+// ---------------------------------------------------------------- 30 more patients, so the analytics have something to show
+/**
+ * AG30001 to AG30030: 18 at Ranipet, 12 at CMC Vellore, mostly Ongoing, each with a few weeks of sessions and several
+ * assessment scales measured at about days 1, 7, 14, 21 and 28 with scores moving the way a recovery does (FMA, ARAT and
+ * MoCA rise; MAS and PHQ-9 fall). Deterministic, so every run produces the same people.
+ */
+function bulkPatients(): DemoPatient[] {
+  const out: DemoPatient[] = [];
+  for (let i = 1; i <= 30; i++) {
+    const code = `AG3${String(i).padStart(4, "0")}`;
+    const r = rng(code);
+    const north = i > 18;
+    const startedDaysAgo = 29 + Math.floor(r() * 22); // 29 to 50: far enough back for a full 30 days of assessments
+    const status: DemoPatient["status"] = i % 11 === 0 ? "Completed" : i % 13 === 0 ? "Paused" : "Ongoing";
+    const devices: ("MARS" | "PLUTO")[] = i % 3 === 0 ? ["MARS", "PLUTO"] : i % 2 === 0 ? ["PLUTO"] : ["MARS"];
+    const side = (["Left", "Right"] as const)[Math.floor(r() * 2)]!;
+    const gain = 0.12 + r() * 0.25; // how much this patient improves over 28 days
+    const start = 0.22 + r() * 0.2;
+
+    const scaleIds = ["fma", ...(i % 3 !== 0 ? ["arat"] : []), ...(i % 2 === 0 ? ["mas"] : []), ...(i % 3 === 1 ? ["moca"] : []), ...(i % 4 === 0 ? ["phq9"] : [])];
+    const assessments: DemoPatient["assessments"] = [];
+    for (const scaleId of scaleIds) {
+      for (const base of [0, 7, 14, 21, 28]) {
+        if (base > 0 && r() < 0.15) continue; // not everyone is assessed at every point
+        const day = base === 0 ? 0 : Math.max(1, base + Math.floor(r() * 5) - 2); // up to two days either side
+        const t = day / 28;
+        const noise = (r() - 0.5) * 0.05;
+        const f = scaleId === "mas" ? 0.6 - gain * 0.6 * t : scaleId === "phq9" ? 0.55 - gain * 0.9 * t : start + gain * t;
+        assessments.push({ scaleId, day, label: day === 0 ? "Baseline" : `Day ${day}`, fraction: Math.min(0.98, Math.max(0.02, f + noise)) });
+      }
+    }
+
+    out.push({
+      code,
+      centre: north ? "north" : "downtown",
+      therapist: north ? T2 : T1,
+      gender: r() < 0.5 ? "Female" : "Male",
+      age: 40 + Math.floor(r() * 35),
+      side,
+      strokeDaysAgo: 40 + Math.floor(r() * 200),
+      registeredDaysAgo: startedDaysAgo + 1,
+      status,
+      plan: {
+        trainingSide: side,
+        devices,
+        durationDays: 42,
+        dailyMinutes: 30 + 10 * Math.floor(r() * 3),
+        startedDaysAgo,
+        trainsDay: (d) => d < 20 && (d + i) % 4 !== 3, // a few weeks of sessions, with the odd missed day
+        status: status === "Completed" ? "Completed" : status === "Paused" ? "Paused" : "Active",
+        startAccuracy: 0.45 + r() * 0.1,
+        endAccuracy: 0.7 + r() * 0.2,
+      },
+      assessments,
+    });
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------- main
 async function main() {
   const target = new URL(url);
@@ -165,8 +225,13 @@ async function main() {
     process.exit(1);
   }
 
+  // --only-bulk (npm run demo:bulk): add just the 30 bulk patients to what is already there, wiping and reseeding nothing
+  const onlyBulk = process.argv.includes("--only-bulk");
+  const bulk = bulkPatients();
+
   // 1. wipe everything except Prisma's own migration history (--no-wipe: keep what is there; only for a database with no patients)
-  if (process.argv.includes("--no-wipe")) console.log("Keeping existing rows (--no-wipe).");
+  if (onlyBulk) console.log("Adding the 30 bulk patients only; nothing is wiped.");
+  else if (process.argv.includes("--no-wipe")) console.log("Keeping existing rows (--no-wipe).");
   else {
   const tables = await prisma.$queryRaw<{ tablename: string }[]>`SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
   await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${tables.map((t) => `"${t.tablename}"`).join(", ")} RESTART IDENTITY CASCADE`);
@@ -174,13 +239,15 @@ async function main() {
   }
 
   // 2. reference data: users, centres, device types, devices (the seed also adds its own sample patients, removed below)
-  const seed = spawnSync("npx tsx prisma/seed.ts", { shell: true, stdio: "inherit" });
-  if (seed.status !== 0) throw new Error("prisma/seed.ts failed");
-  await prisma.patient.deleteMany({});
+  if (!onlyBulk) {
+    const seed = spawnSync("npx tsx prisma/seed.ts", { shell: true, stdio: "inherit" });
+    if (seed.status !== 0) throw new Error("prisma/seed.ts failed");
+    await prisma.patient.deleteMany({});
+  }
 
   // 3. each centre gets its own MARS and PLUTO units
-  const north = await prisma.location.findUniqueOrThrow({ where: { name: "North Campus" } });
-  const downtown = await prisma.location.findUniqueOrThrow({ where: { name: "Downtown Clinic" } });
+  const north = await prisma.location.findUniqueOrThrow({ where: { name: "CMC Vellore" } });
+  const downtown = await prisma.location.findUniqueOrThrow({ where: { name: "CMC Ranipet" } });
   for (const [displayCode, deviceTypeId, locationId, room] of [
     ["MARS-003", "MARS", north.id, "Therapy Room 1"],
     ["PLUTO-003", "PLUTO", north.id, "Therapy Room 1"],
@@ -192,10 +259,17 @@ async function main() {
 
   const users = new Map((await prisma.user.findMany()).map((u) => [u.email, u]));
   const consultant = users.get("vikram.suresh@neurodash.care")!;
-  const scales = new Map(["fma", "arat", "mas"].map((id) => [id, scale(id)]));
+  const scales = new Map(["fma", "arat", "mas", "moca", "phq9"].map((id) => [id, scale(id)]));
   const registry: ReturnType<typeof registryEntry>[] = [];
 
-  for (const d of PATIENTS) {
+  let roster = onlyBulk ? bulk : [...PATIENTS, ...bulk];
+  if (onlyBulk) {
+    const have = new Set((await prisma.patient.findMany({ select: { displayCode: true } })).map((p) => p.displayCode));
+    roster = roster.filter((d) => !have.has(d.code));
+    console.log(`${bulk.length - roster.length} of the bulk patients already exist and are skipped.`);
+  }
+
+  for (const d of roster) {
     const therapist = users.get(d.therapist)!;
     const rand = rng(d.code);
     const registered = daysAgo(d.registeredDaysAgo);
@@ -339,14 +413,18 @@ async function main() {
   const root = process.env.NEURODASH_DATA_DIR?.trim();
   if (root) {
     mkdirSync(root, { recursive: true });
-    for (const d of PATIENTS) mkdirSync(join(root, d.code), { recursive: true });
+    for (const d of roster) mkdirSync(join(root, d.code), { recursive: true });
     const now = new Date();
     const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 19);
-    writeFileSync(join(root, "patients.json"), JSON.stringify({ version: 1, updated_at: local, patients: registry }, null, 2));
-    console.log(`Wrote ${registry.length} patients to ${join(root, "patients.json")}`);
+    const file = join(root, "patients.json");
+    // adding to an existing registry keeps what is in it and bumps its version
+    const existing = onlyBulk && existsSync(file) ? (JSON.parse(readFileSync(file, "utf8")) as { version: number; patients: { user_id: string }[] }) : null;
+    const merged = existing ? [...existing.patients, ...registry.filter((e) => !existing.patients.some((p) => p.user_id === e.user_id))] : registry;
+    writeFileSync(file, JSON.stringify({ version: existing ? existing.version + 1 : 1, updated_at: local, patients: merged }, null, 2));
+    console.log(`Wrote ${registry.length} patients to ${file}`);
   }
 
-  console.log(`Demo ready: ${PATIENTS.length} patients across Downtown Clinic and North Campus. Sign in with any seeded account (password neurodash123).`);
+  console.log(`Demo ready: ${roster.length} patients across CMC Ranipet and CMC Vellore. Sign in with any seeded account (password neurodash123).`);
 }
 
 main()

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { PDF, createPatient, createUser, db, downtownId, northId, signInAll, type Sessions } from './helpers';
+import { PDF, createPatient, createUser, db, downtownId, northId, pageData, signInAll, type Sessions } from './helpers';
 import { allItems, answerableItems } from '../../src/lib/scales/evaluate';
 import type { ScaleDef } from '../../src/lib/scales/types';
 
@@ -25,7 +25,7 @@ function answers(def: ScaleDef, pick: (choices: number[]) => number, only?: (id:
 }
 
 const submit = (client: typeof s.priya, patientId: string, fields: Record<string, string | Blob | (string | Blob)[]>) =>
-	client.action(`/assessments/new?patient=${patientId}`, { assessmentDate: '2026-09-01', label: 'Baseline', ...fields });
+	client.action(`/assessments/new?patient=${patientId}`, { assessmentDate: '2026-09-01', ...fields });
 
 const phq9 = scale('phq9');
 const PHQ_SCORED = (id: string) => (allItems(phq9).find((i) => i.id === 'phq9_total_score')!.expr ?? '').includes(id);
@@ -162,11 +162,10 @@ describe('validation: the server never trusts the client', () => {
 		expect(await count()).toBe(0);
 	});
 
-	it('rejects a future date, an invalid date and an unknown timepoint', async () => {
+	it('rejects a future date and an invalid date', async () => {
 		const good = JSON.stringify({ [firstId]: 1 });
 		expect((await submit(s.priya, id, { scaleId: 'phq9', answers: good, assessmentDate: tomorrow() })).type).toBe('failure');
 		expect((await submit(s.priya, id, { scaleId: 'phq9', answers: good, assessmentDate: 'yesterday' })).type).toBe('failure');
-		expect((await submit(s.priya, id, { scaleId: 'phq9', answers: good, label: 'Whenever' })).type).toBe('failure');
 		expect(await count()).toBe(0);
 	});
 
@@ -248,7 +247,7 @@ describe('examiner', () => {
 		const a = JSON.stringify(answers(phq9, () => 0, PHQ_SCORED));
 
 		await submit(s.priya, id, { scaleId: 'phq9', answers: a });
-		await submit(s.priya, id, { scaleId: 'phq9', answers: a, examinerId: colleagueId, label: 'Day 7' });
+		await submit(s.priya, id, { scaleId: 'phq9', answers: a, examinerId: colleagueId });
 		const rows = await db().assessment.findMany({ where: { patientId: id }, include: { administeredBy: true }, orderBy: { createdAt: 'asc' } });
 		expect(rows.map((r) => r.administeredBy?.email)).toEqual(['priya.nair@neurodash.care', colleague.email]);
 	});
@@ -329,12 +328,47 @@ describe('reading assessments back', () => {
 		expect(html).toContain('18'); // 9 items × 2
 	});
 
-	it('the hub lists assessments only within the caller’s scope, with scan counts', async () => {
+});
+
+describe('timepoints: only the baseline is labelled', () => {
+	const send = (id: string, scaleId: string, fields: Record<string, string> = {}) => {
+		const def = scale(scaleId);
+		return submit(s.priya, id, { scaleId, answers: JSON.stringify(answers(def, (nums) => nums[0])), ...fields });
+	};
+	const labels = async (id: string, scaleId: string) => (await db().assessment.findMany({ where: { patientId: id, scaleId }, orderBy: { createdAt: 'asc' } })).map((r) => r.label);
+
+	it('the first assessment of a scale is the Baseline and later ones carry no label', async () => {
 		const id = await createPatient(s.priya);
-		await submit(s.priya, id, { scaleId: 'phq9', answers: JSON.stringify(answers(phq9, () => 1, PHQ_SCORED)), scans: [PDF('hub')] });
-		const name = (await db().patient.findUniqueOrThrow({ where: { id } })).name;
-		expect(await (await s.priya.get('/assessments')).text()).toContain(name);
-		expect(await (await s.rohan.get('/assessments')).text()).not.toContain(name);
-		expect(await (await s.admin.get('/assessments')).text()).toContain(name);
+		await send(id, 'phq9');
+		await send(id, 'phq9', { assessmentDate: '2026-09-08' });
+		await send(id, 'phq9', { assessmentDate: '2026-09-15' });
+		expect(await labels(id, 'phq9')).toEqual(['Baseline', null, null]);
+	});
+
+	it('each scale has its own baseline', async () => {
+		const id = await createPatient(s.priya);
+		await send(id, 'phq9');
+		await send(id, 'fma');
+		await send(id, 'phq9', { assessmentDate: '2026-09-08' });
+		expect(await labels(id, 'phq9')).toEqual(['Baseline', null]);
+		expect(await labels(id, 'fma')).toEqual(['Baseline']);
+	});
+
+	it('a label sent by the browser is ignored: there is no timepoint choice', async () => {
+		const id = await createPatient(s.priya);
+		await send(id, 'phq9', { label: 'Day 28' });
+		await send(id, 'phq9', { label: 'Baseline', assessmentDate: '2026-09-08' });
+		expect(await labels(id, 'phq9')).toEqual(['Baseline', null]);
+	});
+
+	it('the form says whether it is the baseline, and offers no timepoint options', async () => {
+		const id = await createPatient(s.priya);
+		expect((await pageData(s.priya, `/assessments/new?patient=${id}&scale=phq9`)).isBaseline).toBe(true);
+		await send(id, 'phq9');
+		expect((await pageData(s.priya, `/assessments/new?patient=${id}&scale=phq9`)).isBaseline).toBe(false);
+		expect((await pageData(s.priya, `/assessments/new?patient=${id}&scale=fma`)).isBaseline).toBe(true); // another scale: still its baseline
+		const html = await (await s.priya.get(`/assessments/new?patient=${id}&scale=phq9`)).text();
+		expect(html).not.toContain('Timepoint');
+		expect(html).not.toContain('Day 7');
 	});
 });

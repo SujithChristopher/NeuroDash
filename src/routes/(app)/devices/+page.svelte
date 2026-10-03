@@ -7,9 +7,10 @@
 	import KpiCard from '$lib/components/KpiCard.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
+	import RequestActions from '$lib/components/RequestActions.svelte';
 	import { DEVICE_STATUSES } from '$lib/constants';
 	import { toastEnhance } from '$lib/enhance';
-	import { timeAgo } from '$lib/utils';
+	import { fmtDateShort, timeAgo } from '$lib/utils';
 
 	let { data, form } = $props();
 	const PAGE_SIZE = 8;
@@ -19,6 +20,7 @@
 	let status = $state('all');
 	let pageNo = $state(1);
 	let showRegister = $state(false);
+	let showRequest = $state(false);
 
 	const count = (s: string) => data.devices.filter((d) => d.status === s).length;
 	const filtered = $derived(
@@ -36,6 +38,9 @@
 
 <PageHead title="Devices" sub="{data.devices.length} rehabilitation devices across {data.types.length} device types.">
 	{#snippet actions()}
+		{#if data.canRequest}
+			<button class="btn btn-primary" onclick={() => (showRequest = true)}><Icon name="plus" size={15} /> Request device</button>
+		{/if}
 		{#if data.canRegister}
 			<button class="btn btn-primary" onclick={() => (showRegister = true)}><Icon name="plus" size={15} /> Register device</button>
 		{/if}
@@ -97,6 +102,63 @@
 		</div>
 	</div>
 </div>
+
+{#if data.canRequest || data.isEngineer}
+	<div class="section-title-row">
+		<h2>Device requests</h2>
+		<span class="muted" style="font-size:12px">{data.isEngineer ? 'from every centre' : `for ${data.centreName ?? 'your centre'}`}</span>
+	</div>
+	{#if data.canRequest}
+		<div class="alert alert-info" style="margin-bottom:12px">
+			<Icon name="info" size={15} />
+			<span>An engineer clears each request and sets up a unit at your centre. Once it is set up you can raise issues for it and follow its history. You are notified at each step.</span>
+		</div>
+	{/if}
+	<div class="card" style="margin-bottom:20px">
+		<div class="table-wrap">
+			<table class="dt">
+				<thead>
+					<tr><th>Centre</th><th>Device type</th>{#if data.isEngineer}<th>Requested by</th>{/if}<th>Requested</th><th>Engineer</th><th>Status</th>{#if data.isEngineer}<th></th>{/if}</tr>
+				</thead>
+				<tbody>
+					{#each data.requests as r (r.id)}
+						<tr>
+							<td>{r.location.name}{#if r.notes}<div class="dt-sub">{r.notes}</div>{/if}</td>
+							<td>{r.deviceType.name} — {r.deviceType.category}</td>
+							{#if data.isEngineer}<td>{r.therapist}</td>{/if}
+							<td class="mono">{fmtDateShort(r.requestedAt)}</td>
+							<td>{#if r.engineer}{r.engineer}{:else}<span class="muted">Unassigned</span>{/if}</td>
+							<td><Badge text={r.status} /></td>
+							{#if data.isEngineer}<td><RequestActions request={r} available={data.available} /></td>{/if}
+						</tr>
+					{:else}
+						<tr><td colspan="7"><EmptyState icon="device" title="No device requests yet" sub={data.canRequest ? 'Use Request device above to ask for one.' : ''} /></td></tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{/if}
+
+{#if showRequest}
+	<Modal title="Request a device for {data.centreName ?? 'your centre'}" onclose={() => (showRequest = false)}>
+		<form id="request-device" method="POST" action="?/request" use:enhance={toastEnhance({ onSuccess: () => (showRequest = false), reset: true })}>
+			<div class="field">
+				<label for="rq-type">Device type</label>
+				<select id="rq-type" name="deviceTypeId" required>
+					<option value="">Select a device type…</option>
+					{#each data.types as t (t.id)}<option value={t.id}>{t.name} — {t.category}</option>{/each}
+				</select>
+			</div>
+			<div class="field"><label for="rq-notes">Notes for engineering</label><textarea id="rq-notes" name="notes" maxlength="1000" placeholder="Why the centre needs this device…"></textarea></div>
+			{#if form?.error}<div class="alert alert-critical" style="margin-top:10px"><Icon name="alert" size={15} /><span>{form.error}</span></div>{/if}
+		</form>
+		{#snippet footer()}
+			<button class="btn btn-secondary" onclick={() => (showRequest = false)}>Cancel</button>
+			<button class="btn btn-primary" form="request-device"><Icon name="send" size={14} /> Send request</button>
+		{/snippet}
+	</Modal>
+{/if}
 
 {#if showRegister}
 	<Modal title="Register device" onclose={() => (showRegister = false)}>

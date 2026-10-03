@@ -1,6 +1,6 @@
 <script lang="ts">
-	// Engineer actions for a device request. Posts to the /device-requests form actions
-	// from anywhere (the requests page and the Issues page), then refreshes the current page.
+	// Engineer actions for a device request. Posts to the /devices form actions
+	// from anywhere (the Devices page and the Issues page), then refreshes the current page.
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import { toast } from '$lib/stores/toast';
@@ -27,17 +27,17 @@
 
 {#if request.status === REQUEST_PENDING}
 	<div style="display:flex;gap:6px">
-		<form method="POST" action="/device-requests?/clear" use:enhance={submit}>
+		<form method="POST" action="/devices?/clear" use:enhance={submit}>
 			<input type="hidden" name="id" value={request.id} />
 			<button class="btn btn-secondary btn-sm">Inspect &amp; Clear</button>
 		</form>
-		<form method="POST" action="/device-requests?/decline" use:enhance={submit}>
+		<form method="POST" action="/devices?/decline" use:enhance={submit}>
 			<input type="hidden" name="id" value={request.id} />
 			<button class="btn btn-ghost btn-sm">Decline</button>
 		</form>
 	</div>
 {:else if request.status === REQUEST_CLEARED}
-	<form method="POST" action="/device-requests?/assign" use:enhance={submit} style="display:flex;gap:6px;align-items:center">
+	<form method="POST" action="/devices?/assign" use:enhance={submit} style="display:flex;gap:6px;align-items:center">
 		<input type="hidden" name="id" value={request.id} />
 		<select name="deviceId" class="filter-select" bind:value={deviceId} required aria-label="Unit to assign">
 			<option value="">{units.length ? 'Pick a unit…' : 'No unit available'}</option>

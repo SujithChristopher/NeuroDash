@@ -20,9 +20,12 @@
 	// Roving tabindex: the selected button (or the first) is the one tab stop.
 	const stop = $derived(selected >= 0 ? selected : 0);
 	let root = $state<HTMLDivElement>();
-	// Text options are listed one per row; short numeric scales (0-5, 0.5 steps) stay in a single wrapped row.
-	const compact = $derived(choices.every((c) => String(c.label).length <= 3));
-
+	// Short answers (a single word or a number: "0", "1", "Yes", "Normal") sit side by side as equal columns in ONE row.
+	// Anything longer (sentences) is listed one per row so long labels never get cut off.
+	const SHORT = /^\S{1,14}$/;
+	const compact = $derived(choices.length <= 8 && choices.every((c) => SHORT.test(String(c.label).trim())));
+	// Many short answers (e.g. a 0-10 scale) wrap onto further rows instead of overflowing.
+	const wrapShort = $derived(choices.length > 8 && choices.every((c) => SHORT.test(String(c.label).trim())));
 	function key(e: KeyboardEvent, i: number) {
 		const next = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? i + 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? i - 1 : null;
 		if (next === null) return;
@@ -33,7 +36,7 @@
 	}
 </script>
 
-<div class="choice-group" class:list={!compact} role="radiogroup" aria-label={label} bind:this={root}>
+<div class="choice-group" class:list={!compact && !wrapShort} class:columns={compact} role="radiogroup" aria-label={label} bind:this={root}>
 	{#each choices as c, i (String(c.value))}
 		<button
 			type="button"
@@ -79,6 +82,26 @@
 	.choice-group.list {
 		flex-direction: column;
 		gap: 6px;
+	}
+	/* one line of equal columns */
+	.choice-group.columns {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(0, 1fr);
+		gap: 8px;
+		max-width: 640px;
+	}
+	.choice-group.columns .choice {
+		justify-content: center;
+		text-align: center;
+		padding: 8px 6px;
+	}
+	/* a phone is too narrow for many columns: let them wrap */
+	@media (max-width: 480px) {
+		.choice-group.columns {
+			grid-auto-flow: row;
+			grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+		}
 	}
 	.choice-group.list .choice {
 		width: 100%;

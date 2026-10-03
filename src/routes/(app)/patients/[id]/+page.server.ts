@@ -93,7 +93,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const active = (await activeByCode()).get(p.displayCode);
 
 	return {
-		liveSession: active ? { device: active.device, secondsAgo: active.secondsAgo } : null,
+		liveSession: active ? { device: active.device, client: active.client, secondsAgo: active.secondsAgo } : null,
 		perms: {
 			isOwner: owner,
 			// Status changes are the primary therapist's. Consultants are read-only apart from adding notes.

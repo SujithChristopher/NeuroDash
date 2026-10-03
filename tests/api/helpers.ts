@@ -6,9 +6,9 @@ export const BASE = () => process.env.TEST_BASE_URL ?? 'http://localhost:5198';
 export const PASSWORD = 'neurodash123';
 
 export const USERS = {
-	priya: 'priya.nair@neurodash.care', // therapist, Downtown
-	rohan: 'rohan.mehta@neurodash.care', // therapist, North Campus
-	vikram: 'vikram.suresh@neurodash.care', // consultant, Downtown
+	priya: 'priya.nair@neurodash.care', // therapist, Ranipet
+	rohan: 'rohan.mehta@neurodash.care', // therapist, CMC Vellore
+	vikram: 'vikram.suresh@neurodash.care', // consultant, Ranipet
 	arjun: 'arjun.rao@neurodash.care', // engineer
 	admin: 'biorehabilitationgroup@gmail.com'
 } as const;
@@ -145,7 +145,7 @@ export const PDF = (label = 'scan') => new File([`%PDF-1.4\n% ${label}\n`], `${l
 export const PNG = () =>
 	new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0])], 'photo.png', { type: 'image/png' });
 
-/** Creates a patient as Priya (Downtown) and returns its id. */
+/** Creates a patient as Priya (Ranipet) and returns its id. */
 export async function createPatient(therapist: Client, code = uniq('Pat')): Promise<string> {
 	// The Patient ID doubles as the patient's label (no name is collected).
 	const r = await therapist.action('/patients/new', { patientId: code, dob: '1970-01-01', gender: 'Female', affectedSide: 'Left' });
@@ -170,8 +170,8 @@ export async function createUser(admin: Client, opts: { role: 'THERAPIST' | 'CON
 	return { email, client: c, tempPassword: r.data.tempPassword };
 }
 
-export const downtownId = async () => (await db().location.findUniqueOrThrow({ where: { name: 'Downtown Clinic' } })).id;
-export const northId = async () => (await db().location.findUniqueOrThrow({ where: { name: 'North Campus' } })).id;
+export const downtownId = async () => (await db().location.findUniqueOrThrow({ where: { name: 'CMC Ranipet' } })).id;
+export const northId = async () => (await db().location.findUniqueOrThrow({ where: { name: 'CMC Vellore' } })).id;
 
 /** Reads a page's server `load` data (merged layout + page) via SvelteKit's __data.json endpoint. */
 export async function pageData<T = any>(client: Client, path: string): Promise<T> {

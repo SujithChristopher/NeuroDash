@@ -13,7 +13,7 @@ describe('computePresence', () => {
 	};
 
 	it('is active within the window and inactive after it', () => {
-		const by = Object.fromEntries(computePresence(raw, now).map((e) => [e.code, e]));
+		const by = Object.fromEntries(computePresence(raw, now, 300).map((e) => [e.code, e]));
 		expect(by['118']).toMatchObject({ device: 'MARS01', active: true });
 		expect(by['118'].secondsAgo).toBeGreaterThanOrEqual(19);
 		expect(by['118'].secondsAgo).toBeLessThanOrEqual(21);
@@ -42,7 +42,7 @@ describe('computePresence', () => {
 });
 
 describe('presenceSignature', () => {
-	const e = (code: string, device: string, active: boolean) => ({ code, device, lastUpload: '', secondsAgo: 0, active });
+	const e = (code: string, device: string, active: boolean) => ({ code, device, client: null, lastUpload: '', secondsAgo: 0, active });
 	it('lists only active patients, sorted, and ignores timing', () => {
 		expect(presenceSignature([e('b', 'MARS01', true), e('a', 'PLUTO01', true), e('c', 'X', false)])).toBe('a@PLUTO01,b@MARS01');
 		expect(presenceSignature([])).toBe('');
