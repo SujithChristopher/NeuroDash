@@ -113,6 +113,7 @@ The other device must be on the **same network** as the computer running NeuroDa
    ALLOW_HTTP_COOKIES=1
    ```
 3. Start the app so it listens on the network, not just on this computer: `npm run dev:lan`. It always uses **port 5180** (`--strictPort`): if something else already holds that port it stops with an error instead of quietly picking another one, so the address never changes.
+   **Slow on the other device?** `dev:lan` is the development server: it sends hundreds of unbundled files per page, which is quick on this computer but slow over Wi-Fi. For demos and shared use run `npm run serve:lan` instead (builds once, then serves the bundled app on the same port 5180; rebuild by re-running it after code changes).
 4. Allow it through the Windows firewall (run once, in an administrator PowerShell):
    ```powershell
    netsh advfirewall firewall add rule name="NeuroDash 5180" dir=in action=allow protocol=TCP localport=5180
