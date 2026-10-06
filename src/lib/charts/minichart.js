@@ -76,6 +76,8 @@ function roundRectRight(ctx,x,y,w,h,r){
 }
 
 function easeOutCubic(t){ return 1-Math.pow(1-t,3); }
+// A little overshoot: used for the points that pop onto a lively line chart
+function easeOutBack(t){ var c=1.9; return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2); }
 
 function MiniChart(ctx, config){
   this.ctx = ctx;
@@ -215,8 +217,9 @@ MiniChart.prototype._layout = function(){
     return;
   }
   var horizontal = this.o.indexAxis==='y';
-  var padLeft = horizontal ? 76 : 34;
-  var padBottom = 24;
+  var sc = this.o.scales || {};
+  var padLeft = (horizontal ? 76 : 34) + (sc.y && sc.y.title && sc.y.title.text ? 16 : 0);
+  var padBottom = 24 + (sc.x && sc.x.title && sc.x.title.text ? 16 : 0);
   var padTop = 10 + legendH;
   var padRight = 12;
   this.plot = { x: padLeft, y: padTop, w: Math.max(10, this.w-padLeft-padRight), h: Math.max(10, this.h-padTop-padBottom) };
@@ -285,6 +288,13 @@ MiniChart.prototype._drawLine = function(){
   });
   ctx.strokeStyle = gridColor; ctx.beginPath(); ctx.moveTo(p.x, p.y+p.h+0.5); ctx.lineTo(p.x+p.w, p.y+p.h+0.5); ctx.stroke();
 
+  // Axis titles (optional): the unit of the y axis, rotated, and what the x axis counts
+  var yTitle = s.y && s.y.title && s.y.title.text, xTitle = s.x && s.x.title && s.x.title.text;
+  ctx.fillStyle = tickColor; ctx.font = '600 11px IBM Plex Sans, system-ui, sans-serif';
+  if(yTitle){ ctx.save(); ctx.translate(11, p.y + p.h/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(yTitle, 0, 0); ctx.restore(); }
+  if(xTitle){ ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(xTitle, p.x + p.w/2, this.h - 2); }
+  ctx.font = '11px IBM Plex Sans, system-ui, sans-serif';
+
   var step = this._xTickStep(n);
   ctx.textAlign='center'; ctx.textBaseline='top';
   var self_w = this.w;
@@ -339,12 +349,25 @@ MiniChart.prototype._drawLine = function(){
     ctx.stroke();
     ctx.setLineDash([]);
     if(n<=40){
-      pts.forEach(function(pt){
+      var lively = !!self.o.lively;
+      var color = ds.borderColor || '#2a78d6';
+      pts.forEach(function(pt, i){
         if(!pt) return;
+        var r = 3;
+        if(lively){
+          // Each point pops in (with a little overshoot) as the line reaches it, sending out one soft ring
+          var frac = p.w ? (pt.x - p.x) / p.w : 0;
+          var pp = Math.min(1, Math.max(0, (reveal - frac) / 0.1));
+          if(pp <= 0) return;
+          r = 3.6 * easeOutBack(pp);
+          if(pp < 1){ ctx.beginPath(); ctx.strokeStyle = hexToRgba(color, 0.35 * (1 - pp)); ctx.lineWidth = 2; ctx.arc(pt.x, pt.y, 4 + 10 * pp, 0, Math.PI*2); ctx.stroke(); }
+          if(self._hoverIdx === i){ ctx.beginPath(); ctx.fillStyle = hexToRgba(color, 0.18); ctx.arc(pt.x, pt.y, 9, 0, Math.PI*2); ctx.fill(); r = 5; }
+        }
         ctx.beginPath();
-        ctx.fillStyle = ds.borderColor || '#2a78d6';
-        ctx.arc(pt.x, pt.y, 3, 0, Math.PI*2);
+        ctx.fillStyle = color;
+        ctx.arc(pt.x, pt.y, Math.max(0, r), 0, Math.PI*2);
         ctx.fill();
+        if(lively){ ctx.beginPath(); ctx.fillStyle = '#fff'; ctx.arc(pt.x, pt.y, Math.max(0, r - 1.6), 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.fillStyle = color; ctx.arc(pt.x, pt.y, Math.max(0, r - 2.6), 0, Math.PI*2); ctx.fill(); }
       });
     }
   });

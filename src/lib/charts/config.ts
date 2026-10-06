@@ -25,6 +25,13 @@ export interface ChartOpts {
 	valueSuffix?: string;
 	/** Line charts: the tooltip lines for the point at this index (the first line is marked with the series colour). */
 	tooltipLines?: (index: number) => string[];
+	/** Line charts: points pop in as the line draws, with a ripple and a halo on hover. */
+	lively?: boolean;
+	/** Line charts: how long the draw-in takes (ms) */
+	animationMs?: number;
+	/** Axis titles, e.g. the unit */
+	xTitle?: string;
+	yTitle?: string;
 }
 
 export const cssVar = (name: string) =>
@@ -91,6 +98,8 @@ export function lineConfig(labels: string[], datasets: LineDataset[], opts: Char
 			responsive: true,
 			maintainAspectRatio: false,
 			interaction: { mode: 'index', intersect: false },
+			lively: !!opts.lively,
+			animation: opts.animationMs ? { duration: opts.animationMs } : undefined,
 			plugins: {
 				legend: {
 					display: !!opts.legend,
@@ -101,6 +110,7 @@ export function lineConfig(labels: string[], datasets: LineDataset[], opts: Char
 			scales: {
 				x: {
 					grid: { display: false },
+					title: { display: !!opts.xTitle, text: opts.xTitle ?? '' },
 					ticks: {
 						color: cssVar('--ink-500'),
 						font: font(),
@@ -112,6 +122,7 @@ export function lineConfig(labels: string[], datasets: LineDataset[], opts: Char
 				},
 				y: {
 					beginAtZero: true,
+					title: { display: !!opts.yTitle, text: opts.yTitle ?? '' },
 					grid: { color: cssVar('--border') },
 					ticks: { color: cssVar('--ink-500'), font: font(), precision: 0 },
 					border: { display: false },

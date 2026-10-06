@@ -1,5 +1,6 @@
 <script lang="ts">
-	// Therapy-plan attendance: one square per plan day, shaded by how much of the day's target was trained.
+	// Therapy-plan attendance as a calendar: a row per week (Monday to Sunday), one square per plan day showing its date,
+	// shaded by how much of that day's target was trained.
 	import { buildAttendance, type AttendanceDay } from '$lib/attendance';
 	import { fmtDateShort } from '$lib/utils';
 
@@ -9,51 +10,39 @@
 	const today = new Date().toISOString().slice(0, 10);
 	const a = $derived(buildAttendance(dayLog, today));
 	const LEVELS = [0, 1, 2, 3, 4] as const;
-	const WEEKDAYS = ['Mon', '', 'Wed', '', 'Fri', '', ''];
+	const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 	const title = (c: NonNullable<(typeof a.weeks)[number][number]>) =>
 		`Day ${c.dayNumber} · ${fmtDateShort(c.date)} · ${c.level === null ? 'still to come' : `${Math.round(c.minutes)} of ${c.target} min`}`;
+	const dayOfMonth = (date: string) => String(Number(date.slice(8, 10)));
 </script>
 
 <div class="card">
 	<div class="card-head"><h3>Attendance</h3><span class="hint">therapy minutes per day vs target</span></div>
 	<div class="card-body">
 		{#if a.weeks.length}
-			<div class="att">
-				<div class="grid-wrap">
-					<div class="months" style="--weeks:{a.weeks.length}">
-						{#each a.months as m, i (i)}<span>{m ?? ''}</span>{/each}
-					</div>
-					<div class="body">
-						<div class="days" aria-hidden="true">{#each WEEKDAYS as d, i (i)}<span>{d}</span>{/each}</div>
-						<div class="cells" style="--weeks:{a.weeks.length}" role="img" aria-label="Attendance by day">
-							{#each a.weeks as week, w (w)}
-								{#each week as c, i (i)}
-									{#if c}
-										<span class="cell l{c.level ?? 'x'}" class:today={c.today} title={title(c)}></span>
-									{:else}
-										<span class="cell out"></span>
-									{/if}
-								{/each}
-							{/each}
-						</div>
-					</div>
+			<div class="cal" role="img" aria-label="Attendance by day">
+				<div class="row head" aria-hidden="true">
+					<span></span>
+					{#each WEEKDAYS as d (d)}<span>{d}</span>{/each}
 				</div>
-				<div class="facts">
-					<div>
-						<div class="k-label">Last 7 days</div>
-						<div class="big">{a.last7.trained} of {a.last7.planned} <span>sessions</span></div>
+				{#each a.weeks as week, w (w)}
+					<div class="row">
+						<span class="month">{a.months[w] ?? ''}</span>
+						{#each week as c, i (i)}
+							{#if c}
+								<span class="cell l{c.level ?? 'x'}" class:today={c.today} title={title(c)}>{dayOfMonth(c.date)}</span>
+							{:else}
+								<span class="cell out"></span>
+							{/if}
+						{/each}
 					</div>
-					<div>
-						<div class="k-label">Since start</div>
-						<div class="big">{a.sinceStartPct == null ? '—' : `${a.sinceStartPct}%`} <span>of planned minutes</span></div>
-					</div>
-					<div class="legend" aria-label="Legend">
-						None
-						{#each LEVELS as l (l)}<span class="cell sm l{l}"></span>{/each}
-						Target met
-					</div>
-				</div>
+				{/each}
+			</div>
+			<div class="legend" aria-label="Legend">
+				None
+				{#each LEVELS as l (l)}<span class="sw l{l}"></span>{/each}
+				Target met
 			</div>
 		{:else}
 			<div class="muted" style="font-size:12.5px">Attendance appears once a therapy plan exists.</div>
@@ -62,62 +51,40 @@
 </div>
 
 <style>
-	.att {
-		display: flex;
-		gap: 28px;
-		flex-wrap: wrap;
-		align-items: flex-start;
-	}
-	.grid-wrap {
-		overflow-x: auto;
-		max-width: 100%;
-		padding-bottom: 2px;
-	}
-	.months {
+	/* seven columns share the whole width of the card, so there is no empty space beside the calendar */
+	.cal {
 		display: grid;
-		grid-template-columns: repeat(var(--weeks), 22px);
-		gap: 5px;
-		margin-left: 34px;
-		margin-bottom: 4px;
+		gap: 6px;
+		width: 100%;
+	}
+	.row {
+		display: grid;
+		grid-template-columns: 30px repeat(7, minmax(0, 1fr));
+		gap: 6px;
+		align-items: center;
+	}
+	.head span {
+		text-align: center;
 		font-size: 11px;
 		color: var(--ink-500);
-		height: 14px;
 	}
-	.months span {
+	.month {
+		font-size: 11px;
+		color: var(--ink-500);
 		white-space: nowrap;
-		overflow: visible;
-	}
-	.body {
-		display: flex;
-		gap: 8px;
-	}
-	.days {
-		display: grid;
-		grid-template-rows: repeat(7, 22px);
-		gap: 5px;
-		width: 26px;
-		font-size: 11px;
-		color: var(--ink-500);
-		line-height: 22px;
-	}
-	.cells {
-		display: grid;
-		grid-template-rows: repeat(7, 22px);
-		grid-auto-flow: column;
-		grid-auto-columns: 22px;
-		gap: 5px;
 	}
 	.cell {
-		display: block;
-		width: 22px;
-		height: 22px;
-		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		max-height: 46px;
+		aspect-ratio: 1.25;
+		border-radius: 8px;
 		box-sizing: border-box;
-	}
-	.cell.sm {
-		width: 14px;
-		height: 14px;
-		border-radius: 4px;
+		font-size: 11px;
+		font-weight: 600;
+		color: var(--ink-500);
 	}
 	.cell.out {
 		background: transparent;
@@ -126,6 +93,8 @@
 	.cell.lx {
 		background: var(--surface);
 		border: 1px solid var(--border);
+		font-weight: 500;
+		color: var(--ink-400);
 	}
 	.cell.l0 {
 		background: var(--surface-2);
@@ -135,40 +104,46 @@
 	}
 	.cell.l2 {
 		background: color-mix(in srgb, var(--accent) 48%, var(--surface));
+		color: var(--ink-900);
 	}
 	.cell.l3 {
 		background: color-mix(in srgb, var(--accent) 74%, var(--surface));
+		color: #fff;
 	}
 	.cell.l4 {
 		background: var(--accent);
+		color: #fff;
 	}
 	.cell.today {
 		outline: 2px solid var(--ink-900);
 		outline-offset: 1px;
 	}
-	.facts {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-		min-width: 190px;
-	}
-	.big {
-		font-size: 24px;
-		font-weight: 600;
-		color: var(--ink-900);
-		line-height: 1.2;
-		margin-top: 2px;
-	}
-	.big span {
-		font-size: 14px;
-		font-weight: 400;
-		color: var(--ink-500);
-	}
 	.legend {
 		display: flex;
 		align-items: center;
 		gap: 5px;
+		margin-top: 14px;
 		font-size: 12px;
 		color: var(--ink-500);
+	}
+	.sw {
+		width: 14px;
+		height: 14px;
+		border-radius: 4px;
+	}
+	.sw.l0 {
+		background: var(--surface-2);
+	}
+	.sw.l1 {
+		background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+	}
+	.sw.l2 {
+		background: color-mix(in srgb, var(--accent) 48%, var(--surface));
+	}
+	.sw.l3 {
+		background: color-mix(in srgb, var(--accent) 74%, var(--surface));
+	}
+	.sw.l4 {
+		background: var(--accent);
 	}
 </style>

@@ -51,7 +51,7 @@
 			</div>
 			<div class="card-body">
 				{#if days.length}
-					<Chart kind="line" labels={days.map((d) => `Day ${d.n}`)} datasets={[{ label: 'Therapy time (min)', data: days.map((d) => d.minutes), color: 'var(--accent)' }]} opts={{ tooltipLines: tip, maxTicksX: 7 }} height={200} />
+					<Chart kind="area" labels={days.map((d) => String(d.n))} datasets={[{ label: 'Therapy time (min)', data: days.map((d) => d.minutes), color: 'var(--accent)' }]} opts={{ tooltipLines: tip, maxTicksX: 15, xTitle: 'Session', yTitle: 'Minutes', lively: true, animationMs: 1600 }} height={230} />
 				{:else}
 					<EmptyState icon="activity" title="No therapy sessions yet" sub="Sessions appear here as the training devices upload them." />
 				{/if}

@@ -1,2 +1,0 @@
--- RenameIndex
-ALTER INDEX "robotic_assessments_patient_id_device_type_id_limb_timepoint_ke" RENAME TO "robotic_assessments_patient_id_device_type_id_limb_timepoin_key";
