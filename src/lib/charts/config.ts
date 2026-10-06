@@ -23,6 +23,8 @@ export interface ChartOpts {
 	stacked?: boolean;
 	/** Appended to values in bar tooltips, e.g. " min". */
 	valueSuffix?: string;
+	/** Line charts: the tooltip lines for the point at this index (the first line is marked with the series colour). */
+	tooltipLines?: (index: number) => string[];
 }
 
 export const cssVar = (name: string) =>
@@ -94,7 +96,7 @@ export function lineConfig(labels: string[], datasets: LineDataset[], opts: Char
 					display: !!opts.legend,
 					labels: { color: cssVar('--ink-700'), font: font(), usePointStyle: true, boxWidth: 8 }
 				},
-				tooltip: { ...tooltipBase(), callbacks: {} }
+				tooltip: { ...tooltipBase(), callbacks: opts.tooltipLines ? { label: (c: { parsed: { x: number } }) => opts.tooltipLines!(c.parsed.x) } : {} }
 			},
 			scales: {
 				x: {

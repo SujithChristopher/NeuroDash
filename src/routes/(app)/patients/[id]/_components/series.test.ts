@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countTrials, deviceDaily, deviceTotals, devicesOf, durationByDay, type TrainingSession } from './series';
+import { avgIntervalDays, countTrials, deviceDaily, deviceTotals, devicesOf, durationByDay, sessionDays, type TrainingSession } from './series';
 
 const mk = (date: string, typeId: string, minutes: number | null, over: Partial<TrainingSession> = {}): TrainingSession => ({
 	date: `${date}T00:00:00.000Z`,
@@ -73,5 +73,29 @@ describe('scaleTrends', () => {
 		expect(t[0]).toMatchObject({ count: 2, labels: ['Baseline', 'Day 7'], data: [40, 55] });
 		expect(t[1].count).toBe(1);
 		expect(t[0].color).not.toBe(t[1].color);
+	});
+});
+
+describe('sessionDays: one point per day trained, all devices together', () => {
+	it('counts several sessions on one day as one, numbering the days 1, 2, 3 whatever the gaps', () => {
+		const d = sessionDays(sessions);
+		expect(d.map((x) => [x.n, x.date, x.minutes, x.sessions])).toEqual([[1, '2026-08-04', 35, 3], [2, '2026-08-07', 15, 2]]);
+	});
+	it('lists each device share of the day and the day accuracy', () => {
+		const [first] = sessionDays(sessions);
+		expect(first.byDevice).toEqual([{ name: 'MARS', minutes: 25 }, { name: 'PLUTO', minutes: 10 }]);
+		expect(first.accuracy).toBe(80);
+	});
+	it('is empty without sessions', () => expect(sessionDays([])).toEqual([]));
+});
+
+describe('avgIntervalDays', () => {
+	it('is the average gap between training days, not counting several sessions in one day twice', () => {
+		expect(avgIntervalDays(sessionDays(sessions))).toBe(3);
+		expect(avgIntervalDays([{ date: '2026-08-01' }, { date: '2026-08-02' }, { date: '2026-08-06' }])).toBe(2.5);
+	});
+	it('needs two training days', () => {
+		expect(avgIntervalDays([])).toBeNull();
+		expect(avgIntervalDays([{ date: '2026-08-01' }])).toBeNull();
 	});
 });

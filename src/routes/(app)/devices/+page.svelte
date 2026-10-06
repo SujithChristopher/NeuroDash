@@ -21,6 +21,8 @@
 	let pageNo = $state(1);
 	let showRegister = $state(false);
 	let showRequest = $state(false);
+	// The device a therapist is asking to return (opens the reason dialog)
+	let returning = $state<{ id: string; displayCode: string } | null>(null);
 
 	const count = (s: string) => data.devices.filter((d) => d.status === s).length;
 	const filtered = $derived(
@@ -73,20 +75,30 @@
 	</div>
 	<div class="table-wrap">
 		<table class="dt">
-			<thead><tr><th>Device</th><th>Centre</th><th>Status</th><th></th></tr></thead>
+			<thead><tr><th>Device</th><th>Centre</th><th>Status</th><th></th><th></th></tr></thead>
 			<tbody>
 				{#each items as d (d.id)}
-					<tr class="clickable" onclick={() => goto(`/devices/${d.id}`)}>
+					<tr class="clickable" onclick={(e) => { if (!(e.target as HTMLElement).closest('button, form')) goto(`/devices/${d.id}`); }}>
 						<td>
 							<div class="dt-name mono">{d.displayCode}</div>
 							<div class="dt-sub">{d.type.category}{d.location ? ` · ${d.location}` : ''}{d.lastSyncAt ? ` · synced ${timeAgo(d.lastSyncAt)}` : ''}</div>
 						</td>
 						<td>{#if d.centre}{d.centre}{:else}<span class="muted">In stock</span>{/if}</td>
-						<td><Badge text={d.status} /></td>
+						<td><Badge text={d.status} />{#if d.returnPending} <Badge text="Return requested" tone="warning" />{/if}</td>
+						<td style="text-align:right;white-space:nowrap">
+							{#if data.canRequest && d.centre && !d.returnPending}
+								<button class="btn btn-ghost btn-sm" onclick={() => (returning = { id: d.id, displayCode: d.displayCode })}><Icon name="box" size={13} /> Return</button>
+							{:else if data.isEngineer && d.centre}
+								<form method="POST" action="?/takeBack" use:enhance={toastEnhance()} style="display:inline">
+									<input type="hidden" name="deviceId" value={d.id} />
+									<button class="btn btn-ghost btn-sm"><Icon name="box" size={13} /> Take back</button>
+								</form>
+							{/if}
+						</td>
 						<td class="row-chevron"><Icon name="chevron" size={14} /></td>
 					</tr>
 				{:else}
-					<tr><td colspan="4"><EmptyState icon="device" title="No devices match your filters" /></td></tr>
+					<tr><td colspan="5"><EmptyState icon="device" title="No devices match your filters" /></td></tr>
 				{/each}
 			</tbody>
 		</table>
@@ -102,6 +114,36 @@
 		</div>
 	</div>
 </div>
+
+{#if data.returns.length && (data.canRequest || data.isEngineer)}
+	<div class="section-title-row">
+		<h2>Return requests</h2>
+		<span class="muted" style="font-size:12px">{data.isEngineer ? 'waiting for you to take the device back' : 'waiting for an engineer'}</span>
+	</div>
+	<div class="card" style="margin-bottom:20px">
+		<div class="table-wrap">
+			<table class="dt">
+				<thead><tr><th>Device</th><th>Centre</th><th>Requested by</th><th>Requested</th>{#if data.isEngineer}<th></th>{/if}</tr></thead>
+				<tbody>
+					{#each data.returns as r (r.id)}
+						<tr>
+							<td class="mono">{r.displayCode}{#if r.reason}<div class="dt-sub" style="font-family:inherit">{r.reason}</div>{/if}</td>
+							<td>{r.centre ?? '—'}</td>
+							<td>{r.by}</td>
+							<td class="mono">{fmtDateShort(r.requestedAt)}</td>
+							{#if data.isEngineer}
+								<td style="text-align:right;white-space:nowrap">
+									<form method="POST" action="?/takeBack" use:enhance={toastEnhance()} style="display:inline"><input type="hidden" name="deviceId" value={r.deviceId} /><button class="btn btn-primary btn-sm">Take back</button></form>
+									<form method="POST" action="?/declineReturn" use:enhance={toastEnhance()} style="display:inline"><input type="hidden" name="id" value={r.id} /><button class="btn btn-ghost btn-sm">Decline</button></form>
+								</td>
+							{/if}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{/if}
 
 {#if data.canRequest || data.isEngineer}
 	<div class="section-title-row">
@@ -156,6 +198,21 @@
 		{#snippet footer()}
 			<button class="btn btn-secondary" onclick={() => (showRequest = false)}>Cancel</button>
 			<button class="btn btn-primary" form="request-device"><Icon name="send" size={14} /> Send request</button>
+		{/snippet}
+	</Modal>
+{/if}
+
+{#if returning}
+	<Modal title="Return {returning.displayCode}" onclose={() => (returning = null)}>
+		<form id="return-device" method="POST" action="?/requestReturn" use:enhance={toastEnhance({ onSuccess: () => (returning = null), reset: true })}>
+			<input type="hidden" name="deviceId" value={returning.id} />
+			<p class="muted" style="font-size:13px;margin:0 0 12px">An engineer will be asked to take {returning.displayCode} back from {data.centreName ?? 'your centre'}. It stays with you until they do.</p>
+			<div class="field"><label for="rt-reason">Reason (optional)</label><textarea id="rt-reason" name="reason" maxlength="500" placeholder="No longer needed, faulty, moving to another centre…"></textarea></div>
+			{#if form?.error}<div class="alert alert-critical" style="margin-top:10px"><Icon name="alert" size={15} /><span>{form.error}</span></div>{/if}
+		</form>
+		{#snippet footer()}
+			<button class="btn btn-secondary" onclick={() => (returning = null)}>Cancel</button>
+			<button class="btn btn-primary" form="return-device"><Icon name="send" size={14} /> Send return request</button>
 		{/snippet}
 	</Modal>
 {/if}

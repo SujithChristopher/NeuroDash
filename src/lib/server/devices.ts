@@ -3,6 +3,8 @@ import { prisma } from './db';
 export type DeviceEventType =
 	| 'registered'
 	| 'assigned'
+	| 'return_requested'
+	| 'returned'
 	| 'maintenance'
 	| 'issue'
 	| 'investigating'

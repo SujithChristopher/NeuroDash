@@ -1,8 +1,8 @@
-// Active: account created, no training yet. Ongoing: devices allocated and at least one session trained (set
-// automatically when device data arrives). The rest are chosen by the therapist.
+// Inactive: registered, no therapy plan yet. Active: has a plan (both follow the plan automatically). The rest are
+// chosen by the therapist.
 export const PATIENT_STATUSES = [
+	'Inactive',
 	'Active',
-	'Ongoing',
 	'Paused',
 	'Completed',
 	'Discontinued'

@@ -10,7 +10,7 @@ export type LaptopStatus = 'active' | 'paused' | 'discharged';
 export function laptopStatus(status: string): LaptopStatus {
 	if (status === 'Paused') return 'paused';
 	if (status === 'Completed' || status === 'Discontinued') return 'discharged';
-	return 'active'; // Active / Ongoing
+	return 'active'; // Active (Inactive patients are not in the file)
 }
 
 export function laptopSide(affectedSide: string | null | undefined): 'left' | 'right' | 'both' | null {
@@ -25,6 +25,8 @@ export interface RegistryEntry {
 	status: LaptopStatus;
 	side: 'left' | 'right' | 'both' | null;
 	devices: string[];
+	/** Devices chosen for the robotic assessment: the patient is offered on these as well, before and after a plan */
+	assessment_devices: string[];
 	[extra: string]: unknown;
 }
 
@@ -34,12 +36,15 @@ export function registryEntry(p: {
 	status: string;
 	affectedSide: string | null;
 	devices: string[];
+	assessmentDevices?: string[];
 }): RegistryEntry {
+	const ids = (list: string[]) => [...new Set(list.map((d) => d.toUpperCase()))].sort();
 	return {
 		user_id: p.code,
 		status: laptopStatus(p.status),
 		side: laptopSide(p.affectedSide),
-		devices: [...new Set(p.devices.map((d) => d.toUpperCase()))].sort()
+		devices: ids(p.devices),
+		assessment_devices: ids(p.assessmentDevices ?? [])
 	};
 }
 

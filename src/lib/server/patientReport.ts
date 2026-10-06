@@ -17,7 +17,7 @@ export async function loadPatientReport(user: User, patientId: string, period?: 
 				orderBy: { startTime: 'asc' },
 				include: {
 					device: { select: { displayCode: true, deviceType: { select: { id: true, name: true, colorSeries: true } } } },
-					trials: { select: { mechanism: true, durationSec: true } }
+					trials: { select: { mechanism: true, durationSec: true, targets: true, hits: true } }
 				}
 			}
 		}

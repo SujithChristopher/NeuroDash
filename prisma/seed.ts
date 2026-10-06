@@ -101,7 +101,7 @@ async function main() {
 
   const patient = await prisma.patient.upsert({
     where: { displayCode: "P-10124" },
-    update: { status: "Ongoing" },
+    update: { status: "Active" },
     create: {
       displayCode: "P-10124",
       name: "Ananya R.",
@@ -115,7 +115,7 @@ async function main() {
       mobilityStatus: "Ambulatory with cane",
       therapyGoals: ["Improve functional grasp for self-feeding", "Restore independent reach above shoulder height"],
       initialObservations: "Reduced grip strength on left hand; moderate spasticity.",
-      status: "Ongoing",
+      status: "Active",
     },
   });
 

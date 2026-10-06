@@ -4,9 +4,11 @@ import json
 import os
 import shutil
 import threading
+import zipfile
 from datetime import datetime
 from pathlib import Path
 
+import assessment_receive
 import patients_store
 
 # =========================================================
@@ -257,6 +259,64 @@ def handle_presence(connection, device_id, header, action):
 # HANDLE DEVICE
 # =========================================================
 
+# =========================================================
+# ROBOTIC ASSESSMENTS (a locked timepoint, sent once, only when it changed)
+# =========================================================
+
+def handle_assessment(connection, address, device_id, header):
+    """Two steps on one connection: the laptop sends its fingerprint first and the server says whether it wants the
+    package at all (see assessment_receive.py), so an unchanged assessment costs a few bytes."""
+
+    try:
+        patient, limb, timepoint, fingerprint, file_size = assessment_receive.check_header(header)
+    except assessment_receive.AssessmentError as error:
+        send_sync_response(connection, {"success": False, "message": str(error)})
+        print(f"REJECTED: {error}")
+        return
+
+    folder = assessment_receive.package_folder(DATA_FOLDER, patient, device_id, limb, timepoint)
+    print(f"Assessment: {patient} {device_id} {limb} {timepoint}")
+
+    if assessment_receive.stored_fingerprint(folder) == fingerprint:
+        send_sync_response(connection, {"success": True, "send": False, "unchanged": True})
+        print("Already have this exact assessment: nothing to receive.")
+        return
+
+    send_sync_response(connection, {"success": True, "send": True})
+
+    incoming = DATA_FOLDER / "_incoming"
+    incoming.mkdir(parents=True, exist_ok=True)
+    temp_zip = incoming / f"{device_id}_assessment_{datetime.now():%Y%m%d%H%M%S%f}.tmp"
+
+    try:
+        remaining = file_size
+
+        with open(temp_zip, "wb") as output:
+            while remaining > 0:
+                packet = connection.recv(min(BUFFER_SIZE, remaining))
+
+                if not packet:
+                    raise ConnectionError("Connection lost during transfer.")
+
+                output.write(packet)
+                remaining -= len(packet)
+
+        saved = assessment_receive.install(
+            temp_zip, DATA_FOLDER, patient, device_id, limb, timepoint, fingerprint, incoming
+        )
+
+    except (assessment_receive.AssessmentError, zipfile.BadZipFile) as error:
+        send_sync_response(connection, {"success": False, "message": str(error)})
+        print(f"REJECTED: {error}")
+        return
+
+    finally:
+        temp_zip.unlink(missing_ok=True)
+
+    print(f"Saved to  : {saved}")
+    send_sync_response(connection, {"success": True, "saved": True, "patient_id": patient})
+
+
 def handle_device(connection, address):
 
     print()
@@ -307,6 +367,19 @@ def handle_device(connection, address):
                 return
 
             handle_sync(connection, address, device_id, header)
+            return
+
+        if action == "assessment":
+
+            if device_id not in ALLOWED_DEVICES:
+                send_sync_response(connection, {
+                    "success": False,
+                    "message": "Unknown device"
+                })
+                print("REJECTED: Unknown device")
+                return
+
+            handle_assessment(connection, address, device_id, header)
             return
 
         if action in ("check_user", "claim_user", "release"):

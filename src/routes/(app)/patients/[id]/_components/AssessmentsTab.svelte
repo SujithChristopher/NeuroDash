@@ -4,10 +4,14 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Badge from '$lib/components/Badge.svelte';
+	import RoboticAssessment from './RoboticAssessment.svelte';
 	import { fmtDateShort } from '$lib/utils';
 	import type { PageData } from '../$types';
 
 	let { data, openAssessment }: { data: PageData; openAssessment: (id: string) => void } = $props();
+
+	// Two kinds of assessment: the clinical scales, and the robotic one (devices chosen for it).
+	let section = $state<'clinical' | 'robotic'>('clinical');
 
 	const list = $derived(data.assessments);
 	const href = $derived(`/assessments/new?patient=${data.patient.id}`);
@@ -37,12 +41,20 @@
 	const sign = (n: number) => (n > 0 ? `+${n}` : String(n));
 </script>
 
+<div class="chips" role="tablist" aria-label="Assessment type" style="margin-bottom:16px">
+	<button type="button" role="tab" aria-selected={section === 'clinical'} class="chip" class:on={section === 'clinical'} onclick={() => (section = 'clinical')}>Clinical assessment</button>
+	<button type="button" role="tab" aria-selected={section === 'robotic'} class="chip" class:on={section === 'robotic'} onclick={() => (section = 'robotic')}>Robotic assessment{#if data.assessmentDevices.length} <span class="count">{data.assessmentDevices.length}</span>{/if}</button>
+</div>
+
+{#if section === 'robotic'}
+	<RoboticAssessment {data} />
+{:else}
 {#if list.length === 0}
 	<div class="card">
 		<EmptyState icon="clipboard" title="No assessments recorded yet" sub="Create the first assessment to establish a clinical baseline." />
 		{#if data.perms.isOwner}
 			<div style="text-align:center;padding-bottom:24px">
-				<a class="btn btn-primary" {href}><Icon name="plus" size={14} /> New Assessment</a>
+				<a class="btn btn-primary" {href}><Icon name="plus" size={14} /> Clinical Assessment</a>
 			</div>
 		{/if}
 	</div>
@@ -56,7 +68,7 @@
 			{/each}
 		</div>
 		{#if data.perms.isOwner}
-			<a class="btn btn-primary btn-sm" {href}><Icon name="plus" size={13} /> New Assessment</a>
+			<a class="btn btn-primary btn-sm" {href}><Icon name="plus" size={13} /> Clinical Assessment</a>
 		{/if}
 	</div>
 
@@ -121,6 +133,7 @@
 			</div>
 		</div>
 	{/if}
+{/if}
 {/if}
 
 <style>

@@ -24,7 +24,8 @@ export function normalizeDevice(raw: string | null | undefined): string | null {
 export function isWatchedUpload(relPath: string): boolean {
 	const p = relPath.replace(/\\/g, '/');
 	if (/(^|\/)(_incoming|backup)(\/|$)/i.test(p)) return false;
-	return /(^|\/)(sessions|configdata)\.csv$/i.test(p);
+	// a laptop's sessions.csv / configdata.csv, or the fingerprint a finished assessment upload ends with
+	return /(^|\/)(sessions|configdata)\.csv$/i.test(p) || /(^|\/)_assessments\/[^/]+\/\.fingerprint$/i.test(p);
 }
 
 /** RFC-4180-ish CSV: quoted fields, escaped quotes, CRLF/LF, BOM. Blank lines are dropped. */

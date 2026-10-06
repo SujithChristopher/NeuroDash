@@ -4,7 +4,6 @@ import { isReservedPatientId, laptopSide, laptopStatus, registryEntry } from './
 describe('status / side mapping to the laptop vocabulary', () => {
 	it('maps app statuses to active / paused / discharged', () => {
 		expect(laptopStatus('Active')).toBe('active');
-		expect(laptopStatus('Ongoing')).toBe('active');
 		expect(laptopStatus('Paused')).toBe('paused');
 		expect(laptopStatus('Completed')).toBe('discharged');
 		expect(laptopStatus('Discontinued')).toBe('discharged');
@@ -24,7 +23,8 @@ describe('registryEntry (patients.json)', () => {
 			user_id: '118',
 			status: 'active',
 			side: 'right',
-			devices: ['MARS01', 'PLUTO']
+			devices: ['MARS01', 'PLUTO'],
+			assessment_devices: []
 		});
 	});
 	it('uses null for an unset side and [] for no devices', () => {
@@ -32,7 +32,8 @@ describe('registryEntry (patients.json)', () => {
 			user_id: 'a',
 			status: 'paused',
 			side: null,
-			devices: []
+			devices: [],
+			assessment_devices: []
 		});
 	});
 });
@@ -40,7 +41,18 @@ describe('registryEntry (patients.json)', () => {
 describe('patients.json entries carry no personal details', () => {
 	it('has exactly the four fields the laptops read and nothing else', () => {
 		const e = registryEntry({ code: 'P-1', status: 'Active', affectedSide: 'Left', devices: ['PLUTO'] });
-		expect(Object.keys(e).sort()).toEqual(['devices', 'side', 'status', 'user_id']);
+		expect(Object.keys(e).sort()).toEqual(['assessment_devices', 'devices', 'side', 'status', 'user_id']);
+	});
+});
+
+describe('assessment_devices (robotic assessment)', () => {
+	it('lists the devices chosen for the robotic assessment, upper-case, unique and sorted, apart from the plan devices', () => {
+		const e = registryEntry({ code: 'AG1', status: 'Inactive', affectedSide: 'Left', devices: [], assessmentDevices: ['mars', 'PLUTO', 'Mars'] });
+		expect(e.devices).toEqual([]);
+		expect(e.assessment_devices).toEqual(['MARS', 'PLUTO']);
+	});
+	it('an Inactive patient (no plan yet) is still mapped to the laptops as active', () => {
+		expect(laptopStatus('Inactive')).toBe('active');
 	});
 });
 

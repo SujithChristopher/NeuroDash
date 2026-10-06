@@ -132,6 +132,7 @@ export async function syncPatientToLocalServer(patientId: string): Promise<Folde
 				status: true,
 				affectedSide: true,
 				trainingDevices: { select: { deviceTypeId: true } },
+				assessmentDevices: { select: { deviceTypeId: true } },
 				// The side being trained comes from the latest plan; the affected side is the fallback.
 				therapyPlans: { orderBy: { createdAt: 'desc' }, take: 1, select: { trainingSide: true } }
 			}
@@ -145,7 +146,8 @@ export async function syncPatientToLocalServer(patientId: string): Promise<Folde
 				code: p.displayCode,
 				status: p.status,
 				affectedSide: p.therapyPlans[0]?.trainingSide ?? p.affectedSide,
-				devices: p.trainingDevices.map((d) => d.deviceTypeId)
+				devices: p.trainingDevices.map((d) => d.deviceTypeId),
+				assessmentDevices: p.assessmentDevices.map((d) => d.deviceTypeId)
 			})
 		);
 		return { ok: true };

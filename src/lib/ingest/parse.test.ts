@@ -188,6 +188,11 @@ describe('isWatchedUpload (which file events trigger an import)', () => {
 			expect(isWatchedUpload(f), f).toBe(true);
 		}
 	});
+	it('accepts the fingerprint that finishes an assessment upload, and nothing else inside it', () => {
+		expect(isWatchedUpload('testr\\_assessments\\PLUTO_right_A0\\.fingerprint')).toBe(true);
+		expect(isWatchedUpload('testr/_assessments/MARS_right_A1/.fingerprint')).toBe(true);
+		expect(isWatchedUpload('testr/_assessments/MARS_right_A1/session1/ml-rom.csv')).toBe(false); // half-extracted
+	});
 	it('ignores partial uploads, backups and other files', () => {
 		for (const f of ['_incoming\\PLUTO_2026.tmp', '_incoming/MARS01/sessions.csv', 'testr\\MARS01\\backup\\sessions_2026-10-01.csv', 'testr/MARS01/backup/sessions.csv', 'testr/MARS01/raw-sess01.csv', 'patients.json', 'devices.json', 'testr', 'mysessions.csv', 'sessions.csv.tmp']) {
 			expect(isWatchedUpload(f), f).toBe(false);

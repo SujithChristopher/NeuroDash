@@ -83,7 +83,7 @@ export async function programStats(user: User) {
 
 	const [total, active, newPatients, activePlans, statusGroups] = await Promise.all([
 		prisma.patient.count({ where: scope }),
-		prisma.patient.count({ where: { ...scope, status: { in: ['Active', 'Ongoing'] } } }),
+		prisma.patient.count({ where: { ...scope, status: 'Active' } }),
 		prisma.patient.count({ where: { ...scope, registrationDate: { gte: thirtyDaysAgo } } }),
 		prisma.therapyPlan.count({ where: { status: 'Active', patient: scope } }),
 		prisma.patient.groupBy({ by: ['status'], where: scope, _count: { _all: true } })
@@ -178,7 +178,7 @@ export async function recentAudit(take = 8) {
 	}));
 }
 
-export const CENTRE_STATUSES = ['Active', 'Ongoing', 'Paused', 'Completed', 'Discontinued'] as const;
+export const CENTRE_STATUSES = ['Inactive', 'Active', 'Paused', 'Completed', 'Discontinued'] as const;
 
 export interface CentreStats {
 	id: string;

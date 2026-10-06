@@ -148,12 +148,12 @@ enough data to draw its per-scale graphs. `npm run demo:bulk` adds just those 30
 
 | ID | Centre | Status | What it shows |
 |---|---|---|---|
-| AG10001 | Ranipet (Priya) | Ongoing | MARS and PLUTO, about 4 weeks of sessions, FMA and ARAT improving, two notes |
-| AG10002 | Ranipet | Ongoing | PLUTO only, some missed days, FMA and MAS |
-| AG10003 | Ranipet | Active | Brand new, no plan yet |
+| AG10001 | Ranipet (Priya) | Active | MARS and PLUTO, about 4 weeks of sessions, FMA and ARAT improving, two notes |
+| AG10002 | Ranipet | Active | PLUTO only, some missed days, FMA and MAS |
+| AG10003 | Ranipet | Inactive | Brand new, no plan yet |
 | AG10004 | Ranipet | Paused | Stopped after a few sessions, with a note |
 | AG10005 | Ranipet | Completed | Full plan, FMA from baseline to discharge |
-| AG20001 | CMC Vellore (Rohan) | Ongoing | MARS and PLUTO |
+| AG20001 | CMC Vellore (Rohan) | Active | MARS and PLUTO |
 | AG20002 | CMC Vellore | Discontinued | A few sessions only |
 
 Reset the demo at any time with `npm run demo:reset -- --yes`. It **erases every table** of the database in `DATABASE_URL`
@@ -203,7 +203,7 @@ cd localserver
 python s2.py          # listens on TCP 5000; the laptops' sender.py talks to it
 ```
 
-Open TCP 5000 and UDP 5001 in the firewall. Run `python -m unittest test_agent test_presence` in the same folder for its tests. On each training laptop also run `python agent.py` (see below).
+Open TCP 5000 and UDP 5001 in the firewall. Run `python -m unittest test_agent test_presence test_assessment` in the same folder for its tests (copy `s2.py`, `patients_store.py` and `assessment_receive.py` to the server). On each training laptop also run `python agent.py` (see below).
 
 **Patients and `patients.json`**
 
@@ -219,8 +219,25 @@ Open TCP 5000 and UDP 5001 in the firewall. Run `python -m unittest test_agent t
 The **Patient ID** is the ID typed on the training devices (letters, digits, `-` and `_`). Names such as `PLUTO`, `mars01`, `patients`
 or `_incoming` are refused because they would clash with the server's own folders.
 
-**Patient status:** *Active* (account created) becomes *Ongoing* automatically once devices are allocated and a session has been
-trained. *Paused*, *Completed* and *Discontinued* are set by the therapist, or by changing the plan's status (the patient follows the plan).
+**Patient status:** *Inactive* (registered, no therapy plan yet) becomes *Active* when the therapy plan is created. *Paused*,
+*Completed* and *Discontinued* are set by the therapist, or by changing the plan's status (the patient follows the plan).
+
+**Assessments come before the plan.** The patient's *Assessments* tab has two parts: *Clinical assessment* (the click-only scales) and
+*Robotic assessment*, where the therapist picks the devices the patient is assessed on. Those devices go into `patients.json` as
+`assessment_devices`, and the patient is offered on exactly those devices. A therapy plan cannot be created until one assessment
+(clinical, or robotic devices chosen) exists.
+
+**Robotic assessment results (PLUTO and MARS).** When the assessment software on a device finishes a timepoint (A0, A1...), it leaves a
+`<TP>.locked` file; `python sender.py --assessments` (also part of `--upload`) then sends that timepoint to the server, once, and again
+only if its files change. The server keeps the files in `<data folder>/<patient ID>/_assessments/<DEVICE>_<limb>_<TP>/` and the
+dashboard stores the results in their own tables. On the patient's *Assessments → Robotic assessment* tab each timepoint lists the
+mechanisms the patient can use (PLUTO: FPS, WFE, WURD, HOC, active or passive only; MARS: the reach range of ML, AP and MLAP). Open one
+for the detail (every task: AROM, PROM, APROM, with the change since the previous timepoint), and the graph shows how a range changed once
+there are two timepoints. Details: `localserver/DASHBOARD_DATA_GUIDE.md`, section 11. `npm run demo:reset` adds A0 and A1 for the demo
+patients. The patient's Overview tab ends with an attendance calendar (one square per plan day, shaded by minutes against the target).
+
+**Returning a device:** a therapist can ask for a unit at their centre to be returned (Devices → Return); the engineer takes it back
+into stock (Take back), or declines. An engineer can also take a unit back on their own.
 
 **When a laptop uploads data**, the app reads it from the folder and stores it in the database:
 

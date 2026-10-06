@@ -14,6 +14,7 @@ import { dataRoot } from '$lib/server/dataDir';
 import { activeByCode } from '$lib/server/presence';
 import { checkUpload } from '$lib/server/files';
 import { PATIENT_STATUSES, PLAN_STATUSES } from '$lib/constants';
+import type { RoboticAssessmentView } from '$lib/roboticAssessment';
 
 const patientInclude = {
 	therapist: { select: { id: true, name: true, locationId: true } },
@@ -61,7 +62,9 @@ const patientInclude = {
 		orderBy: { allocatedAt: 'asc' },
 		include: { deviceType: { select: { id: true, name: true, category: true } }, allocatedBy: { select: { name: true } } }
 	},
-	deviceConfigs: { orderBy: [{ device: 'asc' }, { startDate: 'desc' }] }
+	deviceConfigs: { orderBy: [{ device: 'asc' }, { startDate: 'desc' }] },
+	assessmentDevices: { orderBy: { selectedAt: 'asc' }, include: { deviceType: { select: { id: true, name: true } } } },
+	roboticAssessments: { orderBy: [{ timepoint: 'asc' }, { deviceTypeId: 'asc' }], include: { results: true } }
 } satisfies Prisma.PatientInclude;
 
 export const load: PageServerLoad = async ({ locals, params }) => {
@@ -102,6 +105,22 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		},
 		deviceTypes,
 		allDeviceTypes,
+		// Devices picked for the robotic assessment, and whether any assessment exists: a plan needs one first.
+		assessmentDevices: p.assessmentDevices.map((d) => ({ deviceTypeId: d.deviceTypeId, name: d.deviceType.name })),
+		hasAssessment: p.assessments.length + p.assessmentDevices.length + p.roboticAssessments.length > 0,
+		// What the devices measured (PLUTO range of motion, MARS reach range), one entry per timepoint
+		roboticAssessments: p.roboticAssessments.map(
+			(a): RoboticAssessmentView => ({
+				id: a.id,
+				device: a.deviceTypeId,
+				limb: a.limb,
+				timepoint: a.timepoint,
+				assessedAt: a.assessedAt.toISOString(),
+				lockedAt: a.lockedAt?.toISOString() ?? null,
+				mechanisms: a.mechanisms as RoboticAssessmentView['mechanisms'],
+				results: a.results.map((r) => ({ mechanism: r.mechanism, task: r.task, status: r.status, unit: r.unit, romMin: r.romMin, romMax: r.romMax, romRange: r.romRange, attempts: r.attempts, comment: r.comment, extra: r.extra as Record<string, unknown> | null }))
+			})
+		),
 		folder: { enabled: dataRoot() !== null, path: dataRoot() ? `${p.displayCode}/` : null },
 		trainingDevices: p.trainingDevices.map((d) => ({
 			id: d.id,
@@ -269,6 +288,11 @@ export const actions: Actions = {
 		if (!(PATIENT_STATUSES as readonly string[]).includes(status)) return fail(400, { error: 'Invalid status.' });
 		if (status === p.status) return { ok: true };
 
+		// Inactive / Active simply say whether the patient has a plan: they are not picked by hand.
+		const hasPlan = (await prisma.therapyPlan.count({ where: { patientId: p.id } })) > 0;
+		if (status === 'Inactive') return fail(400, { error: 'Inactive means no therapy plan yet; it is set automatically.' });
+		if (status === 'Active' && !hasPlan) return fail(400, { error: 'Create a therapy plan first: a patient becomes Active when the plan is created.' });
+
 		await prisma.patient.update({ where: { id: p.id }, data: { status } });
 		await auditAs(user)({
 			action: 'Patient Status Changed',
@@ -325,6 +349,35 @@ export const actions: Actions = {
 		return { ok: true, message: 'Document uploaded.' };
 	},
 
+	// Robotic assessment: the therapist picks the devices the patient is assessed on. They go to patients.json as
+	// "assessment_devices", so the patient is offered on exactly those devices (and busy elsewhere, as ever).
+	setRoboticDevices: async ({ request, locals, params }) => {
+		const user = requireRole(locals.user, 'THERAPIST');
+		const p = await scopedPatient(user, params.id);
+		if (!isOwnerTherapist(user, p.therapist.id)) throw error(403, 'Only the primary therapist can set up the robotic assessment.');
+
+		const fd = await request.formData();
+		const deviceTypeIds = [...new Set(fd.getAll('deviceTypeIds').map(String))];
+		const valid = await prisma.deviceType.count({ where: { id: { in: deviceTypeIds } } });
+		if (valid !== deviceTypeIds.length) return fail(400, { roboticError: 'Unknown device selected.' });
+
+		const before = await prisma.assessmentDevice.findMany({ where: { patientId: p.id }, include: { deviceType: { select: { name: true } } } });
+		await prisma.$transaction([
+			prisma.assessmentDevice.deleteMany({ where: { patientId: p.id, deviceTypeId: { notIn: deviceTypeIds } } }),
+			prisma.assessmentDevice.createMany({ data: deviceTypeIds.map((deviceTypeId) => ({ patientId: p.id, deviceTypeId, selectedById: user.id })), skipDuplicates: true })
+		]);
+		const names = (await prisma.deviceType.findMany({ where: { id: { in: deviceTypeIds } }, select: { name: true }, orderBy: { name: 'asc' } })).map((d) => d.name);
+		await auditAs(user)({
+			action: 'Robotic Assessment Devices Set',
+			entityType: 'Patient',
+			entityId: p.id,
+			previousValue: before.map((d) => d.deviceType.name).sort().join(', ') || undefined,
+			newValue: names.join(', ') || undefined
+		});
+		await syncPatientToLocalServer(p.id);
+		return { ok: true, message: names.length ? `Robotic assessment on ${names.join(', ')}.` : 'Robotic assessment devices cleared.' };
+	},
+
 	createPlan: async ({ request, locals, params }) => {
 		const user = requireRole(locals.user, 'THERAPIST');
 		const p = await scopedPatient(user, params.id);
@@ -333,6 +386,13 @@ export const actions: Actions = {
 
 		// One plan per patient: change it with "Modify plan" (devices, side, targets) instead of creating another.
 		if (await prisma.therapyPlan.count({ where: { patientId: p.id } })) return fail(409, { planError: 'This patient already has a plan. Modify it instead.' });
+
+		// A plan is built on an assessment: at least one clinical assessment, or devices picked for the robotic assessment.
+		const assessed =
+			(await prisma.assessment.count({ where: { patientId: p.id } })) +
+			(await prisma.assessmentDevice.count({ where: { patientId: p.id } })) +
+			(await prisma.roboticAssessment.count({ where: { patientId: p.id } }));
+		if (!assessed) return fail(409, { planError: 'Do an assessment first (clinical or robotic): a therapy plan cannot be created before one.' });
 
 		const fd = await request.formData();
 		const parsed = createPlanSchema.safeParse(Object.fromEntries([...fd.entries()].filter(([, v]) => typeof v === 'string')));
@@ -377,6 +437,8 @@ export const actions: Actions = {
 					};
 				})
 			});
+			// The patient becomes Active once they have a plan (a paused/completed one never gets here: one plan per patient).
+			await tx.patient.update({ where: { id: p.id }, data: { status: 'Active' } });
 			return created;
 		});
 
@@ -428,8 +490,7 @@ export const actions: Actions = {
 
 		await prisma.$transaction(async (tx) => {
 			if (next.status !== plan.status) {
-				const trained = await tx.therapySession.count({ where: { patientId: p.id } });
-				const wanted = next.status === 'Active' ? (trained > 0 ? 'Ongoing' : 'Active') : next.status;
+				const wanted = next.status;
 				if (wanted !== p.status) {
 					await tx.patient.update({ where: { id: p.id }, data: { status: wanted } });
 					patientStatus = wanted;

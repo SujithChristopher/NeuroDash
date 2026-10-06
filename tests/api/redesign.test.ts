@@ -12,16 +12,18 @@ const entry = (code: string) => (JSON.parse(fs.readFileSync(path.join(ROOT(), 'p
 const plan = (id: string, over: Record<string, string | string[]> = {}) =>
 	s.priya.action(`/patients/${id}?/createPlan`, { trainingSide: 'Right', startDate: '2026-09-28', durationDays: '5', dailyTargetMinutes: '30', deviceTypeIds: ['MARS'], ...over });
 
-describe('patient status: Active → Ongoing', () => {
-	it('a new patient is Active, and stays Active after a plan with no session yet', async () => {
+describe('patient status: Inactive → Active', () => {
+	const status = async (id: string) => (await db().patient.findUniqueOrThrow({ where: { id } })).status;
+
+	it('a new patient is Inactive, and the plan makes them Active', async () => {
 		const id = await createPatient(s.priya);
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
+		expect(await status(id)).toBe('Inactive');
 		await plan(id);
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
+		expect(await status(id)).toBe('Active');
 	});
 
-	it('becomes Ongoing once devices are allocated and a session has been trained', async () => {
-		const code = uniq('ong').slice(0, 20);
+	it('stays Active when a session is trained (there is no Ongoing any more)', async () => {
+		const code = uniq('act').slice(0, 20);
 		const id = await createPatient(s.priya, code);
 		await plan(id);
 		const header =
@@ -29,15 +31,22 @@ describe('patient status: Active → Ongoing', () => {
 		const row = '1,2026-09-28 10:56:02,1,1,2026-09-28 10:57:24,2026-09-28 10:58:25,x,ML,-90,SS,0.025,18.7,60,100,60,10,10,0,10,10,0,1,1,raw.csv';
 		const dir = path.join(ROOT(), code, 'MARS01');
 		fs.mkdirSync(dir, { recursive: true });
-		fs.writeFileSync(path.join(dir, 'sessions.csv'), `:Location: x\n:Device: MARS\n:User: ${code}\n${header}\n${row}\n`);
+		fs.writeFileSync(path.join(dir, 'sessions.csv'), `:Location: x
+:Device: MARS
+:User: ${code}
+${header}
+${row}
+`);
 		await s.arjun.action('/data-sync?/sync');
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Ongoing');
+		expect(await db().therapySession.count({ where: { patientId: id } })).toBe(1);
+		expect(await status(id)).toBe('Active');
 	});
 
-	it('only the five statuses exist', async () => {
+	it('only Inactive, Active, Paused, Completed and Discontinued exist', async () => {
 		const id = await createPatient(s.priya);
-		for (const ok of ['Ongoing', 'Paused', 'Completed', 'Discontinued', 'Active']) expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: ok })).type, ok).toBe('success');
-		for (const bad of ['New', 'Assessment Pending']) expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: bad })).type, bad).toBe('failure');
+		await plan(id);
+		for (const ok of ['Paused', 'Completed', 'Discontinued', 'Active']) expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: ok })).type, ok).toBe('success');
+		for (const bad of ['Ongoing', 'New', 'Assessment Pending']) expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: bad })).type, bad).toBe('failure');
 	});
 });
 

@@ -274,3 +274,30 @@ describe('stacked bars (one colour per device)', () => {
 		expect(html).toContain('Total: 15 min');
 	});
 });
+
+describe('line chart tooltip', () => {
+	const hover = (cfg: ReturnType<typeof lineCfg>, touch = false) => {
+		const c = new MiniChart(fakeCanvas().ctx, cfg);
+		run(1500);
+		let html = '';
+		c._showTip = (_x: number, _y: number, h: string) => (html = h);
+		const p = c.plot as { x: number; y: number; w: number; h: number };
+		// the last point sits at the right edge of the plot
+		if (touch) (c.canvas as { getBoundingClientRect: () => { left: number; top: number } }).getBoundingClientRect = () => ({ left: 0, top: 0 });
+		if (touch) c._onTouch({ touches: [{ clientX: p.x + p.w, clientY: p.y + 5 }] });
+		else c._hoverLine(p.x + p.w, p.y + 5, { clientX: 0, clientY: 0 });
+		return html;
+	};
+	const lines = (index: number) => [`Session ${index + 1}: 60 min`, 'MARS: 40 min', 'PLUTO: 20 min'];
+	const cfg = () => lineCfg({ plugins: { tooltip: { callbacks: { label: (c: { parsed: { x: number } }) => lines(c.parsed.x) } } } });
+
+	it('shows several lines for a point when the label callback returns a list', () => {
+		const html = hover(cfg());
+		expect(html).toContain('Session 4: 60 min');
+		expect(html).toContain('MARS: 40 min');
+		expect(html).toContain('PLUTO: 20 min');
+	});
+	it('a touch on the chart shows the same tooltip as hovering', () => {
+		expect(hover(cfg(), true)).toContain('PLUTO: 20 min');
+	});
+});

@@ -1,0 +1,360 @@
+{
+    "subj": "ai37220",
+    "mode": "assessment",
+    "domlimb": "right",
+    "afflimb": "right",
+    "limb": "right",
+    "FPS": {
+        "status": "Complete",
+        "tasks": {
+            "AROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_142835",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_AROM_raw-20260917_142835.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_AROM_summary-20260917_142835.csv",
+                    "taskcomment": "",
+                    "status": "Rejected",
+                    "romval": [
+                        [
+                            -64.8984375,
+                            86.8359375
+                        ]
+                    ],
+                    "rom": [
+                        -64.8984375,
+                        86.8359375
+                    ]
+                },
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_142943",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_AROM_raw-20260917_142943.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_AROM_summary-20260917_142943.csv",
+                    "taskcomment": "",
+                    "status": "Rejected",
+                    "romval": [
+                        [
+                            -69.046875,
+                            11.15156364440918
+                        ]
+                    ],
+                    "rom": [
+                        -69.046875,
+                        11.15156364440918
+                    ]
+                },
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_143115",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_AROM_raw-20260917_143115.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_AROM_summary-20260917_143115.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -88.05937194824219,
+                            -19.18124771118164
+                        ]
+                    ],
+                    "rom": [
+                        -88.05937194824219,
+                        -19.18124771118164
+                    ]
+                }
+            ],
+            "PROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_143540",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_PROM_raw-20260917_143540.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_PROM_summary-20260917_143540.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -89.5640640258789,
+                            10.265626907348633
+                        ]
+                    ],
+                    "rom": [
+                        -89.5640640258789,
+                        10.265626907348633
+                    ]
+                }
+            ],
+            "APROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_143618",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_APROM_raw-20260917_143618.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_APROM_summary-20260917_143618.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -92.934560546875,
+                            63.849095306396485
+                        ]
+                    ],
+                    "rom": [
+                        -92.934560546875,
+                        63.849095306396485
+                    ]
+                }
+            ],
+            "DISC": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_143700",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_DISC_raw-20260917_143700.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_DISC_summary-20260917_143700.csv",
+                    "taskcomment": "",
+                    "status": "Rejected"
+                },
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_143820",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_DISC_raw-20260917_143820.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_DISC_summary-20260917_143820.csv",
+                    "taskcomment": "",
+                    "status": "Rejected"
+                },
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_144012",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_DISC_raw-20260917_144012.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_FPS_DISC_summary-20260917_144012.csv",
+                    "taskcomment": "",
+                    "status": "Complete"
+                }
+            ]
+        }
+    },
+    "WFE": {
+        "status": "Partially Complete",
+        "tasks": {
+            "AROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_142134",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_AROM_raw-20260917_142134.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_AROM_summary-20260917_142134.csv",
+                    "taskcomment": "",
+                    "status": "Rejected",
+                    "romval": [
+                        [
+                            -44.12109375,
+                            -6.616405487060547
+                        ]
+                    ],
+                    "rom": [
+                        -44.12109375,
+                        -6.616405487060547
+                    ]
+                },
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_142404",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_AROM_raw-20260917_142404.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_AROM_summary-20260917_142404.csv",
+                    "taskcomment": "",
+                    "status": "Rejected",
+                    "romval": [
+                        [
+                            -43.080467224121094,
+                            -12.43828010559082
+                        ]
+                    ],
+                    "rom": [
+                        -43.080467224121094,
+                        -12.43828010559082
+                    ]
+                },
+                {
+                    "session": "r_A0_20260917_141322",
+                    "taskcomment": "AROM not satisfied: not completed within 60s over 1 attempt(s); discrete reaching disabled.",
+                    "status": "Skipped"
+                }
+            ],
+            "PROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_142544",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_PROM_raw-20260917_142544.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_PROM_summary-20260917_142544.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -48.22734451293945,
+                            -19.835155487060547
+                        ]
+                    ],
+                    "rom": [
+                        -48.22734451293945,
+                        -19.835155487060547
+                    ]
+                }
+            ],
+            "APROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_142604",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_APROM_raw-20260917_142604.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WFE_APROM_summary-20260917_142604.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -49.901061935424806,
+                            -14.32968677520752
+                        ]
+                    ],
+                    "rom": [
+                        -49.901061935424806,
+                        -14.32968677520752
+                    ]
+                }
+            ],
+            "DISC": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "taskcomment": "AROM skipped. [AROM not satisfied: not completed within 60s over 1 attempt(s); discrete reaching disabled.]",
+                    "status": "Excluded"
+                }
+            ]
+        }
+    },
+    "WURD": {
+        "status": "Partially Complete",
+        "tasks": {
+            "AROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_141749",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WURD_AROM_raw-20260917_141749.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WURD_AROM_summary-20260917_141749.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -7.2000017166137695,
+                            1.0265610218048096
+                        ]
+                    ],
+                    "rom": [
+                        -7.2000017166137695,
+                        1.0265610218048096
+                    ]
+                }
+            ],
+            "PROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_141900",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WURD_PROM_raw-20260917_141900.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WURD_PROM_summary-20260917_141900.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -17.83125114440918,
+                            13.499998092651367
+                        ]
+                    ],
+                    "rom": [
+                        -17.83125114440918,
+                        13.499998092651367
+                    ]
+                }
+            ],
+            "APROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_141928",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WURD_APROM_raw-20260917_141928.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_WURD_APROM_summary-20260917_141928.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            -19.08618900299072,
+                            33.69487380981445
+                        ]
+                    ],
+                    "rom": [
+                        -19.08618900299072,
+                        33.69487380981445
+                    ]
+                }
+            ],
+            "DISC": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "taskcomment": "AROM 8.23deg below 10.0deg threshold",
+                    "status": "Skipped"
+                }
+            ]
+        }
+    },
+    "HOC": {
+        "status": "Partially Complete",
+        "tasks": {
+            "AROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "taskcomment": "AROM not satisfied: not completed within 60s over 1 attempt(s); discrete reaching disabled.",
+                    "status": "Skipped"
+                }
+            ],
+            "PROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_144542",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_HOC_PROM_raw-20260917_144542.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_HOC_PROM_summary-20260917_144542.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            0.0,
+                            1.317996292951343
+                        ]
+                    ],
+                    "rom": [
+                        0.0,
+                        1.317996292951343
+                    ]
+                }
+            ],
+            "APROM": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "tasktime": "20260917_144601",
+                    "rawfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_HOC_APROM_raw-20260917_144601.csv",
+                    "summaryfile": "C:/Users/homer/Documents/HomerPlutoData/fullassessment/ai37220/right/A0/r_A0_20260917_141322/ai37220_right_HOC_APROM_summary-20260917_144601.csv",
+                    "taskcomment": "",
+                    "status": "Complete",
+                    "romval": [
+                        [
+                            0.11191924078084989,
+                            1.4666427084571367
+                        ]
+                    ],
+                    "rom": [
+                        0.11191924078084989,
+                        1.4666427084571367
+                    ]
+                }
+            ],
+            "DISC": [
+                {
+                    "session": "r_A0_20260917_141322",
+                    "taskcomment": "AROM skipped. [AROM not satisfied: not completed within 60s over 1 attempt(s); discrete reaching disabled.]",
+                    "status": "Excluded"
+                }
+            ]
+        }
+    }
+}

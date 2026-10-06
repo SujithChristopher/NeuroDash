@@ -145,12 +145,17 @@ export const PDF = (label = 'scan') => new File([`%PDF-1.4\n% ${label}\n`], `${l
 export const PNG = () =>
 	new File([new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0])], 'photo.png', { type: 'image/png' });
 
-/** Creates a patient as Priya (Ranipet) and returns its id. */
-export async function createPatient(therapist: Client, code = uniq('Pat')): Promise<string> {
+/**
+ * Creates a patient as Priya (Ranipet) and returns its id. A therapy plan needs an assessment first, so the patient
+ * gets a clinical one (a scale no test uses) unless `assessed` is false.
+ */
+export async function createPatient(therapist: Client, code = uniq('Pat'), assessed = true): Promise<string> {
 	// The Patient ID doubles as the patient's label (no name is collected).
 	const r = await therapist.action('/patients/new', { patientId: code, dob: '1970-01-01', gender: 'Female', affectedSide: 'Left' });
 	if (r.type !== 'redirect' || !r.location) throw new Error(`createPatient failed: ${JSON.stringify(r.data)} ${r.status}`);
-	return r.location.split('/patients/')[1].split('?')[0];
+	const id = r.location.split('/patients/')[1].split('?')[0];
+	if (assessed) await db().assessment.create({ data: { patientId: id, scaleId: 'mrs', assessmentDate: new Date('2020-01-01'), answers: {}, label: 'Baseline' } });
+	return id;
 }
 
 /** Creates an active user via the admin API and completes the forced password reset. */
@@ -162,7 +167,7 @@ export async function createUser(admin: Client, opts: { role: 'THERAPIST' | 'CON
 		role: opts.role,
 		...(opts.locationId ? { locationId: opts.locationId } : {})
 	});
-	if (r.type !== 'success' || !r.data?.tempPassword) throw new Error(`createUser failed: ${JSON.stringify(r.data)}`);
+	if (r.type !== 'success' || !r.data?.tempPassword) throw new Error(`createUser failed: ${r.type} ${r.status} ${JSON.stringify(r.data)}`);
 	const c = new Client();
 	await c.login(email, r.data.tempPassword);
 	const s = await c.action('/login?/setPassword', { password: PASSWORD, confirm: PASSWORD });

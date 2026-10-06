@@ -31,62 +31,64 @@ enum UserRole {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  displayCode  String   @unique @map("display_code") // e.g. 'U-T1'
-  name         String
-  role         UserRole
-  title        String?
-  email        String   @unique
-  initials     String?
-  isActive     Boolean  @default(true) @map("is_active")
-  passwordHash String   @map("password_hash")
+  id                String    @id @default(uuid())
+  displayCode       String    @unique @map("display_code") // e.g. 'U-T1'
+  name              String
+  role              UserRole
+  title             String?
+  email             String    @unique
+  initials          String?
+  isActive          Boolean   @default(true) @map("is_active")
+  passwordHash      String    @map("password_hash")
   // Set whenever an admin creates the account (or a forgot-password request
   // reissues one) — forces the temp password to be exchanged for a real one
   // via /api/auth/set-password before any other endpoint will accept the token.
-  mustResetPassword Boolean @default(false) @map("must_reset_password")
+  mustResetPassword Boolean   @default(false) @map("must_reset_password")
   // Site assignment — required for THERAPIST/CONSULTANT at creation, unused
   // for ENGINEER/ADMIN. Drives patient visibility: a therapist sees every
   // patient at their location (not just their own), and a consultant is
   // scoped to their location too rather than the whole program.
-  locationId   String?  @map("location_id")
-  location     Location? @relation(fields: [locationId], references: [id])
-  createdAt    DateTime @default(now()) @map("created_at")
+  locationId        String?   @map("location_id")
+  location          Location? @relation(fields: [locationId], references: [id])
+  createdAt         DateTime  @default(now()) @map("created_at")
 
-  patients            Patient[]           @relation("PatientTherapist")
-  assessmentsGiven     Assessment[]        @relation("AssessmentAdministrator")
-  plansCreated         TherapyPlan[]       @relation("PlanCreatedBy")
-  planRevisions        PlanRevision[]      @relation("PlanRevisionModifiedBy")
-  documentsUploaded    PatientDocument[]   @relation("DocumentUploadedBy")
-  notesAuthored        PatientNote[]       @relation("NoteAuthor")
-  sessionNotesAuthored SessionNote[]       @relation("SessionNoteAuthor")
-  deviceRequestsMade    DeviceRequest[]    @relation("RequestTherapist")
-  deviceRequestsCleared DeviceRequest[]    @relation("RequestEngineer")
-  issuesOpened          DeviceIssue[]      @relation("IssueOpenedBy")
-  issuesAssigned        DeviceIssue[]      @relation("IssueEngineer")
-  issuesVerified        DeviceIssue[]      @relation("IssueVerifiedBy")
-  troubleshootingLogs   IssueTroubleshootingLog[] @relation("LogAuthor")
-  maintenanceDone       DeviceMaintenance[] @relation("MaintenanceEngineer")
-  notifications         Notification[]     @relation("NotificationTargetUser")
-  auditLogEntries        AuditLog[]         @relation("AuditActor")
+  patients               Patient[]                 @relation("PatientTherapist")
+  assessmentsGiven       Assessment[]              @relation("AssessmentAdministrator")
+  plansCreated           TherapyPlan[]             @relation("PlanCreatedBy")
+  planRevisions          PlanRevision[]            @relation("PlanRevisionModifiedBy")
+  documentsUploaded      PatientDocument[]         @relation("DocumentUploadedBy")
+  notesAuthored          PatientNote[]             @relation("NoteAuthor")
+  sessionNotesAuthored   SessionNote[]             @relation("SessionNoteAuthor")
+  deviceRequestsMade     DeviceRequest[]           @relation("RequestTherapist")
+  deviceRequestsCleared  DeviceRequest[]           @relation("RequestEngineer")
+  deviceReturnsRequested DeviceReturn[]            @relation("ReturnRequester")
+  deviceReturnsHandled   DeviceReturn[]            @relation("ReturnEngineer")
+  issuesOpened           DeviceIssue[]             @relation("IssueOpenedBy")
+  issuesAssigned         DeviceIssue[]             @relation("IssueEngineer")
+  issuesVerified         DeviceIssue[]             @relation("IssueVerifiedBy")
+  troubleshootingLogs    IssueTroubleshootingLog[] @relation("LogAuthor")
+  maintenanceDone        DeviceMaintenance[]       @relation("MaintenanceEngineer")
+  notifications          Notification[]            @relation("NotificationTargetUser")
+  auditLogEntries        AuditLog[]                @relation("AuditActor")
   sessions               Session[]
-  deviceAllocations      PatientDevice[]    @relation("AllocatedBy")
-  reportsWritten         PatientReport[]    @relation("ReportAuthor")
-  centresCovered         Location[]         @relation("CentreEngineer")
+  deviceAllocations      PatientDevice[]           @relation("AllocatedBy")
+  reportsWritten         PatientReport[]           @relation("ReportAuthor")
+  centresCovered         Location[]                @relation("CentreEngineer")
 
   @@index([role])
   @@map("users")
 }
 
 model Location {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
+  id         String   @id @default(uuid())
+  name       String   @unique
+  createdAt  DateTime @default(now()) @map("created_at")
   // The engineer responsible for the devices at this centre (one engineer can cover several centres).
   engineerId String?  @map("engineer_id")
   engineer   User?    @relation("CentreEngineer", fields: [engineerId], references: [id], onDelete: SetNull)
 
-  users User[]
-  devices Device[]
+  users          User[]
+  devices        Device[]
   deviceRequests DeviceRequest[]
 
   @@map("locations")
@@ -100,35 +102,37 @@ model Location {
 // clinical_scales/neuro/*.json (one generic renderer/evaluator handles all of them).
 
 model DeviceType {
-  id          String @id // 'PLUTO','MARS',...
+  id          String  @id // 'PLUTO','MARS',...
   name        String
   category    String
   colorSeries String? @map("color_series")
 
-  mechanisms      DeviceMechanism[]
-  games           DeviceGame[]
-  devices         Device[]
-  planDevices     PlanDevice[]
-  deviceRequests  DeviceRequest[]
-  patientDevices  PatientDevice[]
+  mechanisms         DeviceMechanism[]
+  games              DeviceGame[]
+  devices            Device[]
+  planDevices        PlanDevice[]
+  deviceRequests     DeviceRequest[]
+  patientDevices     PatientDevice[]
+  assessmentDevices  AssessmentDevice[]
+  roboticAssessments RoboticAssessment[]
 
   @@map("device_types")
 }
 
 model DeviceMechanism {
-  id             String     @id @default(uuid())
-  deviceTypeId   String     @map("device_type_id")
-  deviceType     DeviceType @relation(fields: [deviceTypeId], references: [id], onDelete: Cascade)
-  mechanismName  String     @map("mechanism_name")
+  id            String     @id @default(uuid())
+  deviceTypeId  String     @map("device_type_id")
+  deviceType    DeviceType @relation(fields: [deviceTypeId], references: [id], onDelete: Cascade)
+  mechanismName String     @map("mechanism_name")
 
   @@map("device_mechanisms")
 }
 
 model DeviceGame {
-  id            String     @id // 'HAT','PongGame',...
-  deviceTypeId  String     @map("device_type_id")
-  deviceType    DeviceType @relation(fields: [deviceTypeId], references: [id], onDelete: Cascade)
-  displayLabel  String     @map("display_label")
+  id           String     @id // 'HAT','PongGame',...
+  deviceTypeId String     @map("device_type_id")
+  deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id], onDelete: Cascade)
+  displayLabel String     @map("display_label")
 
   trials SessionTrial[]
 
@@ -140,36 +144,38 @@ model DeviceGame {
 // ============================================================================
 
 model Patient {
-  id                  String   @id @default(uuid())
-  displayCode         String   @unique @map("display_code") // 'P-00124'
+  id                  String    @id @default(uuid())
+  displayCode         String    @unique @map("display_code") // 'P-00124'
   name                String
   dob                 DateTime? @db.Date
   gender              String?
-  contactPhone        String?  @map("contact_phone")
-  emergencyContact    String?  @map("emergency_contact")
-  registrationDate    DateTime @default(now()) @db.Date @map("registration_date")
-  therapistId         String   @map("therapist_id")
-  therapist           User     @relation("PatientTherapist", fields: [therapistId], references: [id])
+  contactPhone        String?   @map("contact_phone")
+  emergencyContact    String?   @map("emergency_contact")
+  registrationDate    DateTime  @default(now()) @map("registration_date") @db.Date
+  therapistId         String    @map("therapist_id")
+  therapist           User      @relation("PatientTherapist", fields: [therapistId], references: [id])
   diagnosis           String?
-  affectedSide        String?  @map("affected_side")
-  strokeDate          DateTime? @db.Date @map("stroke_date")
-  mobilityStatus      String?  @map("mobility_status")
+  affectedSide        String?   @map("affected_side")
+  strokeDate          DateTime? @map("stroke_date") @db.Date
+  mobilityStatus      String?   @map("mobility_status")
   // Limb the training targets ("hand" | "leg"); the side comes from affectedSide. Mirrored to patients.json.
-  therapyGoals        String[] @map("therapy_goals")
-  initialObservations String?  @map("initial_observations")
-  clinicalInfo        String?  @map("clinical_info")
-  status              String   @default("Active") // Active|Ongoing|Paused|Completed|Discontinued
-  createdAt           DateTime @default(now()) @map("created_at")
-  updatedAt           DateTime @updatedAt @map("updated_at")
+  therapyGoals        String[]  @map("therapy_goals")
+  initialObservations String?   @map("initial_observations")
+  clinicalInfo        String?   @map("clinical_info")
+  status              String    @default("Inactive") // Inactive (no plan)|Active (has a plan)|Paused|Completed|Discontinued
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
 
-  reports           PatientReport[]
-  documents         PatientDocument[]
-  notes             PatientNote[]
-  assessments       Assessment[]
-  therapyPlans      TherapyPlan[]
-  therapySessions   TherapySession[]
-  trainingDevices   PatientDevice[]
-  deviceConfigs     DeviceConfig[]
+  reports            PatientReport[]
+  documents          PatientDocument[]
+  notes              PatientNote[]
+  assessments        Assessment[]
+  therapyPlans       TherapyPlan[]
+  therapySessions    TherapySession[]
+  trainingDevices    PatientDevice[]
+  assessmentDevices  AssessmentDevice[]
+  roboticAssessments RoboticAssessment[]
+  deviceConfigs      DeviceConfig[]
 
   @@index([therapistId])
   @@index([status])
@@ -178,18 +184,18 @@ model Patient {
 }
 
 model PatientDocument {
-  id           String   @id @default(uuid())
-  patientId    String   @map("patient_id")
-  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id           String      @id @default(uuid())
+  patientId    String      @map("patient_id")
+  patient      Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
   name         String
-  docType      String?  @map("doc_type")
-  uploadDate   DateTime @default(now()) @map("upload_date")
-  uploadedById String?  @map("uploaded_by")
-  uploadedBy   User?    @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
-  sizeKb       Int?     @map("size_kb")
-  storageRef   String?  @map("storage_ref")
+  docType      String?     @map("doc_type")
+  uploadDate   DateTime    @default(now()) @map("upload_date")
+  uploadedById String?     @map("uploaded_by")
+  uploadedBy   User?       @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+  sizeKb       Int?        @map("size_kb")
+  storageRef   String?     @map("storage_ref")
   // Scanned documents are stored as bytes in Postgres (capped at 10MB, type-checked by file signature).
-  mimeType     String?  @map("mime_type")
+  mimeType     String?     @map("mime_type")
   data         Bytes?
   // Set when the scan was attached while recording an assessment.
   assessmentId String?     @map("assessment_id")
@@ -201,13 +207,13 @@ model PatientDocument {
 }
 
 model PatientNote {
-  id         String   @id @default(uuid())
-  patientId  String   @map("patient_id")
-  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  authorId   String   @map("author_id")
-  author     User     @relation("NoteAuthor", fields: [authorId], references: [id])
-  noteDate   DateTime @default(now()) @map("note_date")
-  text       String
+  id        String   @id @default(uuid())
+  patientId String   @map("patient_id")
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  authorId  String   @map("author_id")
+  author    User     @relation("NoteAuthor", fields: [authorId], references: [id])
+  noteDate  DateTime @default(now()) @map("note_date")
+  text      String
 
   @@index([patientId, noteDate(sort: Desc)])
   @@map("patient_notes")
@@ -218,22 +224,22 @@ model PatientNote {
 // ============================================================================
 
 model Assessment {
-  id               String         @id @default(uuid())
-  patientId        String         @map("patient_id")
-  patient          Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id               String   @id @default(uuid())
+  patientId        String   @map("patient_id")
+  patient          Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   // Id of a scale in clinical_scales/neuro (e.g. 'fma', 'phq9'); answers use the REDCap variable names.
-  scaleId          String         @map("scale_id")
-  scaleVersion     Int            @default(1) @map("scale_version")
-  administeredById String?        @map("administered_by")
-  administeredBy   User?          @relation("AssessmentAdministrator", fields: [administeredById], references: [id])
-  assessmentDate   DateTime       @db.Date @map("assessment_date")
+  scaleId          String   @map("scale_id")
+  scaleVersion     Int      @default(1) @map("scale_version")
+  administeredById String?  @map("administered_by")
+  administeredBy   User?    @relation("AssessmentAdministrator", fields: [administeredById], references: [id])
+  assessmentDate   DateTime @map("assessment_date") @db.Date
   label            String? // 'Baseline','Day 7','Discharge'
-  answers          Json           // { itemId: value } — scores are always recomputed from these
+  answers          Json // { itemId: value } — scores are always recomputed from these
   // Headline score of the scale (null when the scale has no computed total, e.g. BBT, NIHSS items).
-  scoreItem        String?        @map("score_item")
+  scoreItem        String?  @map("score_item")
   score            Float?
-  maxScore         Float?         @map("max_score")
-  createdAt        DateTime       @default(now()) @map("created_at")
+  maxScore         Float?   @map("max_score")
+  createdAt        DateTime @default(now()) @map("created_at")
 
   documents PatientDocument[]
 
@@ -247,26 +253,26 @@ model Assessment {
 // ============================================================================
 
 model TherapyPlan {
-  id                  String   @id @default(uuid())
-  patientId           String   @map("patient_id")
-  patient             Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  name                String
-  startDate           DateTime @db.Date @map("start_date")
-  durationDays        Int      @map("duration_days")
-  dailyTargetMinutes  Int      @map("daily_target_minutes")
-  targetSessions      Int?     @map("target_sessions")
-  trainingSide        String?  @map("training_side") // Left|Right|Both: which affected side is trained
-  goals               String[]
-  notes               String?
-  status              String   @default("Active") // Active|Paused|Completed|Discontinued
-  createdById         String   @map("created_by")
-  createdBy           User     @relation("PlanCreatedBy", fields: [createdById], references: [id])
-  createdAt           DateTime @default(now()) @map("created_at")
+  id                 String   @id @default(uuid())
+  patientId          String   @map("patient_id")
+  patient            Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name               String
+  startDate          DateTime @map("start_date") @db.Date
+  durationDays       Int      @map("duration_days")
+  dailyTargetMinutes Int      @map("daily_target_minutes")
+  targetSessions     Int?     @map("target_sessions")
+  trainingSide       String?  @map("training_side") // Left|Right|Both: which affected side is trained
+  goals              String[]
+  notes              String?
+  status             String   @default("Active") // Active|Paused|Completed|Discontinued
+  createdById        String   @map("created_by")
+  createdBy          User     @relation("PlanCreatedBy", fields: [createdById], references: [id])
+  createdAt          DateTime @default(now()) @map("created_at")
 
-  devices          PlanDevice[]
-  revisions        PlanRevision[]
-  dayLog           PlanDayLog[]
-  therapySessions  TherapySession[]
+  devices         PlanDevice[]
+  revisions       PlanRevision[]
+  dayLog          PlanDayLog[]
+  therapySessions TherapySession[]
 
   @@index([patientId])
   @@index([status])
@@ -274,26 +280,26 @@ model TherapyPlan {
 }
 
 model PlanDevice {
-  planId       String     @map("plan_id")
+  planId       String      @map("plan_id")
   plan         TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-  deviceTypeId String     @map("device_type_id")
-  deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
+  deviceTypeId String      @map("device_type_id")
+  deviceType   DeviceType  @relation(fields: [deviceTypeId], references: [id])
 
   @@id([planId, deviceTypeId])
   @@map("plan_devices")
 }
 
 model PlanRevision {
-  id             String   @id @default(uuid())
-  planId         String   @map("plan_id")
+  id             String      @id @default(uuid())
+  planId         String      @map("plan_id")
   plan           TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-  fieldChanged   String   @map("field_changed")
-  previousValue  String?  @map("previous_value")
-  newValue       String?  @map("new_value")
-  modifiedById   String   @map("modified_by")
-  modifiedBy     User     @relation("PlanRevisionModifiedBy", fields: [modifiedById], references: [id])
-  modifiedByRole String   @map("modified_by_role")
-  modifiedAt     DateTime @default(now()) @map("modified_at")
+  fieldChanged   String      @map("field_changed")
+  previousValue  String?     @map("previous_value")
+  newValue       String?     @map("new_value")
+  modifiedById   String      @map("modified_by")
+  modifiedBy     User        @relation("PlanRevisionModifiedBy", fields: [modifiedById], references: [id])
+  modifiedByRole String      @map("modified_by_role")
+  modifiedAt     DateTime    @default(now()) @map("modified_at")
   reason         String?
 
   @@index([planId, modifiedAt])
@@ -301,14 +307,14 @@ model PlanRevision {
 }
 
 model PlanDayLog {
-  id             String   @id @default(uuid())
-  planId         String   @map("plan_id")
-  plan           TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-  dayNumber      Int      @map("day_number")
-  logDate        DateTime @db.Date @map("log_date")
-  status         String   @default("upcoming") // done|partial|missed|upcoming
-  targetMinutes  Int      @map("target_minutes")
-  actualMinutes  Int      @default(0) @map("actual_minutes")
+  id            String      @id @default(uuid())
+  planId        String      @map("plan_id")
+  plan          TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayNumber     Int         @map("day_number")
+  logDate       DateTime    @map("log_date") @db.Date
+  status        String      @default("upcoming") // done|partial|missed|upcoming
+  targetMinutes Int         @map("target_minutes")
+  actualMinutes Int         @default(0) @map("actual_minutes")
 
   therapySessions TherapySession[]
 
@@ -322,24 +328,25 @@ model PlanDayLog {
 // ============================================================================
 
 model Device {
-  id                String     @id @default(uuid())
-  displayCode       String     @unique @map("display_code") // 'PLUTO-003'
-  deviceTypeId      String     @map("device_type_id")
-  deviceType        DeviceType @relation(fields: [deviceTypeId], references: [id])
-  serialNumber      String     @map("serial_number")
-  firmwareVersion   String?    @map("firmware_version")
-  status            String     @default("Available") // Available|In Use|Issue Detected|Awaiting Engineer|Maintenance
-  location          String? // room / bay within the centre
-  locationId        String?    @map("location_id")
-  centre            Location?  @relation(fields: [locationId], references: [id])
-  registeredOn      DateTime   @default(now()) @db.Date @map("registered_on")
-  lastSyncAt        DateTime?  @map("last_sync_at")
-  updatedAt         DateTime   @updatedAt @map("updated_at")
+  id              String     @id @default(uuid())
+  displayCode     String     @unique @map("display_code") // 'PLUTO-003'
+  deviceTypeId    String     @map("device_type_id")
+  deviceType      DeviceType @relation(fields: [deviceTypeId], references: [id])
+  serialNumber    String     @map("serial_number")
+  firmwareVersion String?    @map("firmware_version")
+  status          String     @default("Available") // Available|In Use|Issue Detected|Awaiting Engineer|Maintenance
+  location        String? // room / bay within the centre
+  locationId      String?    @map("location_id")
+  centre          Location?  @relation(fields: [locationId], references: [id])
+  registeredOn    DateTime   @default(now()) @map("registered_on") @db.Date
+  lastSyncAt      DateTime?  @map("last_sync_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
 
-  issues           DeviceIssue[]
-  maintenance      DeviceMaintenance[]
-  events           DeviceEvent[]
-  therapySessions  TherapySession[]
+  issues          DeviceIssue[]
+  returns         DeviceReturn[]
+  maintenance     DeviceMaintenance[]
+  events          DeviceEvent[]
+  therapySessions TherapySession[]
 
   @@index([deviceTypeId])
   @@index([status])
@@ -367,25 +374,46 @@ model DeviceRequest {
   @@map("device_requests")
 }
 
+// A centre asking to give a unit back, and the engineer taking it back into stock.
+model DeviceReturn {
+  id            String    @id @default(uuid())
+  deviceId      String    @map("device_id")
+  device        Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  // The centre the unit was set up at when the return was asked for.
+  locationId    String?   @map("location_id")
+  requestedById String?   @map("requested_by")
+  requestedBy   User?     @relation("ReturnRequester", fields: [requestedById], references: [id])
+  requestedAt   DateTime  @default(now()) @map("requested_at")
+  status        String    @default("Pending") // Pending|Taken back|Declined
+  reason        String?
+  engineerId    String?   @map("engineer_id")
+  engineer      User?     @relation("ReturnEngineer", fields: [engineerId], references: [id])
+  resolvedAt    DateTime? @map("resolved_at")
+
+  @@index([deviceId, status])
+  @@index([status])
+  @@map("device_returns")
+}
+
 model DeviceIssue {
-  id             String    @id @default(uuid())
-  deviceId       String    @map("device_id")
-  device         Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-  description    String
-  severity       String // Low|Medium|High|Critical
-  status         String    @default("Open") // Open|Investigating|Resolved|Cleared
-  openedAt       DateTime  @default(now()) @map("opened_at")
-  openedById     String    @map("opened_by")
-  openedBy       User      @relation("IssueOpenedBy", fields: [openedById], references: [id])
-  engineerId     String?   @map("engineer_id")
-  engineer       User?     @relation("IssueEngineer", fields: [engineerId], references: [id])
-  diagnostics    String?
-  partsReplaced  String?   @map("parts_replaced")
-  resolution     String?
-  resolvedAt     DateTime? @map("resolved_at")
-  clearedAt      DateTime? @map("cleared_at")
-  verifiedById   String?   @map("verified_by")
-  verifiedBy     User?     @relation("IssueVerifiedBy", fields: [verifiedById], references: [id])
+  id            String    @id @default(uuid())
+  deviceId      String    @map("device_id")
+  device        Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  description   String
+  severity      String // Low|Medium|High|Critical
+  status        String    @default("Open") // Open|Investigating|Resolved|Cleared
+  openedAt      DateTime  @default(now()) @map("opened_at")
+  openedById    String    @map("opened_by")
+  openedBy      User      @relation("IssueOpenedBy", fields: [openedById], references: [id])
+  engineerId    String?   @map("engineer_id")
+  engineer      User?     @relation("IssueEngineer", fields: [engineerId], references: [id])
+  diagnostics   String?
+  partsReplaced String?   @map("parts_replaced")
+  resolution    String?
+  resolvedAt    DateTime? @map("resolved_at")
+  clearedAt     DateTime? @map("cleared_at")
+  verifiedById  String?   @map("verified_by")
+  verifiedBy    User?     @relation("IssueVerifiedBy", fields: [verifiedById], references: [id])
 
   troubleshootingLog IssueTroubleshootingLog[]
 
@@ -409,14 +437,14 @@ model IssueTroubleshootingLog {
 }
 
 model DeviceMaintenance {
-  id                String   @id @default(uuid())
-  deviceId          String   @map("device_id")
-  device            Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-  maintenanceDate   DateTime @db.Date @map("maintenance_date")
-  maintenanceType   String   @map("maintenance_type")
-  engineerId        String   @map("engineer_id")
-  engineer          User     @relation("MaintenanceEngineer", fields: [engineerId], references: [id])
-  notes             String?
+  id              String   @id @default(uuid())
+  deviceId        String   @map("device_id")
+  device          Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  maintenanceDate DateTime @map("maintenance_date") @db.Date
+  maintenanceType String   @map("maintenance_type")
+  engineerId      String   @map("engineer_id")
+  engineer        User     @relation("MaintenanceEngineer", fields: [engineerId], references: [id])
+  notes           String?
 
   @@index([deviceId, maintenanceDate(sort: Desc)])
   @@map("device_maintenance")
@@ -439,27 +467,27 @@ model DeviceEvent {
 // ============================================================================
 
 model TherapySession {
-  id               String      @id @default(uuid())
-  patientId        String      @map("patient_id")
-  patient          Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  planId           String?     @map("plan_id")
-  plan             TherapyPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
-  planDayLogId     String?     @map("plan_day_log_id")
-  planDayLog       PlanDayLog? @relation(fields: [planDayLogId], references: [id], onDelete: SetNull)
-  deviceId         String      @map("device_id")
-  device           Device      @relation(fields: [deviceId], references: [id])
-  sessionNumber    Int?        @map("session_number")
-  sessionDate      DateTime    @db.Date @map("session_date")
-  startTime        DateTime    @map("start_time")
-  endTime          DateTime?   @map("end_time")
-  durationMinutes  Decimal?    @map("duration_minutes") @db.Decimal(6, 2)
-  totalTargets     Int         @default(0) @map("total_targets")
-  totalHits        Int         @default(0) @map("total_hits")
-  totalMisses      Int         @default(0) @map("total_misses")
-  totalStars       Int         @default(0) @map("total_stars")
+  id              String       @id @default(uuid())
+  patientId       String       @map("patient_id")
+  patient         Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  planId          String?      @map("plan_id")
+  plan            TherapyPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planDayLogId    String?      @map("plan_day_log_id")
+  planDayLog      PlanDayLog?  @relation(fields: [planDayLogId], references: [id], onDelete: SetNull)
+  deviceId        String       @map("device_id")
+  device          Device       @relation(fields: [deviceId], references: [id])
+  sessionNumber   Int?         @map("session_number")
+  sessionDate     DateTime     @map("session_date") @db.Date
+  startTime       DateTime     @map("start_time")
+  endTime         DateTime?    @map("end_time")
+  durationMinutes Decimal?     @map("duration_minutes") @db.Decimal(6, 2)
+  totalTargets    Int          @default(0) @map("total_targets")
+  totalHits       Int          @default(0) @map("total_hits")
+  totalMisses     Int          @default(0) @map("total_misses")
+  totalStars      Int          @default(0) @map("total_stars")
   // Set for sessions ingested from the local server's CSV uploads: "<patient>:<DEVICE>:<session#>:<start>".
-  sourceKey        String?     @unique @map("source_key")
-  sourceDevice     String?     @map("source_device")
+  sourceKey       String?      @unique @map("source_key")
+  sourceDevice    String?      @map("source_device")
 
   trials SessionTrial[]
   notes  SessionNote[]
@@ -476,14 +504,14 @@ model TherapySession {
 // feature is used at (single photos per note, size-capped at the API layer),
 // avoids standing up S3/blob infra for one feature.
 model SessionNote {
-  id          String         @id @default(uuid())
-  sessionId   String         @map("session_id")
-  session     TherapySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  authorId    String         @map("author_id")
-  author      User           @relation("SessionNoteAuthor", fields: [authorId], references: [id])
-  text        String
-  imageDataUrl String?       @map("image_data_url")
-  createdAt   DateTime       @default(now()) @map("created_at")
+  id           String         @id @default(uuid())
+  sessionId    String         @map("session_id")
+  session      TherapySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  authorId     String         @map("author_id")
+  author       User           @relation("SessionNoteAuthor", fields: [authorId], references: [id])
+  text         String
+  imageDataUrl String?        @map("image_data_url")
+  createdAt    DateTime       @default(now()) @map("created_at")
 
   @@index([sessionId, createdAt])
   @@map("session_notes")
@@ -497,37 +525,37 @@ enum TrialType {
 }
 
 model SessionTrial {
-  id                  String         @id @default(uuid())
-  sessionId           String         @map("session_id")
-  session             TherapySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  trialNumberSession  Int            @map("trial_number_session")
-  trialNumberDay      Int?           @map("trial_number_day")
-  trialType           TrialType      @map("trial_type")
-  gameId              String?        @map("game_id")
-  game                DeviceGame?    @relation(fields: [gameId], references: [id])
-  mechanism           String?
-  targets             Int
-  hits                Int
-  misses              Int
-  stars               Int            @default(0)
-  startTime           DateTime?      @map("start_time")
-  stopTime            DateTime?      @map("stop_time")
-  cumulativeTargets   Int?           @map("cumulative_targets")
-  cumulativeHits      Int?           @map("cumulative_hits")
-  cumulativeMisses    Int?           @map("cumulative_misses")
-  cumulativeStars     Int?           @map("cumulative_stars")
-  rawDataRef          String?        @map("raw_data_ref")
+  id                 String         @id @default(uuid())
+  sessionId          String         @map("session_id")
+  session            TherapySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  trialNumberSession Int            @map("trial_number_session")
+  trialNumberDay     Int?           @map("trial_number_day")
+  trialType          TrialType      @map("trial_type")
+  gameId             String?        @map("game_id")
+  game               DeviceGame?    @relation(fields: [gameId], references: [id])
+  mechanism          String?
+  targets            Int
+  hits               Int
+  misses             Int
+  stars              Int            @default(0)
+  startTime          DateTime?      @map("start_time")
+  stopTime           DateTime?      @map("stop_time")
+  cumulativeTargets  Int?           @map("cumulative_targets")
+  cumulativeHits     Int?           @map("cumulative_hits")
+  cumulativeMisses   Int?           @map("cumulative_misses")
+  cumulativeStars    Int?           @map("cumulative_stars")
+  rawDataRef         String?        @map("raw_data_ref")
   // Straight from the device CSV (game codes like "SS" need not exist in DeviceGame).
-  gameCode            String?        @map("game_code")
+  gameCode           String?        @map("game_code")
   // PLUTO: TrialType (TRAIN, SR85PCTRAIN, SR85PCCATCH…) and AssistMode (AAN, ACTIVE…)
-  trialKind           String?        @map("trial_kind")
-  assistMode          String?        @map("assist_mode")
-  durationSec         Int?           @map("duration_sec")
-  successRate         Float?         @map("success_rate")
-  moveTime            Float?         @map("move_time")
-  reachSpeed          Float?         @map("reach_speed")
-  gameParameter       Float?         @map("game_parameter")
-  planeAngle          Float?         @map("plane_angle")
+  trialKind          String?        @map("trial_kind")
+  assistMode         String?        @map("assist_mode")
+  durationSec        Int?           @map("duration_sec")
+  successRate        Float?         @map("success_rate")
+  moveTime           Float?         @map("move_time")
+  reachSpeed         Float?         @map("reach_speed")
+  gameParameter      Float?         @map("game_parameter")
+  planeAngle         Float?         @map("plane_angle")
 
   @@index([sessionId, trialNumberSession])
   @@map("session_trials")
@@ -602,15 +630,78 @@ model Session {
 
 // Training devices (PLUTO, MARS, …) a patient is allocated to. Mirrored into patients.json, which decides
 // which laptop receives the patient.
-model PatientDevice {
+// What a device measured in a robotic assessment (PLUTO: range of motion per mechanism and task; MARS: reach range per
+// movement). One row per patient, device, limb and timepoint (A0, A1...); a re-sent timepoint replaces it. The laptop's
+// sender uploads a timepoint only once it is locked and only when its data changed (see localserver/sender.py).
+model RoboticAssessment {
   id           String     @id @default(uuid())
   patientId    String     @map("patient_id")
   patient      Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
   deviceTypeId String     @map("device_type_id")
   deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
-  allocatedAt  DateTime   @default(now()) @map("allocated_at")
-  allocatedById String?   @map("allocated_by")
-  allocatedBy  User?      @relation("AllocatedBy", fields: [allocatedById], references: [id])
+  limb         String // left | right | both
+  timepoint    String // A0, A1...
+  assessedAt   DateTime   @map("assessed_at")
+  lockedAt     DateTime?  @map("locked_at")
+  // [{ code, status, ability }] per mechanism (PLUTO) or movement (MARS): which ones the patient can use
+  mechanisms   Json
+  fingerprint  String
+  sourcePath   String     @map("source_path")
+  importedAt   DateTime   @default(now()) @map("imported_at")
+
+  results RoboticAssessmentResult[]
+
+  @@unique([patientId, deviceTypeId, limb, timepoint])
+  @@index([patientId, assessedAt])
+  @@map("robotic_assessments")
+}
+
+model RoboticAssessmentResult {
+  id           String            @id @default(uuid())
+  assessmentId String            @map("assessment_id")
+  assessment   RoboticAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  // FPS | WFE | WURD | HOC (PLUTO), ML | AP | MLAP | ARMWEIGHT | DISCRETE (MARS)
+  mechanism    String
+  // AROM | PROM | APROM | DISC (PLUTO), ROM | CHECK (MARS)
+  task         String
+  status       String // Complete | Rejected | Skipped | Excluded
+  unit         String? // deg | cm
+  romMin       Float?            @map("rom_min")
+  romMax       Float?            @map("rom_max")
+  romRange     Float?            @map("rom_range")
+  attempts     Int               @default(1)
+  comment      String?
+  extra        Json?
+
+  @@unique([assessmentId, mechanism, task])
+  @@map("robotic_assessment_results")
+}
+
+// Devices the therapist picked for the patient's ROBOTIC assessment. Mirrored to patients.json as "assessment_devices":
+// the patient shows up on exactly these devices, so the assessment can be run on them before a plan exists.
+model AssessmentDevice {
+  id           String     @id @default(uuid())
+  patientId    String     @map("patient_id")
+  patient      Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  deviceTypeId String     @map("device_type_id")
+  deviceType   DeviceType @relation(fields: [deviceTypeId], references: [id])
+  selectedAt   DateTime   @default(now()) @map("selected_at")
+  selectedById String?    @map("selected_by")
+
+  @@unique([patientId, deviceTypeId])
+  @@index([deviceTypeId])
+  @@map("assessment_devices")
+}
+
+model PatientDevice {
+  id            String     @id @default(uuid())
+  patientId     String     @map("patient_id")
+  patient       Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  deviceTypeId  String     @map("device_type_id")
+  deviceType    DeviceType @relation(fields: [deviceTypeId], references: [id])
+  allocatedAt   DateTime   @default(now()) @map("allocated_at")
+  allocatedById String?    @map("allocated_by")
+  allocatedBy   User?      @relation("AllocatedBy", fields: [allocatedById], references: [id])
 
   @@unique([patientId, deviceTypeId])
   @@index([deviceTypeId])
@@ -619,22 +710,22 @@ model PatientDevice {
 
 // One row of a device's configdata.csv (training window, arm lengths, side…).
 model DeviceConfig {
-  id             String   @id @default(uuid())
-  patientId      String   @map("patient_id")
-  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id             String    @id @default(uuid())
+  patientId      String    @map("patient_id")
+  patient        Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
   device         String // training device the file came from, e.g. "PLUTO"
-  startDate      DateTime @map("start_date")
+  startDate      DateTime  @map("start_date")
   endDate        DateTime? @map("end_date")
-  totalTime      Int?     @map("total_time")
+  totalTime      Int?      @map("total_time")
   ml             Int?
   ap             Int?
   mlap           Int?
-  foreArmLength  Float?   @map("fore_arm_length")
-  upperArmLength Float?   @map("upper_arm_length")
-  trainingSide   String?  @map("training_side")
+  foreArmLength  Float?    @map("fore_arm_length")
+  upperArmLength Float?    @map("upper_arm_length")
+  trainingSide   String?   @map("training_side")
   location       String?
-  groupName      String?  @map("group_name")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  groupName      String?   @map("group_name")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
   @@unique([patientId, device, startDate])
   @@map("device_configs")

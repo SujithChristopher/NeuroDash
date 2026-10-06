@@ -78,7 +78,7 @@ interface DemoPatient {
   side: "Left" | "Right" | "Bilateral";
   strokeDaysAgo: number;
   registeredDaysAgo: number;
-  status: "Active" | "Ongoing" | "Paused" | "Completed" | "Discontinued";
+  status: "Inactive" | "Active" | "Paused" | "Completed" | "Discontinued";
   /** No plan yet when absent (a brand-new account) */
   plan?: {
     trainingSide: "Left" | "Right" | "Both";
@@ -101,7 +101,7 @@ const T2 = "rohan.mehta@neurodash.care";
 
 const PATIENTS: DemoPatient[] = [
   {
-    code: "AG10001", centre: "downtown", therapist: T1, gender: "Female", age: 58, side: "Left", strokeDaysAgo: 120, registeredDaysAgo: 41, status: "Ongoing",
+    code: "AG10001", centre: "downtown", therapist: T1, gender: "Female", age: 58, side: "Left", strokeDaysAgo: 120, registeredDaysAgo: 41, status: "Active",
     plan: { trainingSide: "Left", devices: ["MARS", "PLUTO"], durationDays: 42, dailyMinutes: 60, startedDaysAgo: 34, trainsDay: (d) => d % 7 !== 6 && d !== 12, status: "Active", startAccuracy: 0.52, endAccuracy: 0.86 },
     assessments: [
       { scaleId: "fma", day: 0, label: "Baseline", fraction: 0.38 },
@@ -116,7 +116,7 @@ const PATIENTS: DemoPatient[] = [
     ],
   },
   {
-    code: "AG10002", centre: "downtown", therapist: T1, gender: "Male", age: 64, side: "Right", strokeDaysAgo: 75, registeredDaysAgo: 19, status: "Ongoing",
+    code: "AG10002", centre: "downtown", therapist: T1, gender: "Male", age: 64, side: "Right", strokeDaysAgo: 75, registeredDaysAgo: 19, status: "Active",
     plan: { trainingSide: "Right", devices: ["PLUTO"], durationDays: 28, dailyMinutes: 45, startedDaysAgo: 16, trainsDay: (d) => d % 4 !== 3, status: "Active", startAccuracy: 0.45, endAccuracy: 0.74 },
     assessments: [
       { scaleId: "fma", day: 0, label: "Baseline", fraction: 0.3 },
@@ -125,7 +125,7 @@ const PATIENTS: DemoPatient[] = [
       { scaleId: "mas", day: 14, label: "Day 14", fraction: 0.3 },
     ],
   },
-  { code: "AG10003", centre: "downtown", therapist: T1, gender: "Female", age: 47, side: "Right", strokeDaysAgo: 30, registeredDaysAgo: 2, status: "Active", assessments: [] },
+  { code: "AG10003", centre: "downtown", therapist: T1, gender: "Female", age: 47, side: "Right", strokeDaysAgo: 30, registeredDaysAgo: 2, status: "Inactive", assessments: [] },
   {
     code: "AG10004", centre: "downtown", therapist: T1, gender: "Male", age: 71, side: "Left", strokeDaysAgo: 150, registeredDaysAgo: 30, status: "Paused",
     plan: { trainingSide: "Left", devices: ["MARS"], durationDays: 30, dailyMinutes: 40, startedDaysAgo: 24, trainsDay: (d) => d < 9 && d % 3 !== 2, status: "Paused", startAccuracy: 0.4, endAccuracy: 0.58 },
@@ -145,7 +145,7 @@ const PATIENTS: DemoPatient[] = [
     notes: [{ by: "therapist", daysAgo: 22, text: "Programme completed. Discharged with a home exercise sheet." }],
   },
   {
-    code: "AG20001", centre: "north", therapist: T2, gender: "Male", age: 49, side: "Left", strokeDaysAgo: 90, registeredDaysAgo: 25, status: "Ongoing",
+    code: "AG20001", centre: "north", therapist: T2, gender: "Male", age: 49, side: "Left", strokeDaysAgo: 90, registeredDaysAgo: 25, status: "Active",
     plan: { trainingSide: "Left", devices: ["MARS", "PLUTO"], durationDays: 35, dailyMinutes: 50, startedDaysAgo: 21, trainsDay: (d) => d % 5 !== 4, status: "Active", startAccuracy: 0.48, endAccuracy: 0.8 },
     assessments: [{ scaleId: "fma", day: 0, label: "Baseline", fraction: 0.33 }, { scaleId: "fma", day: 14, label: "Day 14", fraction: 0.5 }],
   },
@@ -159,7 +159,7 @@ const PATIENTS: DemoPatient[] = [
 
 // ---------------------------------------------------------------- 30 more patients, so the analytics have something to show
 /**
- * AG30001 to AG30030: 18 at Ranipet, 12 at CMC Vellore, mostly Ongoing, each with a few weeks of sessions and several
+ * AG30001 to AG30030: 18 at Ranipet, 12 at CMC Vellore, mostly Active, each with a few weeks of sessions and several
  * assessment scales measured at about days 1, 7, 14, 21 and 28 with scores moving the way a recovery does (FMA, ARAT and
  * MoCA rise; MAS and PHQ-9 fall). Deterministic, so every run produces the same people.
  */
@@ -170,7 +170,7 @@ function bulkPatients(): DemoPatient[] {
     const r = rng(code);
     const north = i > 18;
     const startedDaysAgo = 29 + Math.floor(r() * 22); // 29 to 50: far enough back for a full 30 days of assessments
-    const status: DemoPatient["status"] = i % 11 === 0 ? "Completed" : i % 13 === 0 ? "Paused" : "Ongoing";
+    const status: DemoPatient["status"] = i % 11 === 0 ? "Completed" : i % 13 === 0 ? "Paused" : "Active";
     const devices: ("MARS" | "PLUTO")[] = i % 3 === 0 ? ["MARS", "PLUTO"] : i % 2 === 0 ? ["PLUTO"] : ["MARS"];
     const side = (["Left", "Right"] as const)[Math.floor(r() * 2)]!;
     const gain = 0.12 + r() * 0.25; // how much this patient improves over 28 days
@@ -401,6 +401,55 @@ async function main() {
             maxScore: primary ? maxScore(def, primary) : null,
           },
         });
+      }
+
+      // robotic assessments (what PLUTO and MARS measured): A0 at the start of the plan, A1 two weeks later. The bulk patients skip it.
+      if (!d.code.startsWith("AG30")) {
+        const r = rng(`${d.code}:robotic`);
+        const limb = p.trainingSide === "Left" ? "left" : "right";
+        const mechs = [["FPS", 55, 100, 150], ["WFE", 35, 60, 80], ["WURD", 12, 30, 45]] as const;
+        const base = mechs.map(([code, arom, prom, aprom]) => ({ code, arom: arom * (0.8 + r() * 0.4), prom: prom * (0.9 + r() * 0.2), aprom: aprom * (0.9 + r() * 0.2) }));
+        const reach = [["ML", 38, 12], ["AP", 14, 17], ["MLAP", 30, 16]] as const;
+        const reachBase = reach.map(([code, ml, ap]) => ({ code, ml: ml * (0.9 + r() * 0.2), ap: ap * (0.9 + r() * 0.2) }));
+        const improvement = 1.12 + r() * 0.12;
+        for (const [tp, day, gain] of [["A0", 0, 1], ["A1", Math.min(14, p.startedDaysAgo), improvement]] as const) {
+          const at = addDays(start, day);
+          if (p.devices.includes("PLUTO")) {
+            await prisma.roboticAssessment.create({
+              data: {
+                patientId: patient.id, deviceTypeId: "PLUTO", limb, timepoint: tp, assessedAt: at, lockedAt: addDays(at, 0), fingerprint: `demo-${d.code}-pluto-${tp}`, sourcePath: `demo/${d.code}/PLUTO_${limb}_${tp}`,
+                mechanisms: [...base.map((m) => ({ code: m.code, status: "Complete", ability: "Active" })), { code: "HOC", status: "Partially Complete", ability: "Passive" }],
+                results: {
+                  create: [
+                    ...base.flatMap((m) =>
+                      (["arom", "prom", "aprom"] as const).map((t) => {
+                        const range = Math.round(m[t] * (t === "arom" ? gain : 1 + (gain - 1) / 3) * 10) / 10;
+                        return { mechanism: m.code, task: t.toUpperCase(), status: "Complete", unit: "deg", romMin: -Math.round(range * 0.55 * 10) / 10, romMax: Math.round(range * 0.45 * 10) / 10, romRange: range, attempts: 1 };
+                      }),
+                    ),
+                    { mechanism: "HOC", task: "AROM", status: "Skipped", attempts: 1, comment: "AROM not satisfied: not completed within 60s over 1 attempt(s); discrete reaching disabled." },
+                    { mechanism: "HOC", task: "PROM", status: "Complete", unit: null, romMin: 0, romMax: 1.3, romRange: 1.3, attempts: 1 },
+                  ],
+                },
+              },
+            });
+          }
+          if (p.devices.includes("MARS")) {
+            await prisma.roboticAssessment.create({
+              data: {
+                patientId: patient.id, deviceTypeId: "MARS", limb, timepoint: tp, assessedAt: at, lockedAt: addDays(at, 0), fingerprint: `demo-${d.code}-mars-${tp}`, sourcePath: `demo/${d.code}/MARS_${limb}_${tp}`,
+                mechanisms: reachBase.map((m) => ({ code: m.code, status: "Complete", ability: "Passive" })),
+                results: {
+                  create: reachBase.map(({ code, ml, ap }) => {
+                    const mlCm = Math.round(ml * gain * 10) / 10;
+                    const apCm = Math.round(ap * gain * 10) / 10;
+                    return { mechanism: code, task: "ROM", status: "Complete", unit: "cm", romRange: code === "AP" ? apCm : mlCm, attempts: 3, extra: { mlCm, apCm, avgMlCm: Math.round(mlCm * 0.97 * 10) / 10, avgApCm: Math.round(apCm * 0.97 * 10) / 10, sessions: 1, trials: [] } };
+                  }),
+                },
+              },
+            });
+          }
+        }
       }
     }
 

@@ -26,14 +26,14 @@ export async function loadOverview(user: User, now = new Date()): Promise<{ sche
 
 	// A therapist's schedule is their own patients; a consultant sees the whole centre.
 	const patients = await prisma.patient.findMany({
-		where: { AND: [therapist ? { therapistId: user.id } : patientScopeFor(user), { status: { in: ['Active', 'Ongoing'] } }] },
+		where: { AND: [therapist ? { therapistId: user.id } : patientScopeFor(user), { status: { in: ['Active', 'Inactive'] } }] },
 		orderBy: { displayCode: 'asc' },
 		select: {
 			id: true,
 			displayCode: true,
 			status: true,
 			createdAt: true,
-			_count: { select: { assessments: true } },
+			_count: { select: { assessments: true, assessmentDevices: true, roboticAssessments: true } },
 			therapyPlans: {
 				where: { status: 'Active' },
 				orderBy: { createdAt: 'desc' },
@@ -77,12 +77,14 @@ export async function loadOverview(user: User, now = new Date()): Promise<{ sche
 	if (therapist) {
 		for (const p of patients) {
 			const profile = `/patients/${p.id}`;
-			if (!p.therapyPlans[0] && p.status === 'Active') {
-				todos.push({ key: `plan-${p.id}`, icon: 'edit', tone: 'accent', title: p.displayCode, sub: 'Therapy plan needed · New patient', href: `${profile}?tab=plan`, action: { label: 'Create plan', href: `${profile}?tab=plan` } });
-			}
-			if (p._count.assessments === 0) {
+			// Inactive = no plan yet. The order is: an assessment (clinical or robotic) first, then the plan.
+			if (p.status !== 'Inactive') continue;
+			if (p._count.assessments + p._count.assessmentDevices + p._count.roboticAssessments === 0) {
 				const days = Math.max(0, Math.floor((now.getTime() - p.createdAt.getTime()) / DAY));
-				todos.push({ key: `base-${p.id}`, icon: 'clipboard', tone: 'info', title: p.displayCode, sub: `Assessment needed · registered ${days === 0 ? 'today' : `${days} day${days === 1 ? '' : 's'} ago`}`, href: `/assessments/new?patient=${p.id}`, action: { label: 'New assessment', href: `/assessments/new?patient=${p.id}` } });
+				const href = `${profile}?tab=assessments`;
+				todos.push({ key: `base-${p.id}`, icon: 'clipboard', tone: 'info', title: p.displayCode, sub: `Assessment needed · registered ${days === 0 ? 'today' : `${days} day${days === 1 ? '' : 's'} ago`}`, href, action: { label: 'Do assessment', href } });
+			} else {
+				todos.push({ key: `plan-${p.id}`, icon: 'edit', tone: 'accent', title: p.displayCode, sub: 'Assessed · therapy plan needed', href: `${profile}?tab=plan`, action: { label: 'Create plan', href: `${profile}?tab=plan` } });
 			}
 		}
 	}

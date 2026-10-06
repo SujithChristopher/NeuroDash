@@ -68,37 +68,40 @@
 	{#if r.devices.length === 0}
 		<div class="card" style="margin-bottom:16px"><EmptyState icon="device" title="No device sessions yet" sub="Sessions appear once the training devices upload them." /></div>
 	{:else}
-		<div class="card" style="margin-bottom:16px">
-			<div class="table-wrap">
-				<table class="dt">
-					<thead><tr><th>Device</th><th>Time used</th><th>Sessions</th><th>First used</th><th>Last used</th></tr></thead>
-					<tbody>
-						{#each r.devices as d (d.typeId)}
-							<tr>
-								<td class="dt-name"><span class="swatch" style="background:{color(d.colorSeries)}"></span>{d.name}</td>
-								<td class="mono">{fmtHrsFromMin(d.minutes)}</td>
-								<td class="mono">{d.sessions}</td>
-								<td class="mono">{d.firstDay ? fmtDateShort(d.firstDay) : '—'}</td>
-								<td class="mono">{d.lastDay ? fmtDateShort(d.lastDay) : '—'}</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:8px">
+		<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-bottom:8px">
 			{#each r.devices as d (d.typeId)}
 				{@const term = movementTerm(d.typeId)}
 				<div class="card">
-					<div class="card-head"><h3>{d.name}: {term.toLowerCase()}s trained</h3><span class="hint">trials</span></div>
+					<div class="card-head">
+						<h3><span class="swatch" style="background:{color(d.colorSeries)}"></span>{d.name}</h3>
+						<span class="hint">{d.firstDay ? fmtDateShort(d.firstDay) : '—'} to {d.lastDay ? fmtDateShort(d.lastDay) : '—'}</span>
+					</div>
 					<div class="card-body">
+						<div class="dev-facts">
+							<div><div class="k-label">Sessions</div><div class="k-val" style="font-size:20px">{d.sessions}</div></div>
+							<div><div class="k-label">Hours used</div><div class="k-val" style="font-size:20px">{fmtHrsFromMin(d.minutes)}</div></div>
+							<div><div class="k-label">{term}s trained</div><div class="k-val" style="font-size:20px">{d.movements.length}</div></div>
+						</div>
 						{#if d.movements.length}
-							<Chart kind="bar" labels={d.movements.map((m) => labelFor(MECHANISM_LABELS, m.code))} datasets={[{ label: 'Trials', data: d.movements.map((m) => m.trials), color: color(d.colorSeries) }]} opts={{ horizontal: true }} height={Math.max(120, d.movements.length * 44 + 40)} />
-							<table class="dt" style="margin-top:8px">
-								<thead><tr><th>{term}</th><th>Trials</th><th>Time</th></tr></thead>
+							<table class="dt" style="margin-top:12px">
+								<thead><tr><th>{term}</th><th>Time</th><th>Movement change</th></tr></thead>
 								<tbody>
 									{#each d.movements as m (m.code)}
-										<tr><td>{labelFor(MECHANISM_LABELS, m.code)}</td><td class="mono">{m.trials}</td><td class="mono">{m.minutes} min</td></tr>
+										<tr>
+											<td>{labelFor(MECHANISM_LABELS, m.code)}<div class="dt-sub">{m.trials} trial{m.trials === 1 ? '' : 's'}</div></td>
+											<td class="mono">{m.minutes} min</td>
+											<td>
+												{#if m.changePct == null}
+													<span class="muted">needs 2 training days</span>
+												{:else if m.changePct > 0}
+													<Badge text="Increased {sign(m.changePct)} pts" tone="good" /> <span class="mono muted">{m.fromPct}% → {m.toPct}%</span>
+												{:else if m.changePct < 0}
+													<Badge text="Decreased {m.changePct} pts" tone="critical" /> <span class="mono muted">{m.fromPct}% → {m.toPct}%</span>
+												{:else}
+													<Badge text="No change" tone="neutral" /> <span class="mono muted">{m.fromPct}%</span>
+												{/if}
+											</td>
+										</tr>
 									{/each}
 								</tbody>
 							</table>
@@ -109,6 +112,7 @@
 				</div>
 			{/each}
 		</div>
+		<div class="muted" style="font-size:11.5px;margin-bottom:8px">Movement change is the hit rate (hits out of targets) on the first day the movement was trained compared with the last day, in percentage points.</div>
 		{@render noteBox('Notes on device use', notes.devices, (v) => (notes.devices = v), 'rn-devices')}
 	{/if}
 
@@ -168,6 +172,11 @@
 		height: 10px;
 		border-radius: 3px;
 		margin-right: 8px;
+	}
+	.dev-facts {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 12px;
 	}
 	.report-head {
 		margin-bottom: 14px;

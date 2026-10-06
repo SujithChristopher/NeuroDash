@@ -7,11 +7,11 @@ beforeAll(async () => {
 });
 
 describe('creating a patient', () => {
-	it('makes the creating therapist the primary therapist, with the hospital ID as its label and Active status', async () => {
+	it('makes the creating therapist the primary therapist, with the hospital ID as its label and Inactive status (no plan yet)', async () => {
 		const code = uniq('Created');
 		const id = await createPatient(s.priya, code);
 		const p = await db().patient.findUniqueOrThrow({ where: { id }, include: { therapist: true } });
-		expect(p).toMatchObject({ displayCode: code, name: code, status: 'Active', affectedSide: 'Left', gender: 'Female' });
+		expect(p).toMatchObject({ displayCode: code, name: code, status: 'Inactive', affectedSide: 'Left', gender: 'Female' });
 		expect(p.dob?.toISOString().slice(0, 10)).toBe('1970-01-01');
 		expect(p.therapist.email).toBe('priya.nair@neurodash.care');
 		const audit = await db().auditLog.findFirst({ where: { action: 'Patient Created', entityId: id } });
@@ -93,7 +93,7 @@ describe('patient status', () => {
 		expect(r.type).toBe('success');
 		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Paused');
 		const audit = await db().auditLog.findFirst({ where: { action: 'Patient Status Changed', entityId: id } });
-		expect(audit?.previousValue).toBe('Active');
+		expect(audit?.previousValue).toBe('Inactive');
 		expect(audit?.newValue).toBe('Paused');
 	});
 
@@ -101,13 +101,24 @@ describe('patient status', () => {
 		const id = await createPatient(s.priya);
 		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: 'Banana' })).type).toBe('failure');
 		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: '' })).type).toBe('failure');
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
+		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Inactive');
+	});
+
+	it('Inactive and Active follow the plan: neither is picked by hand without one', async () => {
+		const id = await createPatient(s.priya);
+		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: 'Active' })).type).toBe('failure'); // no plan yet
+		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Inactive');
+		await s.priya.action(`/patients/${id}?/createPlan`, { trainingSide: 'Left', startDate: '2026-12-01', durationDays: '5', dailyTargetMinutes: '30', deviceTypeIds: ['MARS'] });
+		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active'); // the plan made them Active
+		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: 'Inactive' })).type).toBe('failure'); // they have a plan
+		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: 'Paused' })).type).toBe('success');
+		expect((await s.priya.action(`/patients/${id}?/setStatus`, { status: 'Active' })).type).toBe('success'); // allowed again: a plan exists
 	});
 
 	it('a consultant (read-only) cannot change it', async () => {
 		const id = await createPatient(s.priya);
 		expect((await s.vikram.action(`/patients/${id}?/setStatus`, { status: 'Paused' })).status).toBe(403);
-		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Active');
+		expect((await db().patient.findUniqueOrThrow({ where: { id } })).status).toBe('Inactive');
 	});
 });
 

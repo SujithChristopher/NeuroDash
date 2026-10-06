@@ -119,6 +119,49 @@ export function durationByDay(sessions: TrainingSession[], devices: DeviceMeta[]
 	return { days, labels: days.map((d) => fmtDateShort(d)), datasets };
 }
 
+export interface SessionDay {
+	/** 1, 2, 3...: the n-th day the patient trained, however far apart the days are */
+	n: number;
+	date: string;
+	minutes: number;
+	/** Sessions recorded that day (all devices); they count as one point on the chart */
+	sessions: number;
+	accuracy: number | null;
+	byDevice: { name: string; minutes: number }[];
+}
+
+/** One entry per day the patient trained, oldest first: all devices together, several sessions in a day count once. */
+export function sessionDays(sessions: TrainingSession[]): SessionDay[] {
+	const by = new Map<string, { minutes: number; sessions: number; targets: number; hits: number; dev: Map<string, number> }>();
+	for (const s of sessions) {
+		const k = dayKey(s.date);
+		const v = by.get(k) ?? { minutes: 0, sessions: 0, targets: 0, hits: 0, dev: new Map<string, number>() };
+		v.minutes += s.durationMinutes ?? 0;
+		v.sessions++;
+		v.targets += s.totalTargets;
+		v.hits += s.totalHits;
+		v.dev.set(s.device.typeName, (v.dev.get(s.device.typeName) ?? 0) + (s.durationMinutes ?? 0));
+		by.set(k, v);
+	}
+	return [...by.entries()]
+		.sort((a, b) => a[0].localeCompare(b[0]))
+		.map(([date, v], i) => ({
+			n: i + 1,
+			date,
+			minutes: round1(v.minutes),
+			sessions: v.sessions,
+			accuracy: v.targets ? Math.round((v.hits / v.targets) * 100) : null,
+			byDevice: [...v.dev.entries()].map(([name, minutes]) => ({ name, minutes: round1(minutes) })).sort((a, b) => b.minutes - a.minutes)
+		}));
+}
+
+/** Average number of calendar days between one training day and the next; null until there are two. */
+export function avgIntervalDays(days: Pick<SessionDay, 'date'>[]): number | null {
+	if (days.length < 2) return null;
+	const t = (d: string) => Date.parse(d + 'T00:00:00Z');
+	return round1((t(days[days.length - 1].date) - t(days[0].date)) / 86400_000 / (days.length - 1));
+}
+
 /** Per-day accuracy, stars and minutes for ONE device. Days without a session on that device are omitted. */
 export function deviceDaily(sessions: TrainingSession[], typeId: string, lastDays: number | null = null) {
 	const mine = sessions.filter((s) => s.device.typeId === typeId);

@@ -36,7 +36,10 @@ describe('analytics per centre', () => {
 	it('counts patients by status as they change', async () => {
 		const before = await downtown();
 		const pid = await createPatient(s.priya);
-		expect((await downtown()).byStatus.Active).toBe(before.byStatus.Active + 1);
+		expect((await downtown()).byStatus.Inactive).toBe(before.byStatus.Inactive + 1); // registered, no plan yet
+		await s.priya.action(`/patients/${pid}?/createPlan`, { trainingSide: 'Left', startDate: '2026-12-01', durationDays: '5', dailyTargetMinutes: '30', deviceTypeIds: ['MARS'] });
+		const planned = await downtown();
+		expect([planned.byStatus.Inactive, planned.byStatus.Active]).toEqual([before.byStatus.Inactive, before.byStatus.Active + 1]);
 		await s.priya.action(`/patients/${pid}?/setStatus`, { status: 'Discontinued' });
 		const after = await downtown();
 		expect([after.byStatus.Active, after.byStatus.Discontinued]).toEqual([before.byStatus.Active, before.byStatus.Discontinued + 1]);

@@ -91,7 +91,14 @@ function MiniChart(ctx, config){
   this._onLeave = this._onLeave.bind(this);
   this.canvas.addEventListener('mousemove', this._onMove);
   this.canvas.addEventListener('mouseleave', this._onLeave);
+  // Touch: tapping or dragging a finger along the chart shows the same tooltip as hovering; vertical swipes still scroll the page.
   var self = this;
+  this._onTouch = function(e){ var t = e.touches && e.touches[0]; if(t) self._onMove({clientX:t.clientX, clientY:t.clientY}); };
+  this._onTouchOutside = function(e){ if(e.target !== self.canvas) self._onLeave(); };
+  this.canvas.style.touchAction = 'pan-y';
+  this.canvas.addEventListener('touchstart', this._onTouch, {passive:true});
+  this.canvas.addEventListener('touchmove', this._onTouch, {passive:true});
+  window.addEventListener('touchstart', this._onTouchOutside, {passive:true});
   if(window.ResizeObserver){
     this._ro = new ResizeObserver(function(){ self._resize(); });
     this._ro.observe(this.canvas.parentElement||this.canvas);
@@ -177,6 +184,9 @@ MiniChart.prototype.destroy = function(){
   if(this._winResize) window.removeEventListener('resize', this._winResize);
   this.canvas.removeEventListener('mousemove', this._onMove);
   this.canvas.removeEventListener('mouseleave', this._onLeave);
+  this.canvas.removeEventListener('touchstart', this._onTouch);
+  this.canvas.removeEventListener('touchmove', this._onTouch);
+  window.removeEventListener('touchstart', this._onTouchOutside);
   if(this._tip && this._tip.parentNode) this._tip.parentNode.removeChild(this._tip);
 };
 
@@ -567,6 +577,12 @@ MiniChart.prototype._hoverLine = function(mx,my,e){
     }
     return { color: ds.borderColor, text: text };
   });
+  // A label callback may return several lines (a list of strings): one tooltip row each.
+  rows = rows.reduce(function(all, r){
+    if(Array.isArray(r.text)) r.text.forEach(function(t, k){ all.push({ color: k===0 ? r.color : null, text: t }); });
+    else all.push(r);
+    return all;
+  }, []);
   this._showTip(e.clientX, e.clientY, this._tipRowsHTML(rows, String(g.labels[idx])));
   this._draw();
 };

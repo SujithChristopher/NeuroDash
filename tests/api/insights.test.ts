@@ -223,7 +223,7 @@ describe('analytics are scoped and bucketed server-side', () => {
 	it('the Overview carries a schedule and a to-do list for the therapist', async () => {
 		const d = await pageData(s.priya, '/');
 		expect(Array.isArray(d.schedule)).toBe(true);
-		expect(d.todos.some((t: { sub: string }) => /Therapy plan needed/.test(t.sub))).toBe(true);
+		expect(d.todos.some((t: { sub: string }) => /plan needed|Assessment needed/.test(t.sub))).toBe(true);
 	});
 });
 

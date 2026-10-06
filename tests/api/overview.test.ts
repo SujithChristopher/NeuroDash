@@ -90,18 +90,30 @@ describe('sessions today', () => {
 });
 
 describe('the to-do list', () => {
-	it('asks for a plan and a first assessment for a new patient, each with a button', async () => {
+	it('asks first for an assessment (clinical or robotic) for a patient who has none, with a button', async () => {
 		const code = uniq('todo').slice(0, 20);
-		const id = await createPatient(s.priya, code);
+		const id = await createPatient(s.priya, code, false);
 		const mine = (await overview(s.priya)).todos.filter((t) => t.title === code);
-		expect(mine.map((t) => t.action?.label).sort()).toEqual(['Create plan', 'New assessment']);
-		expect(mine.find((t) => t.action?.label === 'Create plan')!.action!.href).toBe(`/patients/${id}?tab=plan`);
-		expect(mine.find((t) => t.action?.label === 'New assessment')!.action!.href).toBe(`/assessments/new?patient=${id}`);
+		expect(mine.map((t) => t.action?.label)).toEqual(['Do assessment']); // one task: the plan comes after
+		expect(mine[0].action!.href).toBe(`/patients/${id}?tab=assessments`);
 	});
 
-	it('stops asking once the plan and an assessment exist', async () => {
-		const { id, code } = await patientWithPlan();
-		await db().assessment.create({ data: { patientId: id, scaleId: 'fma', assessmentDate: new Date(today() + 'T00:00:00Z'), answers: {}, administeredById: await priyaId() } });
+	it('asks for the plan once the patient is assessed, by a clinical assessment or by choosing robotic devices', async () => {
+		const clinical = uniq('tc').slice(0, 20);
+		const idC = await createPatient(s.priya, clinical); // helper adds a clinical assessment
+		const robotic = uniq('tr').slice(0, 20);
+		const idR = await createPatient(s.priya, robotic, false);
+		expect((await s.priya.action(`/patients/${idR}?/setRoboticDevices`, { deviceTypeIds: ['MARS'] })).type).toBe('success');
+		const todos = (await overview(s.priya)).todos;
+		for (const [code, id] of [[clinical, idC], [robotic, idR]]) {
+			const mine = todos.filter((t) => t.title === code);
+			expect(mine.map((t) => t.action?.label), code).toEqual(['Create plan']);
+			expect(mine[0].action!.href).toBe(`/patients/${id}?tab=plan`);
+		}
+	});
+
+	it('stops asking once the plan exists', async () => {
+		const { code } = await patientWithPlan();
 		expect((await overview(s.priya)).todos.filter((t) => t.title === code)).toEqual([]);
 	});
 

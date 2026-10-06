@@ -13,7 +13,7 @@ import { deviceScopeFor } from '$lib/server/scope';
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = requireUser(locals.user);
 	const isEngineer = user.role === 'ENGINEER';
-	const [devices, types, centres, requests, stock, centre] = await Promise.all([
+	const [devices, types, centres, requests, stock, centre, pendingReturns] = await Promise.all([
 		prisma.device.findMany({
 			where: deviceScopeFor(user),
 			orderBy: { displayCode: 'asc' },
@@ -39,12 +39,28 @@ export const load: PageServerLoad = async ({ locals }) => {
 			: Promise.resolve([]),
 		// Units in stock (not yet set up at any centre), for the engineer to hand out.
 		isEngineer ? prisma.device.findMany({ where: { status: 'Available', locationId: null }, select: { id: true, displayCode: true, deviceTypeId: true }, orderBy: { displayCode: 'asc' } }) : Promise.resolve([]),
-		user.role === 'THERAPIST' && user.locationId ? prisma.location.findUnique({ where: { id: user.locationId }, select: { name: true } }) : Promise.resolve(null)
+		user.role === 'THERAPIST' && user.locationId ? prisma.location.findUnique({ where: { id: user.locationId }, select: { name: true } }) : Promise.resolve(null),
+		// Return requests still waiting for an engineer (scoped to the centre's own devices for everyone but engineers).
+		prisma.deviceReturn.findMany({
+			where: { status: 'Pending', device: deviceScopeFor(user) },
+			orderBy: { requestedAt: 'desc' },
+			include: { device: { select: { id: true, displayCode: true, centre: { select: { name: true } } } }, requestedBy: { select: { name: true } } }
+		})
 	]);
+	const returning = new Set(pendingReturns.map((r) => r.deviceId));
 
 	return {
 		canRegister: isEngineer,
 		canRequest: user.role === 'THERAPIST',
+		returns: pendingReturns.map((r) => ({
+			id: r.id,
+			deviceId: r.device.id,
+			displayCode: r.device.displayCode,
+			centre: r.device.centre?.name ?? null,
+			by: r.requestedBy?.name ?? '—',
+			reason: r.reason,
+			requestedAt: r.requestedAt.toISOString()
+		})),
 		isEngineer,
 		centreName: centre?.name ?? null,
 		types,
@@ -68,7 +84,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			location: d.location,
 			lastSyncAt: d.lastSyncAt?.toISOString() ?? null,
 			type: d.deviceType,
-			centre: d.centre?.name ?? null
+			centre: d.centre?.name ?? null,
+			returnPending: returning.has(d.id)
 		}))
 	};
 };
@@ -96,6 +113,11 @@ async function loadRequest(id: string, status: string) {
 	if (req.status !== status) throw error(409, `Request is "${req.status}", not "${status}".`);
 	return req;
 }
+
+const returnSchema = z.object({
+	deviceId: z.string().min(1),
+	reason: z.string().trim().max(500).optional()
+});
 
 export const actions: Actions = {
 	register: async ({ request, locals }) => {
@@ -248,5 +270,87 @@ export const actions: Actions = {
 			newValue: `Set up at ${req.location.name}`
 		});
 		return { ok: true, message: `${device.displayCode} set up at ${req.location.name}.` };
+	},
+
+	// A therapist asks for a unit at their centre to be taken back (no longer needed, faulty, moving to another centre).
+	requestReturn: async ({ request, locals }) => {
+		const user = requireRole(locals.user, 'THERAPIST');
+		const parsed = returnSchema.safeParse(Object.fromEntries(await request.formData()));
+		if (!parsed.success) return fail(400, { error: 'Choose a device to return.' });
+
+		// Only a unit set up at the therapist's own centre; anything else is simply not found.
+		const device = await prisma.device.findFirst({ where: { AND: [{ id: parsed.data.deviceId }, deviceScopeFor(user)] }, include: { centre: { select: { name: true } } } });
+		if (!device || !device.locationId) throw error(404, 'Device not found');
+		if (await prisma.deviceReturn.count({ where: { deviceId: device.id, status: 'Pending' } })) return fail(409, { error: `A return of ${device.displayCode} is already waiting for an engineer.` });
+
+		const ret = await prisma.deviceReturn.create({
+			data: { deviceId: device.id, locationId: device.locationId, requestedById: user.id, reason: parsed.data.reason || null }
+		});
+		await logDeviceEvent(device.id, 'return_requested', `Return requested by ${user.name}${parsed.data.reason ? `: ${parsed.data.reason}` : '.'}`);
+		await notifyRole('ENGINEER', {
+			notifType: 'device',
+			tone: 'info',
+			icon: 'box',
+			title: 'Device return requested',
+			description: `${user.name} asked to return ${device.displayCode} from ${device.centre?.name ?? 'a centre'}.`,
+			link: { page: 'devices' }
+		});
+		await auditAs(user)({ action: 'Device Return Requested', entityType: 'Device', entityId: device.id, newValue: { returnId: ret.id, reason: parsed.data.reason ?? null } });
+		return { ok: true, message: `Return of ${device.displayCode} sent to engineering.` };
+	},
+
+	// An engineer takes a unit back into stock: after a centre's request, or on their own.
+	takeBack: async ({ request, locals }) => {
+		const user = requireRole(locals.user, 'ENGINEER');
+		const parsed = returnSchema.safeParse(Object.fromEntries(await request.formData()));
+		if (!parsed.success) return fail(400, { error: 'Choose a device to take back.' });
+
+		const device = await prisma.device.findUnique({ where: { id: parsed.data.deviceId }, include: { centre: { select: { name: true } } } });
+		if (!device) throw error(404, 'Device not found');
+		if (!device.locationId) return fail(409, { error: `${device.displayCode} is already in stock.` });
+
+		const from = device.centre?.name ?? 'its centre';
+		const pending = await prisma.deviceReturn.findMany({ where: { deviceId: device.id, status: 'Pending' } });
+		await prisma.$transaction([
+			// Back in stock: no centre, no room. A unit that was merely in use is available again; faults and maintenance stay as they are.
+			prisma.device.update({ where: { id: device.id }, data: { locationId: null, location: null, status: device.status === 'In Use' ? 'Available' : device.status } }),
+			prisma.deviceReturn.updateMany({ where: { deviceId: device.id, status: 'Pending' }, data: { status: 'Taken back', engineerId: user.id, resolvedAt: new Date() } })
+		]);
+		await logDeviceEvent(device.id, 'returned', `Taken back from ${from} by ${user.name}.`);
+		for (const r of pending) {
+			if (r.requestedById) {
+				await notifyUser(r.requestedById, {
+					notifType: 'device',
+					tone: 'good',
+					icon: 'check',
+					title: 'Device taken back',
+					description: `${device.displayCode} was taken back from ${from} by ${user.name}.`,
+					link: { page: 'devices' }
+				});
+			}
+		}
+		await auditAs(user)({ action: 'Device Taken Back', entityType: 'Device', entityId: device.id, previousValue: from, newValue: 'In stock' });
+		return { ok: true, message: `${device.displayCode} taken back into stock.` };
+	},
+
+	declineReturn: async ({ request, locals }) => {
+		const user = requireRole(locals.user, 'ENGINEER');
+		const id = String((await request.formData()).get('id') ?? '');
+		const ret = await prisma.deviceReturn.findUnique({ where: { id }, include: { device: { select: { displayCode: true } } } });
+		if (!ret) throw error(404, 'Return request not found');
+		if (ret.status !== 'Pending') return fail(409, { error: `This return is already "${ret.status}".` });
+		await prisma.deviceReturn.update({ where: { id }, data: { status: 'Declined', engineerId: user.id, resolvedAt: new Date() } });
+		if (ret.requestedById) {
+			await notifyUser(ret.requestedById, {
+				notifType: 'device',
+				tone: 'warning',
+				icon: 'x',
+				title: 'Device return declined',
+				description: `${user.name} declined the return of ${ret.device.displayCode}; it stays at your centre.`,
+				link: { page: 'devices' }
+			});
+		}
+		await auditAs(user)({ action: 'Device Return Declined', entityType: 'Device', entityId: ret.deviceId, newValue: id });
+		return { ok: true, message: 'Return declined.' };
 	}
 };

@@ -1,6 +1,7 @@
 // Reads what the training laptops uploaded to the local server and stores it in the database.
 //   <data dir>/<patient ID>/<LAPTOP>/sessions.csv    → TherapySession + SessionTrial (stars, hits, durations)
 //   <data dir>/<patient ID>/<LAPTOP>/configdata.csv  → DeviceConfig
+//   <data dir>/<patient ID>/_assessments/<DEVICE>_<limb>_<TP>/   → RoboticAssessment + results (a locked PLUTO / MARS assessment)
 // Re-scans are idempotent: a file is skipped when its SHA-256 is unchanged, and sessions are upserted by a
 // stable source key (laptops re-upload the whole cumulative file every time).
 import { createHash } from 'node:crypto';
@@ -16,6 +17,7 @@ import {
 	sessionSourceKey,
 	trialTypeFor
 } from '$lib/ingest/parse';
+import { parseAssessmentPackage, TIMEPOINT_PATTERN, type AssessmentFile } from '$lib/ingest/assessment';
 
 const MAX_FILE_BYTES = 20 * 1024 * 1024;
 const KINDS = { 'sessions.csv': 'sessions', 'configdata.csv': 'config' } as const;
@@ -37,6 +39,8 @@ export interface IngestSummary {
 	errors: number;
 	sessions: number;
 	trials: number;
+	/** Robotic assessment timepoints stored this run */
+	assessments: number;
 	files: FileResult[];
 	error?: string;
 }
@@ -89,6 +93,7 @@ async function doIngest(): Promise<IngestSummary> {
 		errors: 0,
 		sessions: 0,
 		trials: 0,
+		assessments: 0,
 		files: []
 	};
 	const finish = (extra: Partial<IngestSummary> = {}) => {
@@ -130,9 +135,10 @@ async function doIngest(): Promise<IngestSummary> {
 		else summary.errors++;
 	}
 
+	await ingestAssessments(root, summary);
+
 	for (const patientId of touched) {
 		await applyDayLogs(patientId);
-		await markOngoing(patientId);
 	}
 	await rolloverMissedDays();
 
@@ -144,7 +150,7 @@ async function doIngest(): Promise<IngestSummary> {
 					action: 'Device Data Synced',
 					entityType: 'Data Sync',
 					entityId: 'local-server',
-					newValue: { files: summary.ingested, sessions: summary.sessions, trials: summary.trials }
+					newValue: { files: summary.ingested, sessions: summary.sessions, trials: summary.trials, assessments: summary.assessments }
 				}
 			})
 			.catch(() => undefined);
@@ -363,14 +369,6 @@ async function ingestConfig(f: Found, text: string, sha: string, touched: Set<st
 	return { path: f.rel, status: 'ok' };
 }
 
-/** A patient with allocated devices who has trained a session is "Ongoing" (a newly created account is "Active"). */
-async function markOngoing(patientId: string) {
-	const p = await prisma.patient.findUnique({ where: { id: patientId }, select: { status: true, _count: { select: { trainingDevices: true, therapySessions: true } } } });
-	if (p?.status === 'Active' && p._count.trainingDevices > 0 && p._count.therapySessions > 0) {
-		await prisma.patient.update({ where: { id: patientId }, data: { status: 'Ongoing' } });
-	}
-}
-
 /** Plan day rows get the real minutes trained that day: a day with any training is done, otherwise missed. */
 async function applyDayLogs(patientId: string) {
 	const days = await prisma.therapySession.groupBy({
@@ -411,4 +409,130 @@ async function rolloverMissedDays() {
 
 export async function recentIngestedFiles(take = 100) {
 	return prisma.ingestedFile.findMany({ orderBy: { ingestedAt: 'desc' }, take });
+}
+
+// ---------------------------------------------------------------------------------------------------- robotic assessments
+
+const ASSESSMENT_PACKAGE = /^([A-Za-z0-9]+)_(left|right|both)_([A-Za-z]\d{1,2})$/i;
+const MAX_PACKAGE_BYTES = 40 * 1024 * 1024;
+const MAX_PACKAGE_FILE_BYTES = 10 * 1024 * 1024;
+
+/** Every text file of a package (relative path, forward slashes). Raw trial files are never needed, so large ones are skipped. */
+async function readPackage(dir: string, prefix = '', budget = { left: MAX_PACKAGE_BYTES }): Promise<AssessmentFile[]> {
+	const out: AssessmentFile[] = [];
+	for (const e of await fs.readdir(dir, { withFileTypes: true })) {
+		const abs = path.join(dir, e.name);
+		if (e.isDirectory()) out.push(...(await readPackage(abs, `${prefix}${e.name}/`, budget)));
+		else if (e.isFile() && /\.(csv|json|locked|txt)$/i.test(e.name) && !e.name.startsWith('.')) {
+			const size = (await fs.stat(abs)).size;
+			if (size > MAX_PACKAGE_FILE_BYTES || size > budget.left) continue;
+			budget.left -= size;
+			out.push({ path: prefix + e.name, text: await fs.readFile(abs, 'utf8') });
+		}
+	}
+	return out;
+}
+
+/** Stores the assessment timepoints the laptops uploaded. Idempotent: a package is skipped while its fingerprint is unchanged. */
+async function ingestAssessments(root: string, summary: IngestSummary) {
+	let patientFolders: string[];
+	try {
+		patientFolders = await listDirs(root);
+	} catch {
+		return;
+	}
+	for (const patientFolder of patientFolders) {
+		const base = path.join(root, patientFolder, '_assessments');
+		let packages: string[];
+		try {
+			packages = (await fs.readdir(base, { withFileTypes: true })).filter((e) => e.isDirectory() && ASSESSMENT_PACKAGE.test(e.name)).map((e) => e.name);
+		} catch {
+			continue; // this patient has no assessments
+		}
+		for (const name of packages) {
+			const rel = `${patientFolder}/_assessments/${name}`;
+			summary.scanned++;
+			let result: FileResult;
+			try {
+				result = await ingestPackage(patientFolder, name, path.join(base, name), rel, summary);
+			} catch (e) {
+				result = { path: rel, status: 'error', message: e instanceof Error ? e.message : String(e) };
+				await record(rel, 'assessment', '', patientFolder, null, 0, 'error', result.message).catch(() => undefined);
+			}
+			summary.files.push(result);
+			if (result.status === 'ok') summary.ingested++;
+			else if (result.status === 'unchanged') summary.unchanged++;
+			else if (result.status === 'unmatched') summary.unmatched++;
+			else summary.errors++;
+		}
+	}
+}
+
+async function ingestPackage(patientFolder: string, name: string, dir: string, rel: string, summary: IngestSummary): Promise<FileResult> {
+	const [, deviceRaw, limbRaw, tpRaw] = ASSESSMENT_PACKAGE.exec(name)!;
+	const device = deviceRaw.toUpperCase();
+	const limb = limbRaw.toLowerCase();
+	const timepoint = tpRaw.toUpperCase();
+	if (!TIMEPOINT_PATTERN.test(timepoint)) return { path: rel, status: 'error', message: `"${tpRaw}" is not a timepoint.` };
+
+	// The sender's fingerprint of the package (written last, so its presence means the package is complete)
+	let sha = '';
+	try {
+		sha = (await fs.readFile(path.join(dir, '.fingerprint'), 'utf8')).trim();
+	} catch {
+		return { path: rel, status: 'unchanged' }; // still being received
+	}
+	const previous = await prisma.ingestedFile.findUnique({ where: { path: rel } });
+	if (previous && previous.sha256 === sha && previous.status === 'ok') return { path: rel, status: 'unchanged' };
+
+	const patient = await findPatient(patientFolder);
+	if (!patient) {
+		const message = `No patient with ID "${patientFolder}".`;
+		await record(rel, 'assessment', sha, patientFolder, device, 0, 'unmatched', message);
+		return { path: rel, status: 'unmatched', message };
+	}
+	const fail = async (message: string): Promise<FileResult> => {
+		await record(rel, 'assessment', sha, patientFolder, device, 0, 'error', message);
+		return { path: rel, status: 'error', message };
+	};
+	if (!(await prisma.deviceType.findUnique({ where: { id: device }, select: { id: true } }))) return fail(`Unknown device "${device}".`);
+
+	const parsed = parseAssessmentPackage(await readPackage(dir));
+	if ('error' in parsed) return fail(parsed.error);
+	if (parsed.device !== device) return fail(`The files are ${parsed.device} files but the upload came from ${device}.`);
+
+	const data = {
+		assessedAt: parsed.assessedAt ?? new Date(),
+		lockedAt: parsed.lockedAt,
+		mechanisms: parsed.mechanisms,
+		fingerprint: sha,
+		sourcePath: rel
+	};
+	await prisma.$transaction(async (tx) => {
+		const a = await tx.roboticAssessment.upsert({
+			where: { patientId_deviceTypeId_limb_timepoint: { patientId: patient.id, deviceTypeId: device, limb, timepoint } },
+			update: data,
+			create: { patientId: patient.id, deviceTypeId: device, limb, timepoint, ...data }
+		});
+		// A re-sent timepoint replaces what was stored for it
+		await tx.roboticAssessmentResult.deleteMany({ where: { assessmentId: a.id } });
+		await tx.roboticAssessmentResult.createMany({
+			data: parsed.results.map((r) => ({
+				assessmentId: a.id,
+				mechanism: r.mechanism,
+				task: r.task,
+				status: r.status,
+				unit: r.unit,
+				romMin: r.romMin,
+				romMax: r.romMax,
+				romRange: r.romRange,
+				attempts: r.attempts,
+				comment: r.comment,
+				extra: (r.extra ?? undefined) as object | undefined
+			}))
+		});
+	});
+	summary.assessments++;
+	await record(rel, 'assessment', sha, patient.displayCode, device, parsed.results.length, 'ok');
+	return { path: rel, status: 'ok' };
 }

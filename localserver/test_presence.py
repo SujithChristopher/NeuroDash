@@ -270,6 +270,31 @@ class LaptopIdentityTests(PresenceTests):
             ps.PRESENCE_FILE = Path(self.tmp.name) / "presence.json"
 
 
+class AssessmentDevicesTests(unittest.TestCase):
+    """patients.json may list assessment_devices: the devices picked for the robotic assessment."""
+
+    DATA = {"patients": [
+        {"user_id": "TRAIN", "status": "active", "side": "left", "devices": ["MARS"]},
+        {"user_id": "ASSESS", "status": "active", "side": "left", "devices": [], "assessment_devices": ["MARS", "PLUTO"]},
+        {"user_id": "BOTH", "status": "active", "side": "left", "devices": ["PLUTO"], "assessment_devices": ["MARS"]},
+        {"user_id": "OLD", "status": "active", "side": None, "devices": ["PLUTO"]},   # a file from before the field existed
+    ]}
+
+    def ids(self, device):
+        ps.NUDGE_ENABLED = False
+        return sorted(p["user_id"] for p in ps.patients_for_device(self.DATA, device))
+
+    def test_a_patient_is_offered_on_their_training_devices_and_on_their_assessment_devices(self):
+        self.assertEqual(self.ids("MARS"), ["ASSESS", "BOTH", "TRAIN"])
+        self.assertEqual(self.ids("PLUTO"), ["ASSESS", "BOTH", "OLD"])
+
+    def test_not_on_any_other_device(self):
+        self.assertEqual(self.ids("ATOBOT"), [])
+
+    def test_the_device_name_is_case_insensitive(self):
+        self.assertEqual(self.ids("mars"), ["ASSESS", "BOTH", "TRAIN"])
+
+
 class HeartbeatTests(unittest.TestCase):
     """The sender keeps telling the server it is still playing; these use a fake server."""
 

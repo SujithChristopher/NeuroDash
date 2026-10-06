@@ -23,7 +23,7 @@ export interface ReportInput {
 		date: Date;
 		durationMinutes: number | null;
 		device: { typeId: string; typeName: string; colorSeries: string | null };
-		trials: { mechanism: string | null; durationSec: number | null }[];
+		trials: { mechanism: string | null; durationSec: number | null; targets?: number; hits?: number }[];
 	}[];
 	assessments: { scaleId: string; title: string; date: Date; label: string | null; score: number | null; maxScore: number | null }[];
 	now: Date;
@@ -44,8 +44,12 @@ export interface ReportDevice {
 	minutes: number;
 	firstDay: string | null;
 	lastDay: string | null;
-	/** Movements (MARS) or mechanisms (PLUTO) trained on this device, most-used first */
-	movements: { code: string; trials: number; minutes: number }[];
+	/**
+	 * Movements (MARS) or mechanisms (PLUTO) trained on this device, most-used first. Movement performance is the hit rate
+	 * (hits / targets) of the first and of the last day this movement was trained; `changePct` is last minus first, in
+	 * percentage points, and null until the movement was trained on two different days.
+	 */
+	movements: { code: string; trials: number; minutes: number; fromPct?: number | null; toPct?: number | null; changePct?: number | null }[];
 }
 
 export interface ReportScale {
@@ -99,7 +103,7 @@ export function buildPatientReport(input: ReportInput): PatientReportData {
 	const assessments = input.assessments.filter((a) => inPeriod(a.date));
 
 	// ---- devices: time and movements per training device
-	const byDevice = new Map<string, ReportDevice & { moves: Map<string, { trials: number; sec: number }> }>();
+	const byDevice = new Map<string, ReportDevice & { moves: Map<string, { trials: number; sec: number; days: Map<string, { targets: number; hits: number }> }> }>();
 	for (const s of sessions) {
 		const key = s.device.typeId;
 		const d = byDevice.get(key) ?? { typeId: key, name: s.device.typeName, colorSeries: s.device.colorSeries, sessions: 0, minutes: 0, firstDay: null, lastDay: null, movements: [], moves: new Map() };
@@ -110,9 +114,15 @@ export function buildPatientReport(input: ReportInput): PatientReportData {
 		if (!d.lastDay || k > d.lastDay) d.lastDay = k;
 		for (const t of s.trials) {
 			if (!t.mechanism) continue;
-			const m = d.moves.get(t.mechanism) ?? { trials: 0, sec: 0 };
+			const m = d.moves.get(t.mechanism) ?? { trials: 0, sec: 0, days: new Map() };
 			m.trials++;
 			m.sec += t.durationSec ?? 0;
+			if (t.targets) {
+				const dv = m.days.get(k) ?? { targets: 0, hits: 0 };
+				dv.targets += t.targets;
+				dv.hits += t.hits ?? 0;
+				m.days.set(k, dv);
+			}
 			d.moves.set(t.mechanism, m);
 		}
 		byDevice.set(key, d);
@@ -121,7 +131,13 @@ export function buildPatientReport(input: ReportInput): PatientReportData {
 		.map(({ moves, ...d }) => ({
 			...d,
 			minutes: round1(d.minutes),
-			movements: [...moves.entries()].map(([code, m]) => ({ code, trials: m.trials, minutes: round1(m.sec / 60) })).sort((a, b) => b.trials - a.trials)
+			movements: [...moves.entries()]
+				.map(([code, m]) => {
+					const days = [...m.days.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([, v]) => Math.round((v.hits / v.targets) * 100));
+					const two = days.length >= 2;
+					return { code, trials: m.trials, minutes: round1(m.sec / 60), fromPct: days.length ? days[0] : null, toPct: two ? days[days.length - 1] : null, changePct: two ? days[days.length - 1] - days[0] : null };
+				})
+				.sort((a, b) => b.trials - a.trials)
 		}))
 		.sort((a, b) => b.minutes - a.minutes);
 

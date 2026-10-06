@@ -61,7 +61,7 @@ export const actions: Actions = {
 				affectedSide: v.affectedSide,
 				strokeDate: v.strokeDate,
 				therapyGoals: [],
-				status: 'Active'
+				status: 'Inactive' // becomes Active when the therapy plan is created
 			}
 		});
 

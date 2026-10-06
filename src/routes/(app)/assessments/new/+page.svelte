@@ -37,7 +37,7 @@
 	const size = (f: File) => (f.size > 1024 * 1024 ? `${(f.size / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(f.size / 1024))} KB`);
 </script>
 
-<PageHead title="New Assessment" sub="{data.patient.name} ({data.patient.displayCode}) — entered directly in NeuroDash, click-only.">
+<PageHead title="Clinical Assessment" sub="{data.patient.name} ({data.patient.displayCode}) — entered directly in NeuroDash, click-only.">
 	{#snippet actions()}<a class="btn btn-ghost" href={back}>Cancel</a>{/snippet}
 </PageHead>
 

@@ -6,7 +6,7 @@ What this gives you: the dashboard knows which patient is training on which devi
 
 ## 1. Server computer (once, and after every update)
 
-- [ ] Copy the new `s2.py` **and** `patients_store.py`, then restart `s2.py`. Without this the lock fails with "Server closed the connection".
+- [ ] Copy the new `s2.py`, `patients_store.py` **and** `assessment_receive.py`, then restart `s2.py`. Without this the lock fails with "Server closed the connection".
 - [ ] Open **TCP 5000** and **UDP 5001** in its firewall.
 - [ ] Use the same `ACTIVE_WINDOW_SECONDS` for `s2.py` (environment variable) and in the web app's `.env`. The default, 900 (15 minutes), suits games of up to 15 minutes. It must be longer than your longest trial.
 
@@ -18,7 +18,7 @@ What this gives you: the dashboard knows which patient is training on which devi
 - [ ] Open **UDP 5001** if a firewall is on. The Pi must reach the server on TCP 5000.
 - [ ] Run `python3 agent.py`. With no `sender.py` in the folder it uses the Pi sender on its own.
 - [ ] Start it at boot (systemd service, below).
-- [ ] `sender_rapberryPI.py --upload` keeps uploading the CSVs as before.
+- [ ] `sender_rapberryPI.py --upload` keeps uploading the CSVs as before, and now also sends any **finished** robotic assessment (its `<TP>.locked` file exists) that is new or changed. `--assessments` does only that. Set `NEURODASH_ASSESSMENT_ROOT` if the assessment folders are not under `ROOT_DIR`.
 
 Systemd service: save as `/etc/systemd/system/neurodash-agent.service`, then `sudo systemctl enable --now neurodash-agent`.
 
@@ -45,7 +45,7 @@ WantedBy=multi-user.target
 - [ ] Give every laptop a **different computer name**. Open **UDP 5001** inbound.
 - [ ] Run `python agent.py`.
 - [ ] Start it at logon: `schtasks /Create /SC ONLOGON /TN "NeuroDash Agent" /TR "pythonw C:\path\to\agent.py"`
-- [ ] `sender.py --upload` keeps uploading as before.
+- [ ] `sender.py --upload` keeps uploading as before, and now also sends any **finished** robotic assessment (its `<TP>.locked` file exists) that is new or changed. `--assessments` does only that: run it when the assessment software locks a timepoint. Set `ASSESSMENT_ROOT` in `sender.py` (or `NEURODASH_ASSESSMENT_ROOT`) to the folder that holds the patient assessment folders.
 
 ## 4. In the training software (Pi and Windows: the same three calls)
 

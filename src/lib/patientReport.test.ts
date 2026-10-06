@@ -6,7 +6,7 @@ const MARS = { typeId: 'MARS', typeName: 'Mars', colorSeries: 'series-2' };
 const PLUTO = { typeId: 'PLUTO', typeName: 'Pluto', colorSeries: 'series-1' };
 
 const base = (over: Partial<ReportInput> = {}): ReportInput => ({
-	patient: { displayCode: 'HOC1', status: 'Ongoing', gender: 'Female', dob: d('1980-06-15'), affectedSide: 'Left', strokeDate: d('2026-05-01'), therapistName: 'Dr P' },
+	patient: { displayCode: 'HOC1', status: 'Active', gender: 'Female', dob: d('1980-06-15'), affectedSide: 'Left', strokeDate: d('2026-05-01'), therapistName: 'Dr P' },
 	plan: null,
 	sessions: [],
 	assessments: [],
@@ -32,10 +32,26 @@ describe('devices in the report', () => {
 	});
 	it('lists the movements / mechanisms of each device with trials and minutes, skipping trials with none', () => {
 		expect(r.devices[0].movements).toEqual([
-			{ code: 'ML', trials: 2, minutes: 2 },
-			{ code: 'AP', trials: 2, minutes: 2 }
+			{ code: 'ML', trials: 2, minutes: 2, fromPct: null, toPct: null, changePct: null },
+			{ code: 'AP', trials: 2, minutes: 2, fromPct: null, toPct: null, changePct: null }
 		]);
-		expect(r.devices[1].movements).toEqual([{ code: 'WURD', trials: 1, minutes: 10 }]);
+		expect(r.devices[1].movements).toEqual([{ code: 'WURD', trials: 1, minutes: 10, fromPct: null, toPct: null, changePct: null }]);
+	});
+	it('reports how each movement changed: hit rate of its first training day against its last', () => {
+		const t = (mechanism: string, targets: number, hits: number) => ({ mechanism, durationSec: 60, targets, hits });
+		const m = buildPatientReport(
+			base({
+				sessions: [
+					{ date: d('2026-09-01'), durationMinutes: 10, device: MARS, trials: [t('ML', 10, 5), t('ML', 10, 5), t('AP', 10, 8)] },
+					{ date: d('2026-09-08'), durationMinutes: 10, device: MARS, trials: [t('ML', 10, 8), t('ML', 10, 7), t('AP', 10, 6)] },
+					{ date: d('2026-09-09'), durationMinutes: 10, device: MARS, trials: [t('AP', 10, 6), t('WFE', 10, 6)] }
+				]
+			})
+		).devices[0].movements;
+		const by = (c: string) => m.find((x) => x.code === c)!;
+		expect(by('ML')).toMatchObject({ fromPct: 50, toPct: 75, changePct: 25 }); // 10/20 then 15/20
+		expect(by('AP')).toMatchObject({ fromPct: 80, toPct: 60, changePct: -20 }); // got worse
+		expect(by('WFE')).toMatchObject({ fromPct: 60, toPct: null, changePct: null }); // one day only: no change yet
 	});
 });
 

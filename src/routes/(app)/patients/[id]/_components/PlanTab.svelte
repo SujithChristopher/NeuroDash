@@ -12,8 +12,9 @@
 	let {
 		data,
 		stats,
-		form
-	}: { data: PageData; stats: ReturnType<typeof computePatientStats>; form: unknown } = $props();
+		form,
+		goTab
+	}: { data: PageData; stats: ReturnType<typeof computePatientStats>; form: unknown; goTab: (t: string) => void } = $props();
 
 	const plan = $derived(stats.plan ? data.plans.find((p) => p.id === stats.plan!.id)! : null);
 	let showNew = $state(false);
@@ -24,10 +25,14 @@
 
 {#if !plan}
 	<div class="card">
-		<EmptyState icon="target" title="No therapy plan yet." sub="Choose the side to train and the devices to begin device-assisted therapy. You can change them later with Modify Plan." />
+		<EmptyState icon="target" title="No therapy plan yet." sub={data.hasAssessment ? 'Choose the side to train and the devices to begin device-assisted therapy. You can change them later with Modify Plan.' : 'A therapy plan is built on an assessment. Do a clinical or a robotic assessment first (Assessments tab).'} />
 		{#if data.perms.isOwner}
 			<div style="text-align:center;padding-bottom:24px">
-				<button class="btn btn-primary" onclick={() => (showNew = true)}><Icon name="plus" size={14} /> Set Up Plan</button>
+				{#if data.hasAssessment}
+					<button class="btn btn-primary" onclick={() => (showNew = true)}><Icon name="plus" size={14} /> Set Up Plan</button>
+				{:else}
+					<button class="btn btn-primary" onclick={() => goTab('assessments')}><Icon name="clipboard" size={14} /> Go to Assessments</button>
+				{/if}
 			</div>
 		{/if}
 	</div>

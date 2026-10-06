@@ -32,7 +32,7 @@ const PHQ_SCORED = (id: string) => (allItems(phq9).find((i) => i.id === 'phq9_to
 
 describe('the assessment screen', () => {
 	it('lists every real scale (and not the bookkeeping forms) for the primary therapist', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const html = await (await s.priya.get(`/assessments/new?patient=${id}`)).text();
 		for (const title of ['Patient Health Questionnaire', 'Fugl-Meyer', 'Action Research Arm Test', 'Box and Block Test']) {
 			expect(html, title).toContain(title);
@@ -43,7 +43,7 @@ describe('the assessment screen', () => {
 	});
 
 	it('renders the chosen scale from its JSON definition', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const res = await s.priya.get(`/assessments/new?patient=${id}&scale=phq9`);
 		expect(res.status).toBe(200);
 		expect(await res.text()).toContain('phq9_total_score');
@@ -51,7 +51,7 @@ describe('the assessment screen', () => {
 
 	it('needs a patient, and only the primary therapist may open it', async () => {
 		expect((await s.priya.get('/assessments/new')).status).toBe(400);
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		expect((await s.vikram.get(`/assessments/new?patient=${id}`)).status).toBe(403);
 		expect((await s.admin.get(`/assessments/new?patient=${id}`)).status).toBe(403);
 		expect((await s.arjun.get(`/assessments/new?patient=${id}`)).status).toBe(403);
@@ -63,7 +63,7 @@ describe('the assessment screen', () => {
 
 describe('recording a scored assessment (PHQ-9)', () => {
 	it('recomputes the score from the answers and ignores any score the client sends', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const a = answers(phq9, () => 1, PHQ_SCORED);
 		const r = await submit(s.priya, id, { scaleId: 'phq9', answers: JSON.stringify(a), score: '999', maxScore: '1' });
 		expect(r.type).toBe('redirect');
@@ -83,33 +83,33 @@ describe('recording a scored assessment (PHQ-9)', () => {
 	});
 
 	it('scores varied answers correctly and leaves the score empty until every scored item is answered', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const ids = Object.keys(answers(phq9, () => 0, PHQ_SCORED));
 		const varied = Object.fromEntries(ids.map((k, i) => [k, i % 4]));
 		await submit(s.priya, id, { scaleId: 'phq9', answers: JSON.stringify(varied) });
 		const total = ids.reduce((sum, _k, i) => sum + (i % 4), 0);
 		expect((await db().assessment.findFirstOrThrow({ where: { patientId: id } })).score).toBe(total);
 
-		const partial = await createPatient(s.priya);
+		const partial = await createPatient(s.priya, undefined, false);
 		await submit(s.priya, partial, { scaleId: 'phq9', answers: JSON.stringify({ [ids[0]]: 2 }) });
 		const row = await db().assessment.findFirstOrThrow({ where: { patientId: partial } });
 		expect(row.score).toBeNull(); // REDCap semantics: blank in, blank out
 		expect(row.maxScore).toBe(27);
 	});
 
-	it('moves an Assessment-Pending patient to Active, but leaves other statuses alone', async () => {
-		const pending = await createPatient(s.priya);
+	it('does not change a patient status: assessing alone does not make them Active (the plan does)', async () => {
+		const pending = await createPatient(s.priya, undefined, false);
 		await submit(s.priya, pending, { scaleId: 'phq9', answers: JSON.stringify(answers(phq9, () => 0, PHQ_SCORED)) });
-		expect((await db().patient.findUniqueOrThrow({ where: { id: pending } })).status).toBe('Active');
+		expect((await db().patient.findUniqueOrThrow({ where: { id: pending } })).status).toBe('Inactive');
 
-		const paused = await createPatient(s.priya);
+		const paused = await createPatient(s.priya, undefined, false);
 		await s.priya.action(`/patients/${paused}?/setStatus`, { status: 'Paused' });
 		await submit(s.priya, paused, { scaleId: 'phq9', answers: JSON.stringify(answers(phq9, () => 0, PHQ_SCORED)) });
 		expect((await db().patient.findUniqueOrThrow({ where: { id: paused } })).status).toBe('Paused');
 	});
 
 	it('audits the creation', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		await submit(s.priya, id, { scaleId: 'phq9', answers: JSON.stringify(answers(phq9, () => 1, PHQ_SCORED)) });
 		const row = await db().assessment.findFirstOrThrow({ where: { patientId: id } });
 		const audit = await db().auditLog.findFirstOrThrow({ where: { action: 'Assessment Created', entityId: row.id } });
@@ -121,7 +121,7 @@ describe('validation: the server never trusts the client', () => {
 	let id: string;
 	const firstId = Object.keys(answers(phq9, () => 0, PHQ_SCORED))[0];
 	beforeAll(async () => {
-		id = await createPatient(s.priya);
+		id = await createPatient(s.priya, undefined, false);
 	});
 	const count = () => db().assessment.count({ where: { patientId: id } });
 
@@ -193,7 +193,7 @@ describe('validation: the server never trusts the client', () => {
 describe('other scales', () => {
 	it('FMA: headline score is the motor total with a 66-point maximum', async () => {
 		const fma = scale('fma');
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const a = answers(fma, (n) => Math.max(...n));
 		await submit(s.priya, id, { scaleId: 'fma', answers: JSON.stringify(a) });
 		const row = await db().assessment.findFirstOrThrow({ where: { patientId: id } });
@@ -204,8 +204,8 @@ describe('other scales', () => {
 
 	it('ARAT: scores the patient’s affected side', async () => {
 		const arat = scale('arat');
-		const left = await createPatient(s.priya); // created with affectedSide = Left
-		const right = await createPatient(s.priya);
+		const left = await createPatient(s.priya, undefined, false); // created with affectedSide = Left
+		const right = await createPatient(s.priya, undefined, false);
 		await db().patient.update({ where: { id: right }, data: { affectedSide: 'Right' } });
 
 		await submit(s.priya, left, { scaleId: 'arat', answers: JSON.stringify(answers(arat, (n) => Math.max(...n), (k) => k.endsWith('_l'))) });
@@ -218,7 +218,7 @@ describe('other scales', () => {
 	});
 
 	it('Box & Block: a scale with no total is stored with no score', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const r = await submit(s.priya, id, { scaleId: 'bbt', answers: JSON.stringify({ bnb_left_trial_1: 57, bnb_right_trial_1: 40 }) });
 		expect(r.type).toBe('redirect');
 		const row = await db().assessment.findFirstOrThrow({ where: { patientId: id } });
@@ -231,7 +231,7 @@ describe('other scales', () => {
 
 	it('MAL (130 items): accepts a large answer set', async () => {
 		const mal = scale('mal');
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const a = answers(mal, (n) => n[Math.min(2, n.length - 1)]);
 		expect(Object.keys(a).length).toBeGreaterThan(60);
 		const r = await submit(s.priya, id, { scaleId: 'mal', answers: JSON.stringify(a) });
@@ -241,7 +241,7 @@ describe('other scales', () => {
 
 describe('examiner', () => {
 	it('defaults to the signed-in therapist and can be another therapist at the same location', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const colleague = await createUser(s.admin, { role: 'THERAPIST', locationId: await downtownId() });
 		const colleagueId = (await db().user.findUniqueOrThrow({ where: { email: colleague.email } })).id;
 		const a = JSON.stringify(answers(phq9, () => 0, PHQ_SCORED));
@@ -253,7 +253,7 @@ describe('examiner', () => {
 	});
 
 	it('cannot be a therapist at another location, a consultant, or an invented id', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const a = JSON.stringify(answers(phq9, () => 0, PHQ_SCORED));
 		const rohan = (await db().user.findUniqueOrThrow({ where: { email: 'rohan.mehta@neurodash.care' } })).id;
 		const vikram = (await db().user.findUniqueOrThrow({ where: { email: 'vikram.suresh@neurodash.care' } })).id;
@@ -268,7 +268,7 @@ describe('scanned documents attached to an assessment', () => {
 	const a = JSON.stringify(answers(phq9, () => 1, PHQ_SCORED));
 
 	it('are stored with the assessment and can be viewed by people who can see the patient', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const r = await submit(s.priya, id, { scaleId: 'phq9', answers: a, scans: [PDF('sheet-1'), PDF('sheet-2')] });
 		expect(r.type).toBe('redirect');
 
@@ -282,13 +282,13 @@ describe('scanned documents attached to an assessment', () => {
 	});
 
 	it('are optional', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		expect((await submit(s.priya, id, { scaleId: 'phq9', answers: a })).type).toBe('redirect');
 		expect(await db().patientDocument.count({ where: { patientId: id } })).toBe(0);
 	});
 
 	it('a bad scan rejects the whole submission — no half-saved assessment', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const r = await submit(s.priya, id, { scaleId: 'phq9', answers: a, scans: [PDF('ok'), new File(['<html>'], 'fake.pdf')] });
 		expect(r.type).toBe('failure');
 		expect(await db().assessment.count({ where: { patientId: id } })).toBe(0);
@@ -296,7 +296,7 @@ describe('scanned documents attached to an assessment', () => {
 	});
 
 	it('appear in the patient’s assessment view and their Documents tab', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		await submit(s.priya, id, { scaleId: 'phq9', answers: a, scans: [PDF('phq9-sheet')] });
 		expect(await (await s.priya.get(`/patients/${id}?tab=assessments`)).text()).toContain('phq9-sheet.pdf');
 		expect(await (await s.priya.get(`/patients/${id}?tab=documents`)).text()).toContain('phq9-sheet.pdf');
@@ -306,7 +306,7 @@ describe('scanned documents attached to an assessment', () => {
 describe('permissions on submit', () => {
 	const a = JSON.stringify(answers(phq9, () => 1, PHQ_SCORED));
 	it('only the primary therapist can record an assessment', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		const colleague = await createUser(s.admin, { role: 'THERAPIST', locationId: await downtownId() });
 		const north = await createUser(s.admin, { role: 'THERAPIST', locationId: await northId() });
 		expect((await submit(colleague.client, id, { scaleId: 'phq9', answers: a })).status).toBe(403);
@@ -321,7 +321,7 @@ describe('permissions on submit', () => {
 
 describe('reading assessments back', () => {
 	it('the patient page shows labelled responses and auto-calculated scores from the definition', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		await submit(s.priya, id, { scaleId: 'phq9', answers: JSON.stringify(answers(phq9, () => 2, PHQ_SCORED)) });
 		const html = await (await s.priya.get(`/patients/${id}?tab=assessments`)).text();
 		expect(html).toContain(phq9.title);
@@ -338,7 +338,7 @@ describe('timepoints: only the baseline is labelled', () => {
 	const labels = async (id: string, scaleId: string) => (await db().assessment.findMany({ where: { patientId: id, scaleId }, orderBy: { createdAt: 'asc' } })).map((r) => r.label);
 
 	it('the first assessment of a scale is the Baseline and later ones carry no label', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		await send(id, 'phq9');
 		await send(id, 'phq9', { assessmentDate: '2026-09-08' });
 		await send(id, 'phq9', { assessmentDate: '2026-09-15' });
@@ -346,7 +346,7 @@ describe('timepoints: only the baseline is labelled', () => {
 	});
 
 	it('each scale has its own baseline', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		await send(id, 'phq9');
 		await send(id, 'fma');
 		await send(id, 'phq9', { assessmentDate: '2026-09-08' });
@@ -355,14 +355,14 @@ describe('timepoints: only the baseline is labelled', () => {
 	});
 
 	it('a label sent by the browser is ignored: there is no timepoint choice', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		await send(id, 'phq9', { label: 'Day 28' });
 		await send(id, 'phq9', { label: 'Baseline', assessmentDate: '2026-09-08' });
 		expect(await labels(id, 'phq9')).toEqual(['Baseline', null]);
 	});
 
 	it('the form says whether it is the baseline, and offers no timepoint options', async () => {
-		const id = await createPatient(s.priya);
+		const id = await createPatient(s.priya, undefined, false);
 		expect((await pageData(s.priya, `/assessments/new?patient=${id}&scale=phq9`)).isBaseline).toBe(true);
 		await send(id, 'phq9');
 		expect((await pageData(s.priya, `/assessments/new?patient=${id}&scale=phq9`)).isBaseline).toBe(false);

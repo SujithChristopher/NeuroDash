@@ -35,6 +35,14 @@
 		neutral: 'var(--ink-400)',
 		serious: 'var(--serious)'
 	};
+	const count = (status: string) => program.statusMix.find((s) => s.status === status)?.count ?? 0;
+	// Active and Inactive get a card each; Paused, Completed and Discontinued share one.
+	const others = $derived(
+		['Paused', 'Completed', 'Discontinued']
+			.map((s) => ({ status: s, n: count(s) }))
+			.filter((o) => o.n > 0)
+	);
+	const othersTotal = $derived(others.reduce((n, o) => n + o.n, 0));
 	const colors = $derived(program.statusMix.map((s) => TONE_VAR[statusTone(s.status)]));
 
 	// Which inflow graph is shown: patients registered in the period, returning patients who trained in it, or both.
@@ -59,11 +67,9 @@
 </script>
 
 <div class="grid" style="margin-bottom:16px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-	<KpiCard label="Total Patients" value={program.total} icon="users" tone="accent" />
-	<KpiCard label="Active Patients" value={program.active} icon="activity" tone="good" />
-	<KpiCard label="New Patients (30d)" value={program.newPatients} icon="plus" tone="accent" />
-	<KpiCard label="Active Plans" value={program.activePlans} icon="target" tone="good" />
-	<KpiCard label="Completed / Discontinued" value="{program.statusMix.find((s) => s.status === 'Completed')?.count ?? 0} / {program.statusMix.find((s) => s.status === 'Discontinued')?.count ?? 0}" icon="check" tone="neutral" />
+	<KpiCard label="Active Patients" value={program.active} icon="activity" tone="good" sub="have a therapy plan" />
+	<KpiCard label="Inactive Patients" value={count('Inactive')} icon="users" tone="accent" sub="no therapy plan yet" />
+	<KpiCard label="Others" value={othersTotal} icon="check" tone="neutral" sub={others.length ? others.map((o) => `${o.n} ${o.status.toLowerCase()}`).join(' · ') : 'paused, completed or discontinued'} />
 </div>
 
 <div class="two-col">

@@ -21,6 +21,8 @@ const entry = (code: string) => registry().patients.find((p) => p.user_id === co
 async function setDevices(pid: string, deviceTypeIds: string[], over: Record<string, string> = {}, client: Client = s.priya) {
 	const plan = await db().therapyPlan.findFirst({ where: { patientId: pid } });
 	if (!plan) {
+		// A plan needs an assessment first (any: this one uses a scale no other test does).
+		if (!(await db().assessment.count({ where: { patientId: pid } }))) await db().assessment.create({ data: { patientId: pid, scaleId: 'mrs', assessmentDate: new Date('2020-01-01'), answers: {}, label: 'Baseline' } });
 		return client.action(`/patients/${pid}?/createPlan`, { trainingSide: 'Left', startDate: '2026-12-01', durationDays: '5', dailyTargetMinutes: '30', deviceTypeIds, ...over });
 	}
 	return client.action(`/patients/${pid}?/editPlan`, {
@@ -73,7 +75,7 @@ describe('registering a patient creates its folder and files', () => {
 		expect(exists(id, 'patient.json')).toBe(false);
 		expect(fs.readdirSync(path.join(ROOT(), id))).toEqual([]);
 
-		expect(entry(id)).toEqual({ user_id: id, status: 'active', side: 'left', devices: ['MARS', 'PLUTO'] });
+		expect(entry(id)).toEqual({ user_id: id, status: 'active', side: 'left', devices: ['MARS', 'PLUTO'], assessment_devices: [] });
 		expect(registry().version).toBeGreaterThan(before);
 	});
 
@@ -168,7 +170,7 @@ describe('changing devices in the therapy plan', () => {
 		fs.writeFileSync(path.join(ROOT(), 'patients.json'), JSON.stringify(reg));
 		const pid = idOf(await register({ patientId: legacy }));
 		await setDevices(pid, ['MARS']);
-		expect(entry(legacy)).toEqual({ user_id: legacy, status: 'active', side: 'left', devices: ['MARS'] });
+		expect(entry(legacy)).toEqual({ user_id: legacy, status: 'active', side: 'left', devices: ['MARS'], assessment_devices: [] });
 	});
 
 	it('does not bump the patients.json version when only a note changed', async () => {
@@ -226,17 +228,17 @@ describe('changing devices in the therapy plan', () => {
 		expect((await setDevices(pid, ['MARS'], { status: 'Discontinued' })).type).toBe('success');
 		expect(await status()).toBe('Discontinued');
 		expect((await setDevices(pid, ['MARS'], { status: 'Active' })).type).toBe('success');
-		expect([await status(), entry(c)?.status]).toEqual(['Active', 'active']); // no session yet: Active, not Ongoing
+		expect([await status(), entry(c)?.status]).toEqual(['Active', 'active']);
 		expect(await db().auditLog.count({ where: { action: 'Patient Status Changed', entityId: pid } })).toBe(4);
 	});
 
-	it('reactivating a plan of a patient who has trained makes them Ongoing again', async () => {
+	it('reactivating a plan of a patient who has trained makes them Active again', async () => {
 		const code = uniq('rs').slice(0, 20);
 		const pid = idOf(await register({ patientId: code, deviceTypeIds: ['MARS'] }));
 		await db().therapySession.create({ data: { patientId: pid, deviceId: (await db().device.findFirstOrThrow({ where: { deviceTypeId: 'MARS' } })).id, sessionDate: new Date(), startTime: new Date(), totalTargets: 1, totalHits: 1 } });
 		await setDevices(pid, ['MARS'], { status: 'Paused' });
 		await setDevices(pid, ['MARS'], { status: 'Active' });
-		expect((await db().patient.findUniqueOrThrow({ where: { id: pid } })).status).toBe('Ongoing');
+		expect((await db().patient.findUniqueOrThrow({ where: { id: pid } })).status).toBe('Active');
 	});
 
 	it('status changes reach the laptops as active / paused / discharged', async () => {
@@ -323,6 +325,7 @@ describe('ingesting what the laptops upload', () => {
 	it('links sessions to the therapy plan and records real minutes and missed days', async () => {
 		const code = uniq('plan').slice(0, 20);
 		const pid = idOf(await register({ patientId: code }));
+		await db().assessment.create({ data: { patientId: pid, scaleId: 'mrs', assessmentDate: new Date('2020-01-01'), answers: {}, label: 'Baseline' } });
 		await s.priya.action(`/patients/${pid}?/createPlan`, { trainingSide: 'Left', name: 'Real plan', startDate: '2026-09-28', durationDays: '10', dailyTargetMinutes: '60', deviceTypeIds: ['MARS'] });
 		drop(code, 'MARS01', 'sessions.csv', sessionsCsv(code, 'MARS', [trial(1, '2026-09-28', 1, 10, 10, 1), trial(2, '2026-09-28', 1, 10, 9, 1)]));
 		await sync();

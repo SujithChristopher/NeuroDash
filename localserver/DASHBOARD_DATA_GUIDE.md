@@ -12,6 +12,7 @@ How the server stores patients, tracks the training devices, stops two devices t
 8. [Setting up a device](#8-setting-up-a-device)
 9. [Calling the agent from the training software](#9-calling-the-agent-from-the-training-software)
 10. [Limits and troubleshooting](#10-limits-and-troubleshooting)
+11. [Robotic assessments (PLUTO and MARS)](#11-robotic-assessments-pluto-and-mars)
 
 ## 1. The data folder
 
@@ -44,7 +45,7 @@ Three programs are involved:
   "version": 6,
   "updated_at": "2026-10-01T14:40:19",
   "patients": [
-    { "user_id": "AG10001", "status": "active", "side": "right", "devices": ["MARS", "PLUTO"] }
+    { "user_id": "AG10001", "status": "active", "side": "right", "devices": ["MARS", "PLUTO"], "assessment_devices": [] }
   ]
 }
 ```
@@ -56,12 +57,13 @@ Three programs are involved:
 | `user_id` | Patient ID. Must equal the `:User:` value in `sessions.csv` and the `HomerID` in `configdata.csv`, since uploads are filed under it. Letters, digits, `-`, `_` only. |
 | `status` | `active`, `paused` or `discharged`. Do not delete patients; discharge them so devices can see the change. |
 | `side` | `left`, `right` or `both` (`null` if not set yet). |
-| `devices` | Training devices this patient is allocated to, upper-case, sorted. |
+| `devices` | Training devices this patient is allocated to (from the therapy plan), upper-case, sorted. |
+| `assessment_devices` | Devices the therapist picked for the patient's **robotic assessment**, upper-case, sorted. Present before a plan exists, so the assessment can be run on them. The field is missing in files written before it existed: treat a missing field as `[]`. |
 
 Rules:
 - **Therapy plans are not stored here**, only identity, status, side and allocation. The web app is the source of truth; this file is a copy for the devices. It never holds names, dates of birth or contact details.
-- **A device only receives patients whose `devices` includes its own `DEVICE_ID`.** A patient on `["PLUTO"]` is invisible to a device that identifies as `MARS`. An empty list on a device usually means this mismatch.
-- **`devices` is replaced as a whole.** Always send the full list.
+- **A device only receives patients whose `devices` or `assessment_devices` includes its own `DEVICE_ID`.** A patient on `["PLUTO"]` is invisible to a device that identifies as `MARS`. An empty list on a device usually means this mismatch. A patient who is training on one device is still hidden from the others, whichever list they are in.
+- **`devices` and `assessment_devices` are replaced as a whole.** Always send the full list.
 - **An identical change does nothing**: no version bump, no nudge.
 - **Who is training right now is not stored here.** The patient lock lives in `presence.json`; the version of this file never changes for it.
 
@@ -266,3 +268,41 @@ nd.stop()                            # at the end (or: with nd.session(patient_i
 | A device shows OFFLINE while idle | Expected: the agent only checks in on events. Set `NEURODASH_KEEPALIVE_SECONDS=120` to show it online all day. |
 | A device's patient list is empty | Its `DEVICE_ID` is not in the patients' `devices`, or the patient is `paused` / `discharged`. |
 | `Ctrl+C` does not stop `s2.py` | Use the current `s2.py` (it wakes up every second), or press Ctrl+Break, or end the process (`netstat -ano \| findstr :5000`, then `taskkill /PID <id> /F`). |
+
+## 11. Robotic assessments (PLUTO and MARS)
+
+A robotic assessment measures what the patient can do with a device: **PLUTO** the range of motion of each wrist/forearm mechanism, **MARS** how far the arm can be moved. The assessment software saves it on the device; the sender sends it to the server once it is finished, and the dashboard shows it under the patient's *Assessments → Robotic assessment*.
+
+**Where the device keeps it.** One patient folder holds the finished timepoints, one folder per limb and timepoint (`A0` is the first, then `A1`, `A2`...), and a `.locked` file per timepoint that says it is finished:
+
+```
+<assessment root>/<patient ID>/
+    A0.locked                          "Locked on 2026-07-07 12:30:55"
+    right/A0/                          limb / timepoint
+        subject_info.json, <id>_right_A0_details.json, <id>_right_A0_protocol.csv      (PLUTO)
+        r_A0_.../<id>_right_FPS_AROM_summary-....csv, ..._raw-....csv                   (PLUTO)
+        session1-2026-07-07/ml-rom.csv, ap-rom.csv, mlap-rom.csv                        (MARS)
+        session2-2026-07-07/armweight.csv, discrete-reach.csv, ...                      (MARS)
+```
+
+The assessment root is `ASSESSMENT_ROOT` in `sender.py` (default `Documents\HomerPlutoData\fullassessment`, or the environment variable `NEURODASH_ASSESSMENT_ROOT`). On a Raspberry Pi it is the same patient folders the sessions use (`ROOT_DIR`).
+
+**When it is sent.** `python sender.py --assessments` (the Pi: `python3 sender_rapberryPI.py --assessments`) looks for finished timepoints and sends each one **once**:
+
+- A timepoint without its `.locked` file is still being done and is **not** sent.
+- A sent timepoint is remembered (`~/.neurodash_assessments_sent.json`, or `NEURODASH_ASSESSMENT_STATE`) by a fingerprint of its files. It is sent again **only if its files change**; otherwise nothing is sent. If the memory is lost, the laptop offers the fingerprint first and the server answers "I already have it", so nothing large travels.
+- The raw trial streams (`*_raw-*.csv`, `raw-*.csv`, about 20 times the rest) stay on the device unless `NEURODASH_SEND_RAW=1`.
+- `--upload` runs the same step after the session CSVs, so a device that already uploads after each session needs no extra call; the assessment software can also run `--assessments` when it locks a timepoint. Exit code 1 means a timepoint could not be sent (it is retried next time).
+
+**How it travels.** One TCP connection to port 5000 per timepoint, with `"action": "assessment"`. The laptop sends `{device_id, client_id, patient_id, limb, timepoint, fingerprint, file_size}`; the server answers `{success, send}` (`send: false` = already stored); then the laptop sends a zip of the timepoint folder and the server answers `{success, saved}`. All frames are length-prefixed JSON, like the patient lock. The server checks the header (limb `left`/`right`/`both`, timepoint like `A0`), refuses zips with paths that escape the folder or files that are not `.csv`, `.json`, `.locked` or `.txt`, and caps the package size.
+
+**Where it lands.** `<data folder>/<patient ID>/_assessments/<DEVICE>_<limb>_<TP>/`, for example `AG10001/_assessments/PLUTO_right_A0/`. A `.fingerprint` file is written last. A re-sent timepoint replaces the folder and the old copy is kept in `_assessments/_backup/`. Folders starting with `_` are ignored by the session import.
+
+**What the dashboard stores.** The web app reads the folder (when `.fingerprint` appears, or on the next scan) and keeps the results in their own tables, `robotic_assessments` (patient, device, limb, timepoint, date, the mechanisms the patient can use) and `robotic_assessment_results` (one row per mechanism and task: status, range of motion, attempts, reason). It does not mix them into the clinical `assessments`.
+
+- **PLUTO** (`*_details.json` plus the summary CSVs): mechanisms FPS, WFE, WURD and HOC; tasks AROM (active), PROM (passive), APROM (assisted) and DISC (discrete reaching). For each task the accepted attempt is the last one marked `Complete`; earlier `Rejected` attempts only count as attempts. A mechanism is **active** when its AROM was completed, **passive only** when only PROM/APROM were, otherwise not usable. Ranges are in degrees (HOC, a hand displacement, has no unit).
+- **MARS** (`ml-rom.csv`, `ap-rom.csv`, `mlap-rom.csv`, `armweight.csv`, `discrete-reach.csv`): MARS moves the arm, so everything is passive. For each movement (ML sideways, AP forwards, MLAP both) the best reach in centimetres (the device's own MAXIMUM row), the average, the trials and sessions. Arm weight and discrete reaching only record which targets were completed.
+
+An assessment (clinical, or a robotic one with devices chosen or results received) must exist before a therapy plan can be created.
+
+The server needs `assessment_receive.py` next to `s2.py`. The sender code is written once in `assessment_send.py` and embedded in `sender.py` and `sender_rapberryPI.py` by `python embed_assessment.py` (a device still needs only its sender and `agent.py`).

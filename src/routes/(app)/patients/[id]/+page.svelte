@@ -104,7 +104,8 @@
 						aria-label="Patient status"
 						onchange={(e) => e.currentTarget.form?.requestSubmit()}
 					>
-						{#each PATIENT_STATUSES as s (s)}<option value={s}>{s}</option>{/each}
+						<!-- Inactive / Active follow the plan: they are only listed for the state the patient is in (or Active once a plan exists) -->
+						{#each PATIENT_STATUSES.filter((s) => s === p.status || (s !== 'Inactive' && (s !== 'Active' || data.plans.length > 0))) as s (s)}<option value={s}>{s}</option>{/each}
 					</select>
 				</form>
 			{:else}
@@ -116,7 +117,7 @@
 					<Icon name="edit" size={13} /> Add Note
 				</button>
 				<a class="btn btn-primary btn-sm" href="/assessments/new?patient={p.id}">
-					<Icon name="plus" size={13} /> New Assessment
+					<Icon name="plus" size={13} /> Clinical Assessment
 				</a>
 			{/if}
 		</div>
@@ -152,11 +153,11 @@
 </div>
 
 {#if tab === 'overview'}
-	<OverviewTab {data} {stats} {openSession} goTab={setTab} />
+	<OverviewTab {data} {stats} goTab={setTab} />
 {:else if tab === 'assessments'}
 	<AssessmentsTab {data} {openAssessment} />
 {:else if tab === 'plan'}
-	<PlanTab {data} {stats} {form} />
+	<PlanTab {data} {stats} {form} goTab={setTab} />
 {:else if tab === 'sessions'}
 	<SessionsTab {data} {openSession} />
 {:else if tab === 'devices'}

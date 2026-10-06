@@ -206,6 +206,13 @@ def upsert_patient(
     return _save_patients(data)
 
 
+def offered_devices(patient):
+    """Where a patient is offered: their training devices plus the devices picked for their robotic assessment
+    ("assessment_devices", absent in older files)."""
+
+    return set(patient.get("devices", [])) | set(patient.get("assessment_devices", []))
+
+
 def patients_for_device(data, device_id, client_id=None, hide_held=False):
     """The patients of this device. With hide_held, patients another laptop is training right now are left out, so a
     laptop never offers a patient who is busy elsewhere. patients.json itself is never changed for this: it is a view."""
@@ -214,7 +221,7 @@ def patients_for_device(data, device_id, client_id=None, hide_held=False):
 
     return [
         p for p in data["patients"]
-        if device_id.upper() in p["devices"] and p["user_id"] not in busy
+        if device_id.upper() in offered_devices(p) and p["user_id"] not in busy
     ]
 
 
