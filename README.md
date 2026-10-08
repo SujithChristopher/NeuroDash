@@ -284,6 +284,7 @@ Each training laptop runs `python localserver/agent.py` all day. It does not pol
 | `npm run db:deploy` | Apply existing migrations (production) |
 | `npm run db:seed` | Load / refresh the demo data |
 | `npm run setup` | One-command setup: `.env`, create database, migrations, demo data (`-- --no-seed`, `-- --demo`, `-- --reset`) |
+| `bash scripts/setup-raspberry-pi.sh` | Sets the dashboard and device server up on a Raspberry Pi (database, build, services at boot); see Deploying |
 | `npm run demo:reset -- --yes` | **Wipes the database** and loads the demo users, centres, devices and the 37 demo patients |
 | `npm run demo:bulk` | Adds the 30 bulk demo patients (AG30001 to AG30030) to the current database; nothing is wiped |
 | `npm run demo:data` | Copies the sample device CSVs into the data folder for the live-upload demo |
@@ -350,6 +351,30 @@ It **refuses to run unless the database name contains `test`**, so it cannot tou
 ---
 
 ## 6. Deploying
+
+### On a Raspberry Pi (one command)
+
+For a clinic network, a Raspberry Pi 4 or 5 (4 GB or more) with **Raspberry Pi OS 64-bit** can run the dashboard and the device server together. As your normal user (not root):
+
+```sh
+git clone --branch main https://github.com/SujithChristopher/NeuroDash.git ~/NeuroDash
+bash ~/NeuroDash/scripts/setup-raspberry-pi.sh
+```
+
+(Use `--branch` for another branch. For a private repository, clone it with your login as above; the script then uses that copy instead of downloading one.)
+
+It installs git, Python 3, PostgreSQL and Node.js 22, creates the database and a database user with a random password (written only to `.env`, readable only by you), installs the packages, builds the app, applies the schema and loads the demo accounts and patients, and starts **two services that restart at boot**: `neurodash-web` (the dashboard on port **5180**) and `neurodash-server` (`localserver/s2.py`, the server the training devices talk to, TCP 5000 and UDP 5001). On a small Pi it adds a 2 GB swap file first so the build is not killed. The first run takes a while (mostly `npm ci` and the build).
+
+When it finishes it prints the addresses, for example `http://raspberrypi.local:5180`. Then:
+
+- **Passwords:** every demo account uses `neurodash123`. Sign in as the admin and reset them before real use.
+- **Devices:** set `NEURODASH_SERVER_IP` to the Pi's address on each training laptop or Pi (or `SERVER_IP` in the sender). The device data folder is `~/NeuroDashData`, shared by both services.
+- **Upgrade:** `bash ~/NeuroDash/scripts/setup-raspberry-pi.sh --update` (pulls, rebuilds, applies new migrations, restarts). It keeps your `.env`, database and data folder, so it is safe to re-run.
+- **Look and manage:** `sudo systemctl status neurodash-web neurodash-server`, `journalctl -u neurodash-web -f`.
+- **Options:** `--port N`, `--dir PATH`, `--data-dir PATH`, `--no-services`, and `--dry-run` to print every step without changing anything. `bash scripts/test-setup-raspberry-pi.sh` tests the script without a Pi.
+- It serves the built app with `vite preview` over plain http for a trusted clinic network (`ALLOW_HTTP_COOKIES=1`). For HTTPS or the internet, use the `adapter-node` route below behind a proxy.
+
+### On your own server (adapter-node)
 
 The project uses `adapter-auto`, which only works on a few hosts. For your own server:
 

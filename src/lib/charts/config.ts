@@ -7,6 +7,8 @@ export interface LineDataset {
 	color: string;
 	fill?: boolean;
 	dashed?: boolean;
+	/** Join the points of a series across the days it has no value (a device used every other day) */
+	connect?: boolean;
 }
 export interface BarDataset {
 	label: string;
@@ -29,6 +31,8 @@ export interface ChartOpts {
 	lively?: boolean;
 	/** Line charts: how long the draw-in takes (ms) */
 	animationMs?: number;
+	/** Line charts: a dashed horizontal target line, e.g. the daily target in minutes */
+	targetLine?: { value: number; label?: string };
 	/** Axis titles, e.g. the unit */
 	xTitle?: string;
 	yTitle?: string;
@@ -90,7 +94,8 @@ export function lineConfig(labels: string[], datasets: LineDataset[], opts: Char
 				tension: 0.35,
 				fill: !!ds.fill,
 				spanGaps: true,
-				borderDash: ds.dashed ? [5, 4] : []
+				borderDash: ds.dashed ? [5, 4] : [],
+				connect: !!ds.connect
 				};
 			})
 		},
@@ -99,6 +104,7 @@ export function lineConfig(labels: string[], datasets: LineDataset[], opts: Char
 			maintainAspectRatio: false,
 			interaction: { mode: 'index', intersect: false },
 			lively: !!opts.lively,
+			targetLine: opts.targetLine,
 			animation: opts.animationMs ? { duration: opts.animationMs } : undefined,
 			plugins: {
 				legend: {
@@ -153,6 +159,7 @@ export function barConfig(labels: string[], datasets: BarDataset[], opts: ChartO
 			indexAxis: opts.horizontal ? 'y' : 'x',
 			stacked: !!opts.stacked,
 			valueSuffix: opts.valueSuffix ?? '',
+			targetLine: opts.targetLine,
 			plugins: {
 				legend: {
 					display: !!opts.legend,

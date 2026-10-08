@@ -16,7 +16,7 @@ import patients_store
 # =========================================================
 
 HOST = "0.0.0.0"
-PORT = 5000
+PORT = int(os.environ.get("NEURODASH_PORT") or 5000)
 
 DATA_FOLDER = patients_store.DATA_FOLDER
 

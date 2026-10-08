@@ -2,8 +2,9 @@
 	import Chart from '$lib/components/Chart.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import KpiCard from '$lib/components/KpiCard.svelte';
+	import RankedBars from '$lib/components/RankedBars.svelte';
 	import { GAME_LABELS, MECHANISM_LABELS, labelFor, movementTerm } from '$lib/constants';
-	import { fmtHrsFromMin } from '$lib/utils';
+	import { fmtDateShort, fmtHrsFromMin } from '$lib/utils';
 	import { countTrials, deviceDaily, deviceTotals, devicesOf, durationByDay } from './series';
 	import type { PageData } from '../$types';
 
@@ -19,6 +20,17 @@
 	const active = $derived(devices.find((d) => d.typeId === picked) ?? devices[0]);
 
 	const duration = $derived(durationByDay(sessions, devices, lastDays));
+
+	// Minutes per day: stacked bars by device (the default). A line per device (joined across the days that device was not used,
+	// with the plan's daily target) is one click away.
+	let view = $state<'lines' | 'bars'>('bars');
+	const target = $derived((data.plans.find((p) => p.status === 'Active') ?? data.plans[0])?.dailyTargetMinutes ?? null);
+	const lineSets = $derived(duration.datasets.map((d) => ({ label: d.label, color: d.color, connect: true, data: d.data.map((v) => (v > 0 ? v : null)) })));
+	const dayTip = (i: number) => {
+		const parts = duration.datasets.map((d) => ({ name: d.label, min: d.data[i] })).filter((x) => x.min > 0);
+		const total = Math.round(parts.reduce((n, x) => n + x.min, 0) * 10) / 10;
+		return [fmtDateShort(duration.days[i]), ...parts.map((x) => `${x.name}: ${x.min} min`), ...(parts.length > 1 ? [`Total: ${total} min`] : [])];
+	};
 	const daily = $derived(active ? deviceDaily(sessions, active.typeId, lastDays) : []);
 	const withAccuracy = $derived(daily.filter((d) => d.accuracy !== null));
 	const totals = $derived(active ? deviceTotals(sessions, active.typeId) : null);
@@ -41,11 +53,19 @@
 
 	<div class="card" style="margin-bottom:20px">
 		<div class="card-head">
-			<div><h3>Therapy time per day</h3><div class="hint">Active minutes, stacked by device</div></div>
+			<div><h3>Therapy time per day</h3><div class="hint">{view === 'lines' ? 'Active minutes, a line per device' : 'Active minutes, stacked by device'}</div></div>
+			<div class="range-toggle" role="group" aria-label="Chart style">
+				<button class:active={view === 'bars'} onclick={() => (view = 'bars')}>Bars</button>
+				<button class:active={view === 'lines'} onclick={() => (view = 'lines')}>Lines</button>
+			</div>
 		</div>
 		<div class="card-body">
 			{#if duration.days.length}
-				<Chart kind="bar" labels={duration.labels} datasets={duration.datasets} opts={{ stacked: true, legend: true, valueSuffix: ' min', thick: 26 }} height={240} />
+				{#if view === 'lines'}
+					<Chart kind="line" labels={duration.labels} datasets={lineSets} opts={{ tooltipLines: dayTip, legend: true, lively: true, animationMs: 1500, yTitle: 'Minutes', maxTicksX: 10, targetLine: target ? { value: target, label: `Target ${target} min` } : undefined }} height={280} />
+				{:else}
+					<Chart kind="bar" labels={duration.labels} datasets={duration.datasets} opts={{ stacked: true, legend: true, valueSuffix: ' min', thick: 26, targetLine: target ? { value: target, label: `Target ${target} min` } : undefined }} height={240} />
+				{/if}
 			{:else}<EmptyState icon="activity" title="No sessions in this range" />{/if}
 		</div>
 	</div>
@@ -111,7 +131,7 @@
 				<div class="card-head"><h3>{term}s trained</h3><span class="hint">trials per {term.toLowerCase()}</span></div>
 				<div class="card-body">
 					{#if mechanisms.length}
-						<Chart kind="bar" labels={mechanisms.map(([m]) => labelFor(MECHANISM_LABELS, m))} datasets={[{ label: 'Trials', data: mechanisms.map(([, n]) => n), color: active.color }]} opts={{ horizontal: true }} height={210} />
+						<RankedBars items={mechanisms.map(([m, n]) => ({ label: labelFor(MECHANISM_LABELS, m), value: n }))} color={active.color} unit="trials" />
 					{:else}<EmptyState icon="activity" title="No {term.toLowerCase()} data recorded" />{/if}
 				</div>
 			</div>

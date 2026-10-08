@@ -31,6 +31,11 @@ export function fmtDateTime(d: Date | string) {
 	const x = new Date(d);
 	return x.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + fmtTime(x);
 }
+/** Date and time with the year, for records that outlive the week they were made in (saved reports) */
+export function fmtDateTimeFull(d: Date | string) {
+	const x = new Date(d);
+	return x.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + fmtTime(x);
+}
 export function timeAgo(d: Date | string) {
 	const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
 	if (m < 1) return 'just now';

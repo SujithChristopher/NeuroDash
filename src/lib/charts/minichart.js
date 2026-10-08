@@ -250,6 +250,16 @@ MiniChart.prototype._drawLegend = function(){
     ctx.fillText(label, x+12, y+1);
     x += 12 + ctx.measureText(label).width + 20;
   });
+  // the target line has its own entry, so its label never sits on top of the data
+  var tl = this.o.targetLine;
+  if(tl && typeof tl.value==='number'){
+    ctx.save();
+    ctx.setLineDash([5,4]); ctx.strokeStyle = 'rgba(180,83,9,.85)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x, y+0.5); ctx.lineTo(x+16, y+0.5); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = '#4b4a46'; ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText(tl.label || ('Target '+tl.value), x+22, y+1);
+  }
 };
 
 MiniChart.prototype._xTickStep = function(n){
@@ -263,13 +273,23 @@ MiniChart.prototype._dataMax = function(datasets){
   return m;
 };
 
+// The dashed target line across the plot at height ty (its label is in the legend)
+MiniChart.prototype._drawTarget = function(ty){
+  var ctx=this.ctx, p=this.plot;
+  ctx.save();
+  ctx.setLineDash([6,5]); ctx.strokeStyle = 'rgba(180,83,9,.8)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(p.x, Math.round(ty)+0.5); ctx.lineTo(p.x+p.w, Math.round(ty)+0.5); ctx.stroke();
+  ctx.restore();
+};
+
 MiniChart.prototype._drawLine = function(){
   var ctx=this.ctx, p=this.plot;
   var labels = this.data.labels||[];
   var datasets = this.data.datasets||[];
   var s = this.o.scales||{};
   var suggestedMax = s.y && s.y.suggestedMax;
-  var yAxis = computeYAxis(this._dataMax(datasets), suggestedMax);
+  var target = this.o.targetLine && typeof this.o.targetLine.value==='number' ? this.o.targetLine : null;
+  var yAxis = computeYAxis(this._dataMax(datasets), Math.max(suggestedMax||0, target ? target.value : 0));
   var showYGrid = !(s.y && s.y.grid && s.y.grid.display===false);
   var gridColor = (s.y && s.y.grid && s.y.grid.color) || '#e6e5df';
   var tickColor = (s.y && s.y.ticks && s.y.ticks.color) || '#8a8983';
@@ -298,10 +318,14 @@ MiniChart.prototype._drawLine = function(){
   var step = this._xTickStep(n);
   ctx.textAlign='center'; ctx.textBaseline='top';
   var self_w = this.w;
+  var prevRight = -Infinity;
   labels.forEach(function(lb,i){
     if(i%step!==0 && i!==n-1) return;
     ctx.fillStyle = tickColor;
     var text = String(lb), tx = xAt(i), half = ctx.measureText(text).width/2;
+    // the last label is always wanted, but not on top of the previous one
+    if(i===n-1 && i%step!==0 && tx-half < prevRight+8) return;
+    prevRight = tx+half;
     // Keep edge labels inside the canvas instead of letting them clip ("Day 34" → "Day 3").
     if(tx+half > self_w-2){ ctx.textAlign='right'; tx = self_w-2; }
     else if(tx-half < 2){ ctx.textAlign='left'; tx = 2; }
@@ -312,6 +336,8 @@ MiniChart.prototype._drawLine = function(){
 
   var self = this;
   var reveal = easeOutCubic(this._t==null ? 1 : this._t);
+  // A dashed target line (e.g. the daily target in minutes), drawn under the data
+  if(target) this._drawTarget(yAt(target.value));
   ctx.save();
   if(reveal<1){ ctx.beginPath(); ctx.rect(p.x-10, p.y-10, (p.w+24)*reveal, p.h+20); ctx.clip(); } // draw the line in left → right
 
@@ -344,11 +370,12 @@ MiniChart.prototype._drawLine = function(){
     if(ds.borderDash && ds.borderDash.length) ctx.setLineDash(ds.borderDash); else ctx.setLineDash([]);
     var run = [];
     var flush = function(){ if(run.length) self._trace(run, ds.tension); run = []; };
-    pts.forEach(function(pt){ if(!pt) flush(); else run.push(pt); });
+    // a series that is only sometimes present (a device used every other day) joins its own points across the gaps
+    pts.forEach(function(pt){ if(!pt){ if(!ds.connect) flush(); } else run.push(pt); });
     flush();
     ctx.stroke();
     ctx.setLineDash([]);
-    if(n<=40){
+    if(n<=40 || ds.connect){
       var lively = !!self.o.lively;
       var color = ds.borderColor || '#2a78d6';
       pts.forEach(function(pt, i){
@@ -393,7 +420,8 @@ MiniChart.prototype._drawBar = function(){
   var dsCount = datasets.length || 1;
   // Stacked bars (vertical only): each category is one bar made of one segment per dataset, e.g. minutes per device.
   var stacked = !!this.o.stacked && !horizontal;
-  var yAxis = computeYAxis(stacked ? this._stackMax(datasets, n) : this._dataMax(datasets), undefined);
+  var barTarget = !horizontal && this.o.targetLine && typeof this.o.targetLine.value==='number' ? this.o.targetLine : null;
+  var yAxis = computeYAxis(stacked ? this._stackMax(datasets, n) : this._dataMax(datasets), barTarget ? barTarget.value : undefined);
   this._barRects = [];
   var self = this;
 
@@ -436,6 +464,7 @@ MiniChart.prototype._drawBar = function(){
         acc += v;
       });
     });
+    if(barTarget) this._drawTarget(p.y + p.h - (barTarget.value/(yAxis.max||1))*p.h);
   } else if(!horizontal){
     ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.font='11px IBM Plex Sans, system-ui, sans-serif';
     yAxis.ticks.forEach(function(t){
@@ -466,6 +495,7 @@ MiniChart.prototype._drawBar = function(){
         self._barRects.push({x:bx,y:by,w:barW-2,h:Math.max(bh,1),i:i,v:v,ds:ds});
       });
     });
+    if(barTarget) this._drawTarget(p.y + p.h - (barTarget.value/(yAxis.max||1))*p.h);
   } else {
     ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.font='11px IBM Plex Sans, system-ui, sans-serif';
     var rowH = n>0? p.h/n : p.h;
@@ -589,17 +619,21 @@ MiniChart.prototype._hoverLine = function(mx,my,e){
   idx = Math.max(0, Math.min(g.n-1, idx));
   this._hoverIdx = idx;
   var callbacks = (this.o.plugins && this.o.plugins.tooltip && this.o.plugins.tooltip.callbacks) || {};
+  var listShown = false;
   var rows = g.datasets.map(function(ds){
     var v = (ds.data||[])[idx];
     var text;
     if(callbacks.label){
+      // a callback that returns a list describes the whole point (every series): show it once, not once per series
+      if(listShown) return null;
       try{ text = callbacks.label({parsed:{y:v,x:idx}, label:String(g.labels[idx]), dataset:{label:ds.label}, raw:v}); }
       catch(err){ text = (ds.label||'')+': '+v; }
+      if(Array.isArray(text)) listShown = true;
     } else {
       text = (ds.label? ds.label+': ':'')+(v==null?'–':v);
     }
     return { color: ds.borderColor, text: text };
-  });
+  }).filter(Boolean);
   // A label callback may return several lines (a list of strings): one tooltip row each.
   rows = rows.reduce(function(all, r){
     if(Array.isArray(r.text)) r.text.forEach(function(t, k){ all.push({ color: k===0 ? r.color : null, text: t }); });

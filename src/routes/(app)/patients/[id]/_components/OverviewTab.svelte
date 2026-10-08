@@ -27,7 +27,6 @@
 		return [
 			`${d.minutes} min on ${fmtDateShort(d.date)}${d.sessions > 1 ? ` (${d.sessions} sessions)` : ''}`,
 			...d.byDevice.map((x) => `${x.name}: ${x.minutes} min`),
-			...(d.accuracy == null ? [] : [`Accuracy: ${d.accuracy}%`]),
 			...(i > 0 ? [`${Math.round((Date.parse(d.date) - Date.parse(days[i - 1].date)) / 86400_000)} day(s) after Day ${i}`] : [])
 		];
 	};
@@ -51,7 +50,7 @@
 			</div>
 			<div class="card-body">
 				{#if days.length}
-					<Chart kind="area" labels={days.map((d) => String(d.n))} datasets={[{ label: 'Therapy time (min)', data: days.map((d) => d.minutes), color: 'var(--accent)' }]} opts={{ tooltipLines: tip, maxTicksX: 15, xTitle: 'Session', yTitle: 'Minutes', lively: true, animationMs: 1600 }} height={230} />
+					<Chart kind="area" labels={days.map((d) => String(d.n))} datasets={[{ label: 'Therapy time (min)', data: days.map((d) => d.minutes), color: 'var(--accent)' }]} opts={{ tooltipLines: tip, maxTicksX: 15, xTitle: 'Session', yTitle: 'Minutes', lively: true, animationMs: 1600, legend: !!stats.plan, targetLine: stats.plan ? { value: stats.plan.dailyTargetMinutes, label: `Target ${stats.plan.dailyTargetMinutes} min` } : undefined }} height={230} />
 				{:else}
 					<EmptyState icon="activity" title="No therapy sessions yet" sub="Sessions appear here as the training devices upload them." />
 				{/if}

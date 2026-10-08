@@ -11,8 +11,10 @@ from pathlib import Path
 # CONFIGURATION
 # =========================================================
 
-SERVER_IP = "172.17.227.246"
-SERVER_PORT = 5000
+# The computer that runs s2.py (127.0.0.1 when it runs on this same device). NEURODASH_SERVER_IP / NEURODASH_SERVER_PORT
+# override these without editing the file.
+SERVER_IP = os.environ.get("NEURODASH_SERVER_IP") or "172.17.227.246"
+SERVER_PORT = int(os.environ.get("NEURODASH_SERVER_PORT") or 5000)
 
 DEVICE_ID = "MARS"
 

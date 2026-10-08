@@ -27,7 +27,8 @@ import threading
 from datetime import datetime
 from pathlib import Path
 
-DATA_FOLDER = Path(r"D:\NeuroDashData")
+# The same folder as NEURODASH_DATA_DIR in the web app's .env: set that variable instead of editing this line
+DATA_FOLDER = Path(os.environ.get("NEURODASH_DATA_DIR") or r"D:\NeuroDashData")
 
 PATIENTS_FILE = DATA_FOLDER / "patients.json"
 DEVICES_FILE = DATA_FOLDER / "devices.json"

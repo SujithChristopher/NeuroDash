@@ -373,6 +373,17 @@ def main():
     print(f"Laptop      : {sender.CLIENT_ID} ({sender.DEVICE_ID})")
     print(f"Server      : {sender.SERVER_IP}:{sender.SERVER_PORT}")
     print(f"Local API   : http://{HTTP_HOST}:{HTTP_PORT}  (/start /stop /trial-ended /check /status)")
+
+    patients_file = getattr(sender, "PATIENTS_FILE", None)
+
+    if patients_file is not None:
+        print(f"Patient list: {patients_file}")
+
+    note = getattr(sender, "_PATIENTS_FILE_NOTE", "")
+
+    if note:
+        print(f"NOTE: {note}")
+
     print("Checks in with the server only when a patient starts or stops and when a trial ends.")
     print("Press Ctrl+C to stop.")
 

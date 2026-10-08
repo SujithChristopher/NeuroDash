@@ -301,3 +301,81 @@ describe('line chart tooltip', () => {
 		expect(hover(cfg(), true)).toContain('PLUTO: 20 min');
 	});
 });
+
+describe('line chart with several series', () => {
+	const twoSeries = (connect: boolean, over: Record<string, unknown> = {}) => ({
+		type: 'line',
+		data: {
+			labels: ['a', 'b', 'c', 'd'],
+			datasets: [
+				{ label: 'Mars', data: [10, null, 30, null], borderColor: '#c2571a', connect },
+				{ label: 'Pluto', data: [null, 20, null, 40], borderColor: '#2a78d6', connect }
+			]
+		},
+		options: { scales: { x: {}, y: {} }, ...over }
+	});
+
+	it('shows a list of lines for a point once, not once per series', () => {
+		const c = new MiniChart(fakeCanvas().ctx, twoSeries(true, { plugins: { tooltip: { callbacks: { label: () => ['Sep 1', 'Mars: 10 min', 'Pluto: 20 min'] } } } }));
+		run(1500);
+		let html = '';
+		c._showTip = (_x: number, _y: number, h: string) => (html = h);
+		const p = c.plot as { x: number; y: number; w: number; h: number };
+		c._hoverLine(p.x, p.y + 5, { clientX: 0, clientY: 0 });
+		expect(html.match(/Mars: 10 min/g)).toHaveLength(1);
+		expect(html).toContain('Pluto: 20 min');
+	});
+
+	it('joins a series across the days it has no value only when asked to', () => {
+		const strokes = (connect: boolean) => {
+			const c = new MiniChart(fakeCanvas().ctx, twoSeries(connect));
+			let runs = 0;
+			const trace = c._trace.bind(c);
+			c._trace = (...a: unknown[]) => {
+				runs++;
+				return trace(...a);
+			};
+			run(1500);
+			c._draw();
+			return runs;
+		};
+		// with gaps every point is its own run; joined, each series is one run
+		expect(strokes(false)).toBeGreaterThan(strokes(true));
+	});
+});
+
+describe('target line', () => {
+	const stackedCfg = () => ({
+		type: 'bar',
+		data: {
+			labels: ['d1', 'd2', 'd3'],
+			datasets: [
+				{ label: 'MARS', data: [10, 0, 30], backgroundColor: '#aa0000', borderRadius: 4, maxBarThickness: 28 },
+				{ label: 'PLUTO', data: [5, 20, 0], backgroundColor: '#0000bb', borderRadius: 4, maxBarThickness: 28 }
+			]
+		},
+		options: { scales: {}, stacked: true, valueSuffix: ' min' } as Record<string, unknown>
+	});
+	it('is drawn on stacked bars and raises the axis so a target above every bar still fits', () => {
+		const c = new MiniChart(fakeCanvas().ctx, { ...stackedCfg(), options: { ...stackedCfg().options, targetLine: { value: 100, label: 'Target 100 min' } } });
+		let at: number | null = null;
+		const draw = c._drawTarget.bind(c);
+		c._drawTarget = (ty: number) => {
+			at = ty;
+			return draw(ty);
+		};
+		run(1500);
+		c._draw();
+		const p = c.plot as { y: number; h: number };
+		expect(at).not.toBeNull();
+		expect(at!).toBeGreaterThanOrEqual(p.y); // inside the plot, not above it
+		expect(at!).toBeLessThan(p.y + p.h);
+	});
+	it('is left out when none is given', () => {
+		const c = new MiniChart(fakeCanvas().ctx, stackedCfg());
+		let drawn = 0;
+		c._drawTarget = () => void drawn++;
+		run(1500);
+		expect(drawn).toBe(0);
+	});
+});

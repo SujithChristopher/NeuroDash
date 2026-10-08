@@ -501,5 +501,41 @@ class RaspberryPiTests(unittest.TestCase):
         self.assertEqual(server.actions().count("claim_user"), claims + 1)
 
 
+class PatientsFileLocationTests(unittest.TestCase):
+    """Where a laptop keeps its patient list: C:\patients.json when it can write it, else its own folder."""
+
+    def test_the_default_is_used_when_it_can_be_written(self):
+        path, note = sender.choose_patients_file(Path("C:/patients.json"), Path("/home/x/patients.json"), writable=lambda p: True)
+        self.assertEqual((path, note), (Path("C:/patients.json"), ""))
+
+    def test_an_unwritable_default_falls_back_to_the_users_folder_and_says_so(self):
+        path, note = sender.choose_patients_file(Path("C:/patients.json"), Path("/home/x/patients.json"), writable=lambda p: False)
+        self.assertEqual(path, Path("/home/x/patients.json"))
+        self.assertIn("cannot be written", note)
+        self.assertIn("patients.json", note)
+
+    def test_an_explicit_choice_wins(self):
+        path, note = sender.choose_patients_file(Path("C:/patients.json"), Path("/x"), writable=lambda p: False, override="D:/mine/patients.json")
+        self.assertEqual((path, note), (Path("D:/mine/patients.json"), ""))
+
+    def test_a_folder_that_can_be_written_is_detected_and_leaves_no_probe_behind(self):
+        with tempfile.TemporaryDirectory() as folder:
+            self.assertTrue(sender.can_write_file(Path(folder) / "patients.json"))
+            self.assertEqual(list(Path(folder).iterdir()), [])
+
+    def test_an_existing_file_is_writable_without_changing_it(self):
+        with tempfile.TemporaryDirectory() as folder:
+            file = Path(folder) / "patients.json"
+            file.write_text('{"version": 3}', encoding="utf-8")
+            self.assertTrue(sender.can_write_file(file))
+            self.assertEqual(file.read_text(encoding="utf-8"), '{"version": 3}')
+
+    def test_a_missing_folder_that_cannot_be_created_is_not_writable(self):
+        with tempfile.TemporaryDirectory() as folder:
+            blocker = Path(folder) / "file"
+            blocker.write_text("x", encoding="utf-8")  # a file where the folder should be
+            self.assertFalse(sender.can_write_file(blocker / "inside" / "patients.json"))
+
+
 if __name__ == "__main__":
     unittest.main()

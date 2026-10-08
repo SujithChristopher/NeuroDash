@@ -10,7 +10,7 @@
 	import Chart from '$lib/components/Chart.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import { downloadCsv, toCsv } from '$lib/csv';
-	import { fmtDateTime, fmtHrsFromMin } from '$lib/utils';
+	import { fmtDateTimeFull, fmtHrsFromMin } from '$lib/utils';
 
 	let { data } = $props();
 
@@ -186,7 +186,7 @@
 						<tbody>
 							{#each data.savedReports as sr (sr.id)}
 								<tr class="clickable" onclick={() => goto(`/reports/saved/${sr.id}`)}>
-									<td class="dt-name">{sr.title}</td><td>{sr.by}</td><td class="mono">{fmtDateTime(sr.createdAt)}</td><td class="row-chevron"><Icon name="chevron" size={14} /></td>
+									<td class="dt-name">{sr.title}</td><td>{sr.by}</td><td class="mono">{fmtDateTimeFull(sr.createdAt)}</td><td class="row-chevron"><Icon name="chevron" size={14} /></td>
 								</tr>
 							{/each}
 						</tbody>

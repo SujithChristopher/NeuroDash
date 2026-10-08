@@ -13,10 +13,12 @@ from pathlib import Path
 # CONFIGURATION
 # =========================================================
  
-SERVER_IP = "172.17.227.246"
-SERVER_PORT = 5000
+# The computer that runs s2.py. Use 127.0.0.1 when the server runs on this same laptop. Set NEURODASH_SERVER_IP (and
+# NEURODASH_SERVER_PORT) instead of editing this file if you prefer.
+SERVER_IP = os.environ.get("NEURODASH_SERVER_IP") or "192.168.0.100"
+SERVER_PORT = int(os.environ.get("NEURODASH_SERVER_PORT") or 5000)
  
-DEVICE_ID = "MARS"
+DEVICE_ID = "PLUTO"
 
 # Which LAPTOP this is. DEVICE_ID is the kind of device (several laptops can all be "MARS"), so the patient lock needs
 # this to tell two MARS laptops apart. Defaults to the computer's name; set NEURODASH_CLIENT_ID to override it.
@@ -48,8 +50,50 @@ CSV_FILES = _load_csv_files()
 # Where this device's assessment software saves finished assessments (see upload_assessments below)
 ASSESSMENT_ROOT = Path(os.environ.get("NEURODASH_ASSESSMENT_ROOT") or Path.home() / "Documents" / "HomerPlutoData" / "fullassessment")
 
-# Local copy of the patients allocated to this laptop's device
-PATIENTS_FILE = Path(r"C:\patients.json")
+# Local copy of the patients allocated to this laptop's device. It stays C:\patients.json (the training software may read it
+# there) when this user may write it; an ordinary Windows user cannot create files in the root of C:\, so then the copy is kept
+# in the user's own folder instead. NEURODASH_PATIENTS_FILE overrides both.
+DEFAULT_PATIENTS_FILE = Path(r"C:\patients.json")
+FALLBACK_PATIENTS_FILE = Path.home() / "NeuroDash" / "patients.json"
+
+
+def can_write_file(path):
+    """True when this program can really write `path`: the file itself when it exists, else a new file in its folder."""
+
+    path = Path(path)
+
+    try:
+        if path.exists():
+            with open(path, "a", encoding="utf-8"):
+                return True
+
+        probe = path.parent / f".neurodash_probe_{os.getpid()}"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        probe.write_text("x", encoding="utf-8")
+        probe.unlink()
+        return True
+    except OSError:
+        return False
+
+
+def choose_patients_file(default, fallback, writable=can_write_file, override=None):
+    """The patients file to use and why: (path, note). The note is empty when the default is fine."""
+
+    if override:
+        return Path(override), ""
+
+    if writable(default):
+        return Path(default), ""
+
+    return Path(fallback), (
+        f"{default} cannot be written by this user, so the patient list is kept in {fallback} instead. "
+        f"Point the training software at that file, or allow this user to write {default}."
+    )
+
+
+PATIENTS_FILE, _PATIENTS_FILE_NOTE = choose_patients_file(
+    DEFAULT_PATIENTS_FILE, FALLBACK_PATIENTS_FILE, override=os.environ.get("NEURODASH_PATIENTS_FILE")
+)
  
 SYNC_INTERVAL_SECONDS = 15
  
@@ -362,17 +406,25 @@ def _sync_patients():
  
     PATIENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
  
+    payload = {
+        "version": response["version"],
+        "updated_at": response["updated_at"],
+        "view": response.get("view"),
+        "patients": response["patients"]
+    }
+
+    # Written to a temporary file and swapped in, so a reader never sees half a file. Where the folder does not allow new
+    # files but the file itself is writable (C:\), it is rewritten in place instead.
     temp = PATIENTS_FILE.with_suffix(".tmp")
- 
-    with open(temp, "w", encoding="utf-8") as f:
-        json.dump({
-            "version": response["version"],
-            "updated_at": response["updated_at"],
-            "view": response.get("view"),
-            "patients": response["patients"]
-        }, f, indent=2)
- 
-    os.replace(temp, PATIENTS_FILE)
+
+    try:
+        with open(temp, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+        os.replace(temp, PATIENTS_FILE)
+    except PermissionError:
+        with open(PATIENTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
  
     print(
         f"Patients updated: v{version} -> v{response['version']} "
@@ -829,6 +881,9 @@ def upload_assessments():
 
 
 if __name__ == "__main__":
+
+    if _PATIENTS_FILE_NOTE:
+        print(f"NOTE: {_PATIENTS_FILE_NOTE}")
 
     mode = sys.argv[1] if len(sys.argv) > 1 else "--upload"
 

@@ -159,7 +159,7 @@
 {:else if tab === 'plan'}
 	<PlanTab {data} {stats} {form} goTab={setTab} />
 {:else if tab === 'sessions'}
-	<SessionsTab {data} {openSession} />
+	<SessionsTab {data} {openSession} goTab={setTab} />
 {:else if tab === 'devices'}
 	<DevicesTab {data} goTab={setTab} />
 {:else if tab === 'progress'}

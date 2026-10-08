@@ -5,7 +5,7 @@
 	import KpiCard from './KpiCard.svelte';
 	import EmptyState from './EmptyState.svelte';
 	import { MECHANISM_LABELS, labelFor, movementTerm } from '$lib/constants';
-	import { adherenceTone, fmtDateShort, fmtHrsFromMin } from '$lib/utils';
+	import { adherenceTone, fmtDate, fmtHrsFromMin } from '$lib/utils';
 	import type { PatientReportData, ReportNotes } from '$lib/patientReport';
 
 	let {
@@ -37,12 +37,12 @@
 			<h2 style="font-size:20px">Patient report <span class="mono muted" style="font-size:13px;font-weight:400">{r.patient.displayCode}</span></h2>
 			<div class="sub">
 				Primary therapist {r.patient.therapist} · <Badge text={r.patient.status} />
-				· Generated {fmtDateShort(r.generatedAt)}
-				· {#if r.period}<b>Period: {r.period.from ? fmtDateShort(r.period.from) : 'start'} to {r.period.to ? fmtDateShort(r.period.to) : 'today'}</b>{:else}All time{/if}
+				· Generated {fmtDate(r.generatedAt)}
+				· {#if r.period}<b>Period: {r.period.from ? fmtDate(r.period.from) : 'start'} to {r.period.to ? fmtDate(r.period.to) : 'today'}</b>{:else}All time{/if}
 			</div>
 			<div class="sub" style="margin-top:4px">
 				{r.patient.age != null ? `${r.patient.age} yrs` : 'Age —'} · {r.patient.gender ?? '—'} · Affected side {r.patient.affectedSide ?? '—'}
-				{#if r.patient.strokeDate}· Stroke / injury {fmtDateShort(r.patient.strokeDate)}{/if}
+				{#if r.patient.strokeDate}· Stroke / injury {fmtDate(r.patient.strokeDate)}{/if}
 			</div>
 		</div>
 	</div>
@@ -58,7 +58,7 @@
 		<div class="card card-pad" style="margin-bottom:16px">
 			<div class="k-label">Therapy plan</div>
 			<div class="k-sub" style="margin-top:6px">
-				Training the <b>{r.plan.trainingSide ?? '—'}</b> side · {r.plan.dailyTargetMinutes} min/day target · started {fmtDateShort(r.plan.startDate)} ·
+				Training the <b>{r.plan.trainingSide ?? '—'}</b> side · {r.plan.dailyTargetMinutes} min/day target · started {fmtDate(r.plan.startDate)} ·
 				planned devices: {r.plan.devices.join(', ') || '—'} · status {r.plan.status}
 			</div>
 		</div>
@@ -74,7 +74,7 @@
 				<div class="card">
 					<div class="card-head">
 						<h3><span class="swatch" style="background:{color(d.colorSeries)}"></span>{d.name}</h3>
-						<span class="hint">{d.firstDay ? fmtDateShort(d.firstDay) : '—'} to {d.lastDay ? fmtDateShort(d.lastDay) : '—'}</span>
+						<span class="hint">{d.firstDay ? fmtDate(d.firstDay) : '—'} to {d.lastDay ? fmtDate(d.lastDay) : '—'}</span>
 					</div>
 					<div class="card-body">
 						<div class="dev-facts">
@@ -146,7 +146,7 @@
 					<thead><tr><th>Timepoint</th><th>Date</th><th>Score</th><th>%</th></tr></thead>
 					<tbody>
 						{#each sc.points as p, i (i)}
-							<tr><td>{p.label}</td><td class="mono">{fmtDateShort(p.date)}</td><td class="mono">{p.score}/{p.max}</td><td class="mono">{p.pct}%</td></tr>
+							<tr><td>{p.label}</td><td class="mono">{fmtDate(p.date)}</td><td class="mono">{p.score}/{p.max}</td><td class="mono">{p.pct}%</td></tr>
 						{/each}
 					</tbody>
 				</table>
