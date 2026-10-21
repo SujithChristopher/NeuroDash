@@ -3,6 +3,8 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import { PLAN_STATUSES } from '$lib/constants';
+	import GoalsEditor from './GoalsEditor.svelte';
+	import type { GoalDraftForm } from '$lib/planGoals';
 	import type { PageData } from '../$types';
 
 	import { untrack } from 'svelte';
@@ -17,6 +19,9 @@
 	// Devices and side start at the plan's current values; the therapist adds or removes devices here.
 	let picked = $state<string[]>(untrack(() => plan.devices.map((d) => d.id)));
 	const toggle = (id: string) => (picked = picked.includes(id) ? picked.filter((x) => x !== id) : [...picked, id]);
+	let side = $state(untrack(() => plan.trainingSide ?? 'Left'));
+	// The goals already set (their targets), which can be changed, removed or added to
+	let drafts = $state<GoalDraftForm[]>(untrack(() => plan.deviceGoals.map((g) => ({ deviceTypeId: g.deviceTypeId, mechanism: g.mechanism, task: g.task, target: String(g.targetValue) }))));
 
 	const f = $derived(form as { editError?: string; ok?: boolean; message?: string } | null);
 	let busy = $state(false);
@@ -46,7 +51,7 @@
 			</div>
 			<div class="field">
 				<label for="ep-side">Affected side to train</label>
-				<select id="ep-side" name="trainingSide" value={plan.trainingSide ?? 'Left'}><option>Left</option><option>Right</option><option>Both</option></select>
+				<select id="ep-side" name="trainingSide" bind:value={side}><option>Left</option><option>Right</option><option>Both</option></select>
 			</div>
 			<div class="field full">
 				<span style="display:block;font-size:12.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px">Devices</span>
@@ -60,6 +65,7 @@
 				</div>
 				<div class="field-hint">Adding or removing a device updates the patient's training devices and patients.json for the laptops.</div>
 			</div>
+			<GoalsEditor {data} devices={picked} {side} bind:drafts overall={plan.goals.join('; ')} />
 			<div class="field"><label for="ep-target">Daily target (minutes)</label><input id="ep-target" name="dailyTargetMinutes" type="number" min="1" max="600" value={plan.dailyTargetMinutes} required /></div>
 			<div class="field"><label for="ep-sess">Target sessions</label><input id="ep-sess" name="targetSessions" type="number" min="1" value={plan.targetSessions ?? ''} required /></div>
 			<div class="field full"><label for="ep-notes">Plan notes</label><textarea id="ep-notes" name="notes">{plan.notes ?? ''}</textarea></div>

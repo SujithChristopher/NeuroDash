@@ -302,7 +302,7 @@ async function main() {
           durationDays: p.durationDays,
           dailyTargetMinutes: p.dailyMinutes,
           targetSessions: p.durationDays,
-          goals: [],
+          goals: d.code.startsWith("AG30") ? [] : ["Improve reach and grasp for everyday tasks"],
           status: p.status,
           createdById: therapist.id,
           createdAt: start,
@@ -449,6 +449,16 @@ async function main() {
               },
             });
           }
+        }
+
+        // Device goals, typed by the therapist: a target above the A0 value (the baseline) that runs until the therapy ends
+        if (p.devices.includes("PLUTO")) {
+          const b = Math.round(base[0].arom * 10) / 10;
+          await prisma.planGoal.create({ data: { planId: plan.id, deviceTypeId: "PLUTO", mechanism: "FPS", task: "AROM", unit: "deg", limb, baselineValue: b, baselineTimepoint: "A0", targetValue: Math.round(b * 1.4) } });
+        }
+        if (p.devices.includes("MARS")) {
+          const b = Math.round(reachBase[0].ml * 10) / 10;
+          await prisma.planGoal.create({ data: { planId: plan.id, deviceTypeId: "MARS", mechanism: "ML", task: "ROM", unit: "cm", limb, baselineValue: b, baselineTimepoint: "A0", targetValue: Math.round(b * 1.3) } });
         }
       }
     }

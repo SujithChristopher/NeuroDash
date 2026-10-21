@@ -14,7 +14,8 @@ import { dataRoot } from '$lib/server/dataDir';
 import { activeByCode } from '$lib/server/presence';
 import { checkUpload } from '$lib/server/files';
 import { PATIENT_STATUSES, PLAN_STATUSES } from '$lib/constants';
-import type { RoboticAssessmentView } from '$lib/roboticAssessment';
+import { describeGoal } from '$lib/planGoals';
+import { parseGoalDrafts, prepareGoals, toRoboticViews } from '$lib/server/planGoals';
 
 const patientInclude = {
 	therapist: { select: { id: true, name: true, locationId: true } },
@@ -27,6 +28,7 @@ const patientInclude = {
 				orderBy: { modifiedAt: 'desc' },
 				include: { modifiedBy: { select: { name: true } } }
 			},
+			deviceGoals: { orderBy: [{ deviceTypeId: 'asc' }, { mechanism: 'asc' }, { task: 'asc' }] },
 			createdBy: { select: { name: true } }
 		}
 	},
@@ -109,18 +111,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		assessmentDevices: p.assessmentDevices.map((d) => ({ deviceTypeId: d.deviceTypeId, name: d.deviceType.name })),
 		hasAssessment: p.assessments.length + p.assessmentDevices.length + p.roboticAssessments.length > 0,
 		// What the devices measured (PLUTO range of motion, MARS reach range), one entry per timepoint
-		roboticAssessments: p.roboticAssessments.map(
-			(a): RoboticAssessmentView => ({
-				id: a.id,
-				device: a.deviceTypeId,
-				limb: a.limb,
-				timepoint: a.timepoint,
-				assessedAt: a.assessedAt.toISOString(),
-				lockedAt: a.lockedAt?.toISOString() ?? null,
-				mechanisms: a.mechanisms as RoboticAssessmentView['mechanisms'],
-				results: a.results.map((r) => ({ mechanism: r.mechanism, task: r.task, status: r.status, unit: r.unit, romMin: r.romMin, romMax: r.romMax, romRange: r.romRange, attempts: r.attempts, comment: r.comment, extra: r.extra as Record<string, unknown> | null }))
-			})
-		),
+		roboticAssessments: toRoboticViews(p.roboticAssessments),
 		folder: { enabled: dataRoot() !== null, path: dataRoot() ? `${p.displayCode}/` : null },
 		trainingDevices: p.trainingDevices.map((d) => ({
 			id: d.id,
@@ -183,6 +174,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			dailyTargetMinutes: pl.dailyTargetMinutes,
 			targetSessions: pl.targetSessions,
 			goals: pl.goals,
+			deviceGoals: pl.deviceGoals.map((g) => ({ id: g.id, deviceTypeId: g.deviceTypeId, mechanism: g.mechanism, task: g.task, unit: g.unit, limb: g.limb, baselineValue: g.baselineValue, baselineTimepoint: g.baselineTimepoint, targetValue: g.targetValue })),
 			notes: pl.notes,
 			createdAt: pl.createdAt.toISOString(),
 			createdBy: pl.createdBy.name,
@@ -275,6 +267,7 @@ const editPlanSchema = z.object({
 	dailyTargetMinutes: z.coerce.number().int().min(1).max(600),
 	targetSessions: z.coerce.number().int().min(1).max(1000),
 	notes: z.string().trim().max(4000).optional(),
+	goals: z.string().optional(),
 	reason: z.string().trim().min(1, 'A reason is required for every plan change.').max(1000)
 });
 
@@ -405,6 +398,12 @@ export const actions: Actions = {
 		if (valid !== deviceTypeIds.length) return fail(400, { planError: 'Unknown device selected.' });
 
 		const goals = (v.goals ?? '').split(';').map((s) => s.trim()).filter(Boolean);
+
+		// Device goals: a typed target per device, mechanism and task, with the baseline from the robotic assessment
+		const drafts = parseGoalDrafts(fd.get('deviceGoals'));
+		if ('error' in drafts) return fail(400, { planError: drafts.error });
+		const prepared = await prepareGoals({ patientId: p.id, planDeviceIds: deviceTypeIds, trainingSide: v.trainingSide, affectedSide: p.affectedSide, drafts: drafts.drafts });
+		if ('error' in prepared) return fail(400, { planError: prepared.error });
 		const start = new Date(Date.UTC(v.startDate.getUTCFullYear(), v.startDate.getUTCMonth(), v.startDate.getUTCDate()));
 
 		const plan = await prisma.$transaction(async (tx) => {
@@ -421,7 +420,8 @@ export const actions: Actions = {
 					notes: v.notes || null,
 					status: 'Active',
 					createdById: user.id,
-					devices: { create: deviceTypeIds.map((deviceTypeId) => ({ deviceTypeId })) }
+					devices: { create: deviceTypeIds.map((deviceTypeId) => ({ deviceTypeId })) },
+					deviceGoals: { create: prepared.goals }
 				}
 			});
 			await tx.planDayLog.createMany({
@@ -462,7 +462,7 @@ export const actions: Actions = {
 		if (!parsed.success) return fail(400, { editError: parsed.error.issues[0].message });
 		const v = parsed.data;
 
-		const plan = await prisma.therapyPlan.findFirst({ where: { id: v.planId, patientId: p.id }, include: { devices: { select: { deviceTypeId: true } } } });
+		const plan = await prisma.therapyPlan.findFirst({ where: { id: v.planId, patientId: p.id }, include: { devices: { select: { deviceTypeId: true } }, deviceGoals: true } });
 		if (!plan) throw error(404, 'Plan not found');
 
 		// The plan's devices are the patient's training devices: adding or removing one here updates the table and patients.json.
@@ -470,6 +470,19 @@ export const actions: Actions = {
 		if (!deviceTypeIds.length) return fail(400, { editError: 'Select at least one device.' });
 		if ((await prisma.deviceType.count({ where: { id: { in: deviceTypeIds } } })) !== deviceTypeIds.length) return fail(400, { editError: 'Unknown device selected.' });
 		const hadDevices = plan.devices.map((d) => d.deviceTypeId).sort();
+
+		// Device goals are only touched when the form sends them. A goal that stays keeps the baseline it was set with.
+		const sentGoals = fd.has('deviceGoals');
+		let goalRows = plan.deviceGoals.filter((g) => deviceTypeIds.includes(g.deviceTypeId));
+		if (sentGoals) {
+			const drafts = parseGoalDrafts(fd.get('deviceGoals'));
+			if ('error' in drafts) return fail(400, { editError: drafts.error });
+			const prepared = await prepareGoals({ patientId: p.id, planDeviceIds: deviceTypeIds, trainingSide: v.trainingSide, affectedSide: p.affectedSide, drafts: drafts.drafts, existing: plan.deviceGoals });
+			if ('error' in prepared) return fail(400, { editError: prepared.error });
+			goalRows = prepared.goals as typeof goalRows;
+		}
+		const describeAll = (gs: { deviceTypeId: string; mechanism: string; task: string; targetValue: number; unit: string | null }[]) => gs.map(describeGoal).sort().join('; ');
+		const newOverall = v.goals === undefined ? plan.goals : v.goals.split(';').map((x) => x.trim()).filter(Boolean);
 
 		const next = { status: v.status, trainingSide: v.trainingSide, dailyTargetMinutes: v.dailyTargetMinutes, targetSessions: v.targetSessions, notes: v.notes || null };
 		const changes: { field: string; previous: string | null; next: string | null }[] = [];
@@ -482,6 +495,8 @@ export const actions: Actions = {
 		diff('Daily Target Duration (min)', plan.dailyTargetMinutes, next.dailyTargetMinutes);
 		diff('Target Sessions', plan.targetSessions, next.targetSessions);
 		diff('Notes', plan.notes, next.notes);
+		diff('Overall goal', plan.goals.join('; ') || null, newOverall.join('; ') || null);
+		diff('Device goals', describeAll(plan.deviceGoals) || null, describeAll(goalRows) || null);
 		if (!changes.length) return fail(400, { editError: 'Nothing was changed.' });
 
 		// The plan is the patient's only plan, so its status is the patient's status: pausing, completing or discontinuing
@@ -496,7 +511,10 @@ export const actions: Actions = {
 					patientStatus = wanted;
 				}
 			}
-			await tx.therapyPlan.update({ where: { id: plan.id }, data: next });
+			await tx.therapyPlan.update({ where: { id: plan.id }, data: { ...next, goals: newOverall } });
+			// The goals are replaced as a whole (the ones that stay carry their original baseline); a device taken out of the plan loses its goals
+			await tx.planGoal.deleteMany({ where: { planId: plan.id } });
+			await tx.planGoal.createMany({ data: goalRows.map((g) => ({ planId: plan.id, deviceTypeId: g.deviceTypeId, mechanism: g.mechanism, task: g.task, unit: g.unit, limb: g.limb, baselineValue: g.baselineValue, baselineTimepoint: g.baselineTimepoint, targetValue: g.targetValue })) });
 			await tx.planDevice.deleteMany({ where: { planId: plan.id, deviceTypeId: { notIn: deviceTypeIds } } });
 			await tx.planDevice.createMany({ data: deviceTypeIds.map((deviceTypeId) => ({ planId: plan.id, deviceTypeId })), skipDuplicates: true });
 			await tx.patientDevice.deleteMany({ where: { patientId: p.id, deviceTypeId: { notIn: deviceTypeIds } } });

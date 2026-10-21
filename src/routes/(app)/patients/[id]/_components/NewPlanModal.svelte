@@ -3,6 +3,8 @@
 	import { enhance } from '$app/forms';
 	import Modal from '$lib/components/Modal.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import GoalsEditor from './GoalsEditor.svelte';
+	import type { GoalDraftForm } from '$lib/planGoals';
 	import type { PageData } from '../$types';
 
 	let { data, form, onclose }: { data: PageData; form: unknown; onclose: () => void } = $props();
@@ -12,6 +14,7 @@
 	let busy = $state(false);
 	let selected = $state<string[]>([]);
 	let duration = $state(29);
+	let drafts = $state<GoalDraftForm[]>([]);
 	// Starts at the patient's affected side; the therapist can change it.
 	let side = $state(untrack(() => (data.patient.affectedSide === 'Right' ? 'Right' : data.patient.affectedSide === 'Bilateral' ? 'Both' : 'Left')));
 
@@ -57,6 +60,7 @@
 				</div>
 				<div class="field-hint">Select one or more devices. The patient is added to patients.json for the laptops with these devices.</div>
 			</div>
+			<GoalsEditor {data} devices={selected} {side} bind:drafts />
 		</div>
 		{#if err}<div class="alert alert-critical" style="margin-top:12px"><Icon name="alert" size={15} /><span>{err}</span></div>{/if}
 	</form>

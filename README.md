@@ -227,6 +227,14 @@ or `_incoming` are refused because they would clash with the server's own folder
 `assessment_devices`, and the patient is offered on exactly those devices. A therapy plan cannot be created until one assessment
 (clinical, or robotic devices chosen) exists.
 
+**Plan goals.** When a therapy plan is created or modified (Therapy Plan tab), the therapist writes an **overall goal** and, for each PLUTO or
+MARS device in the plan, one or more **device goals**: a mechanism (and, for PLUTO, a task such as AROM), with a target range typed as a
+number. The form shows the patient's current value from their latest robotic assessment, which becomes the goal's starting value. A goal has
+no due date: it lasts until the therapy ends, and each robotic assessment in between (A1, A2...) shows on the **Goals** card how far along it
+is (start, latest, target, percentage). When the plan is completed or discontinued, the card shows the final results. The same device,
+limb, mechanism and task are always compared, never PLUTO with MARS or AROM with PROM. The target must be above the starting value, and
+goals are recorded in the plan history like other plan changes. `npm run demo:reset` adds goals for the demo patients.
+
 **Robotic assessment results (PLUTO and MARS).** When the assessment software on a device finishes a timepoint (A0, A1...), it leaves a
 `<TP>.locked` file; `python sender.py --assessments` (also part of `--upload`) then sends that timepoint to the server, once, and again
 only if its files change. The server keeps the files in `<data folder>/<patient ID>/_assessments/<DEVICE>_<limb>_<TP>/` and the

@@ -115,6 +115,7 @@ model DeviceType {
   patientDevices     PatientDevice[]
   assessmentDevices  AssessmentDevice[]
   roboticAssessments RoboticAssessment[]
+  planGoals          PlanGoal[]
 
   @@map("device_types")
 }
@@ -273,6 +274,7 @@ model TherapyPlan {
   revisions       PlanRevision[]
   dayLog          PlanDayLog[]
   therapySessions TherapySession[]
+  deviceGoals     PlanGoal[]
 
   @@index([patientId])
   @@index([status])
@@ -675,6 +677,29 @@ model RoboticAssessmentResult {
 
   @@unique([assessmentId, mechanism, task])
   @@map("robotic_assessment_results")
+}
+
+// A measurable goal for one device of a plan: the target range (typed by the therapist) for one mechanism and task, with the
+// patient's value when the goal was set (the baseline, from the latest robotic assessment). It runs until the therapy ends;
+// every robotic assessment in between shows how far along it is. Only like is compared with like: the same device, limb,
+// mechanism and task (see src/lib/planGoals.ts).
+model PlanGoal {
+  id                String      @id @default(uuid())
+  planId            String      @map("plan_id")
+  plan              TherapyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  deviceTypeId      String      @map("device_type_id")
+  deviceType        DeviceType  @relation(fields: [deviceTypeId], references: [id])
+  mechanism         String // FPS | WFE | WURD | HOC (PLUTO), ML | AP | MLAP (MARS)
+  task              String // AROM | PROM | APROM (PLUTO), ROM (MARS)
+  unit              String? // deg | cm
+  limb              String? // left | right: the limb the baseline was measured on; null = whichever was assessed
+  baselineValue     Float?      @map("baseline_value")
+  baselineTimepoint String?     @map("baseline_timepoint")
+  targetValue       Float       @map("target_value")
+  createdAt         DateTime    @default(now()) @map("created_at")
+
+  @@unique([planId, deviceTypeId, mechanism, task])
+  @@map("plan_goals")
 }
 
 // Devices the therapist picked for the patient's ROBOTIC assessment. Mirrored to patients.json as "assessment_devices":

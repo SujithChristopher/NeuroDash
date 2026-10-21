@@ -8,6 +8,7 @@
 	import type { computePatientStats } from '$lib/patientStats';
 	import NewPlanModal from './NewPlanModal.svelte';
 	import EditPlanModal from './EditPlanModal.svelte';
+	import GoalsCard from './GoalsCard.svelte';
 
 	let {
 		data,
@@ -67,11 +68,12 @@
 				<div class="kv-row"><span class="kl">Daily target duration</span><span class="kv">{plan.dailyTargetMinutes} minutes</span></div>
 				<div class="kv-row"><span class="kl">Target sessions</span><span class="kv">{plan.targetSessions ?? '—'}</span></div>
 				<div class="kv-row"><span class="kl">Devices involved</span><span class="kv">{plan.devices.map((d) => d.name).join(', ')}</span></div>
-				<div class="kv-row" style="grid-column:1/-1"><span class="kl">Therapy goals</span><span class="kv">{plan.goals.join('; ') || '—'}</span></div>
 				<div class="kv-row" style="grid-column:1/-1"><span class="kl">Notes</span><span class="kv">{plan.notes ?? '—'}</span></div>
 			</div>
 		</div>
 	</div>
+
+	<GoalsCard {data} {plan} canEdit={data.perms.canModifyPlan} onedit={() => (showEdit = true)} />
 
 	<div class="card" style="margin-bottom:18px">
 		<div class="card-head"><h3>Daily timeline</h3><span class="hint">Day {stats.currentDay} of {plan.durationDays}</span></div>
